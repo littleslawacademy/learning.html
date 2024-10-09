@@ -154,6 +154,22 @@
             <a class="link" href="https://youtube.com/channel/UC2h7JI9Sfijk8lAKlG2S6bA" target="_blank">Little's Law YouTube Channel</a>
             <a class="link" href="https://linkedin.com/in/vasanthmshanmugam" target="_blank">LinkedIn</a>
             <a class="link" href="https://chat.whatsapp.com/KalLwTLYOEH9gIblYM3teC" target="_blank">WhatsApp Channel</a>
+            <form
+  action= "{secrets.formspree}"
+  method="POST"
+>
+  <label>
+    Your email:
+    <input type="email" name="email">
+  </label>
+  <label>
+    Your message:
+    <textarea name="message"></textarea>
+  </label>
+  <!-- your other form fields go here -->
+  <button type="submit">Send</button>
+</form>
+
         </div>
     </div>
 
@@ -191,6 +207,9 @@
                 expert: [
                     { name: "Execute JMeter Load Test using Azure Release Pipeline", url: "https://www.youtube.com/embed/arbbf9MfcJw?si=SK7an4ohpKUNKXHJ" },
                     { name: "Execute JMeter from Azure repo using Azure pipeline", url: "https://www.youtube.com/embed/pFt5G5lVgFA?si=sVkPN0GC9z2TiRGj" },
+                    { name: "Execute JMeter Load test using Jenkins", url: "https://www.youtube.com/embed/h-uKlNHDS_U?si=Ok427q46JwuuYIf1"},
+                    { name: "Execute JMeter Test in Azure DevOps without Installing jmeter", url: "https://www.youtube.com/embed/7gBECXzLe7Y?si=aRBrD887gsc9QoFr"},
+
                 ]
             },
             loadrunner: {
