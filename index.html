@@ -85,6 +85,13 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
+        .link {
+            display: block;
+            margin-top: 10px;
+            color: blue;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -121,10 +128,10 @@
 
             <br>
 
-            <!-- Installation options dropdown -->
-            <label for="installOptions">I want to:</label>
-            <select id="installOptions" name="installOptions" disabled onchange="showVideo()">
-                <option value="">Select an installation option</option>
+            <!-- Video selection dropdown -->
+            <label for="videoSelect">Select a video:</label>
+            <select id="videoSelect" name="videoSelect" disabled onchange="showVideo()">
+                <option value="">Select a video</option>
             </select>
         </div>
 
@@ -135,8 +142,18 @@
 
         <div class="section" id="aboutMe">
             <h2>About Me and My Channel</h2>
-            <p>Welcome to my channel! I share tutorials and guides on various performance testing tools. Join me in exploring the world of software testing!</p>
-            <p>Feel free to reach out if you have any questions or suggestions!</p>
+            <p>Welcome to my YouTube channel! I'm Vasanth Shanmugam, a seasoned professional with 15 years of experience in performance testing, performance engineering, DevOps, Git, Azure Cloud, Jira, and Confluence.</p>
+
+            <p>Join me as we delve into the intricacies of performance testing, performance engineering, DevOps, Git, Azure Cloud, Jira, and Confluence. Through engaging videos, I break down complex concepts into easy-to-understand explanations, walk you through step-by-step tutorials, and share real-world examples to illustrate key principles.</p>
+
+            <p>With my 15 years of experience, I bring a wealth of knowledge to the table, allowing me to provide in-depth discussions, demonstrate industry-leading tools, and guide you on optimizing performance, ensuring scalability, and enhancing overall software quality.</p>
+
+            <p>So, software engineers, quality assurance professionals, and anyone interested in learning more hit the subscribe button, turn on notifications, and let's optimize our software together.</p>
+
+            <h3>Links</h3>
+            <a class="link" href="https://youtube.com/channel/UC2h7JI9Sfijk8lAKlG2S6bA" target="_blank">Little's Law YouTube Channel</a>
+            <a class="link" href="https://linkedin.com/in/vasanthmshanmugam" target="_blank">LinkedIn</a>
+            <a class="link" href="https://chat.whatsapp.com/KalLwTLYOEH9gIblYM3teC" target="_blank">WhatsApp Channel</a>
         </div>
     </div>
 
@@ -178,55 +195,38 @@
         function populateLevels() {
             const toolSelect = document.getElementById("tool");
             const levelSelect = document.getElementById("level");
-            const installSelect = document.getElementById("installOptions");
+            const videoSelect = document.getElementById("videoSelect");
             const videoContainer = document.getElementById("videoContainer");
 
             levelSelect.disabled = false;
-            installSelect.disabled = true;
-            installSelect.innerHTML = ""; // Clear install options
+            videoSelect.disabled = true;
+            videoSelect.innerHTML = ""; // Clear video options
             videoContainer.style.display = "none"; // Hide video initially
         }
 
-        // Populate installation options based on tool and level selection
+        // Populate video options based on tool and level selection
         function populateInstallOptions() {
             const toolSelect = document.getElementById("tool");
             const levelSelect = document.getElementById("level");
-            const installSelect = document.getElementById("installOptions");
+            const videoSelect = document.getElementById("videoSelect");
             const selectedTool = toolSelect.value;
             const selectedLevel = levelSelect.value;
 
-            // Clear the installation options dropdown
-            installSelect.innerHTML = "";
+            // Clear the video options dropdown
+            videoSelect.innerHTML = "";
 
             if (installOptions[selectedTool] && installOptions[selectedTool][selectedLevel]) {
                 installOptions[selectedTool][selectedLevel].forEach(function (option) {
                     const opt = document.createElement("option");
                     opt.text = option.name;
                     opt.value = option.url; // Use URL as value
-                    installSelect.add(opt);
+                    videoSelect.add(opt);
                 });
             }
 
-            installSelect.disabled = false; // Enable install options dropdown
+            videoSelect.disabled = false; // Enable video options dropdown
         }
 
-        // Show the embedded video based on the selected installation option
+        // Show the embedded video based on the selected video option
         function showVideo() {
-            const installSelect = document.getElementById("installOptions");
-            const videoContainer = document.getElementById("videoContainer");
-            const videoEmbed = document.getElementById("videoEmbed");
-
-            const selectedOptionUrl = installSelect.value;
-            videoEmbed.src = selectedOptionUrl ? selectedOptionUrl : ""; // Update iframe source
-
-            // Show the video container if a valid URL is selected
-            if (selectedOptionUrl) {
-                videoContainer.style.display = "block";
-            } else {
-                videoContainer.style.display = "none"; // Hide if no option is selected
-            }
-        }
-    </script>
-
-</body>
-</html>
+            const videoSelect = document.getElementById("videoSelect");
