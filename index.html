@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Littles Law YouTube Channel by Vasanth Shanmugam</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/littleslawacademy/learning.html/main/images/littleslaw.png" type="image/x-icon"> <!-- Use the correct path -->
+    <link rel="icon" href="https://raw.githubusercontent.com/littleslawacademy/learning.html/main/images/littleslaw.png" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -175,13 +175,13 @@
             },
             jmeter: {
                 beginner: [
-                    { name: "JMeter Installation Guide", url: "https://www.example.com/jmeter-installation" }
+                    { name: "JMeter Installation Guide", url: "https://www.youtube.com/embed/jmeter-beginner" }
                 ],
                 intermediate: [
-                    { name: "Advanced JMeter Configuration", url: "https://www.example.com/advanced-jmeter" }
+                    { name: "Advanced JMeter Configuration", url: "https://www.youtube.com/embed/jmeter-advanced" }
                 ],
                 expert: [
-                    { name: "JMeter Performance Tuning", url: "https://www.example.com/jmeter-tuning" }
+                    { name: "JMeter Performance Tuning", url: "https://www.youtube.com/embed/jmeter-expert" }
                 ]
             },
             loadrunner: {
@@ -215,18 +215,33 @@
             // Clear the video options dropdown
             videoSelect.innerHTML = "";
 
-            if (installOptions[selectedTool] && installOptions[selectedTool][selectedLevel]) {
+            if (installOptions[selectedTool] && installOptions[selectedTool][selectedLevel].length > 0) {
                 installOptions[selectedTool][selectedLevel].forEach(function (option) {
                     const opt = document.createElement("option");
                     opt.text = option.name;
                     opt.value = option.url; // Use URL as value
                     videoSelect.add(opt);
                 });
+                videoSelect.disabled = false; // Enable video options dropdown
+            } else {
+                videoSelect.disabled = true; // Disable video dropdown if no videos
             }
-
-            videoSelect.disabled = false; // Enable video options dropdown
         }
 
         // Show the embedded video based on the selected video option
         function showVideo() {
             const videoSelect = document.getElementById("videoSelect");
+            const videoContainer = document.getElementById("videoContainer");
+            const videoEmbed = document.getElementById("videoEmbed");
+
+            if (videoSelect.value) {
+                videoEmbed.src = videoSelect.value;
+                videoContainer.style.display = "block"; // Show the video container
+            } else {
+                videoContainer.style.display = "none"; // Hide video if no selection
+            }
+        }
+    </script>
+
+</body>
+</html>
