@@ -136,8 +136,100 @@
         </div>
 
         <div class="section" id="futureContent">
-            <h2>Future Content Section</h2>
-            <p>This section will be updated with new content later.</p>
+            <h2>Transformation Journey</h2>
+            <p>This section will be updated with new contents.</p>
+        
+            <!-- Transformational Journey Dropdown -->
+            <label for="transformationalJourney">Transformational Journey:</label>
+            <select id="transformationalJourney" name="transformationalJourney" onchange="populateVideos(this.value)">
+                <option value="">Select a journey</option>
+                <option value="journey1">JMeter End to End Learning (English)</option>
+                <option value="journey2">Journey 2</option>
+                <option value="journey3">Journey 3</option>
+                <option value="journey4">Journey 4</option>
+                <option value="journey5">Journey 5</option>
+            </select>
+            <br><br>
+        
+            <!-- What do you want Dropdown -->
+            <label for="videoLinks">What do you want:</label>
+            <select id="videoLinks" name="videoLinks" onchange="openVideo(this.value)">
+                <option value="">Select a video</option>
+            </select>
+        
+            <script>
+                // Function to populate video options based on selected journey
+                function populateVideos(journey) {
+                    const videoDropdown = document.getElementById("videoLinks");
+                    videoDropdown.innerHTML = ''; // Clear previous options
+        
+                    const journeys = {
+                        journey1: [
+                            { name: "Day 01 - Performance Testing with JMeter", url: "https://www.youtube.com/embed/W4npOeZBfE0?si=nEIJRJcQat3W2N0P" },
+                            { name: "Day 02 - Creating an Effective Performance Testing Plan", url: "https://www.youtube.com/embed/nyHUC2cUAtc?si=jIvPZTB-okBSTnLq" },
+                            { name: "Day 03 - Performance Test Designing Step by step", url: "https://www.youtube.com/embed/O9JnRvuBQSU?si=lqY83KFul_iwoRnZ" },
+                            { name: "Day 04 - How Workload modelling works", url: "https://www.youtube.com/embed/Zss8SWnWXzk?si=1_Pj3jCmi6orGFb0" },
+                            { name: "Day 05 - How to Record HTTP(S) Script in JMeter", url: "https://www.youtube.com/embed/npLx4BUZJg4?si=dO6DzZG4YiIXdcTR" },
+                            { name: "Day 06 - How to Estimate effort for Performance test script and Create api Script", url: "https://www.youtube.com/embed/_q9HGJTATXA?si=cYykxObxqExV-md9" },
+                            { name: "Day 07 - How to do Parameterization in JMeter", url: "https://www.youtube.com/embed/jozXa-pSik0?si=to1Omc0jodh4U01S" },
+                            { name: "Day 08 - How to do Correlation in JMeter", url: "https://www.youtube.com/embed/aYoqh6J8TfA?si=SFXUNtoVv2aMFtqE" },
+                            { name: "Day 09 - Why is Smoke Test necessary in Performance Testing", url: "https://www.youtube.com/embed/v84HCbYdG0w?si=xnHM78U67JZk90eu" },
+                            { name: "Day 10 - How to Run a Load Test in JMeter using Ultimate Thread Group", url: "https://www.youtube.com/embed/nlcjBk51oJo?si=5s510_SNP0mAosk-" },
+                            { name: "Day 11 - How to use Open Model Thread Group in JMeter", url: "https://www.youtube.com/embed/r0DPQHdddoA?si=UrZYvAq0Hp_trPVN" },
+                            { name: "Day 12 - How to use Arrivals Thread Group in JMeter", url: "https://www.youtube.com/embed/Zhm3_QZm2Ys?si=OxLV6IzXTfN78YOS" },
+                            { name: "Day 13 - How to use Concurrency Thread Group for Load testing", url: "https://www.youtube.com/embed/r4iJ8NYQSaY?si=XKnRExP5eBvQKMM4" },
+                            { name: "Day 14 - How to Prepare and Analyze Load Test Report", url: "https://www.youtube.com/embed/atzO7GqDAd8?si=BV_ndIYQ1YB1Fung" },
+                            { name: "Day 15 - How to use Concurrency Thread group in JMeter with multiple scripts", url: "https://www.youtube.com/embed/_t25BGdl7sc?si=j-73AflSiDZYWD1X" },
+                            { name: "Day 16 - How to execute Stress test using JMeter ", url: "https://www.youtube.com/embed/FKIxgMQ7kOk?si=-5fzd50OH-78Q58T" },
+                            { name: "Day 00 - How to install JMeter in Windows 11", url: "https://www.youtube.com/embed/ypnGdx2syqw?si=X2X0Psi6Fax1L6hy" },
+                            { name: "Day 00 - How to Generate Html report in JMeter in GUI Mode", url: "https://www.youtube.com/embed/9c81ZMwdPzo?si=ow1xmYffEERfVIXc" },
+                            { name: "Day 17 - How to create Summary report after JMeter Load Test", url: "https://www.youtube.com/embed/0I7--KdO4Hk?si=VCVcFQsHV_JDVn7a"  }
+
+                        ],
+                        journey2: [
+                            { name: "Video 2.1", url: "https://www.example.com/video2_1" },
+                            { name: "Video 2.2", url: "https://www.example.com/video2_2" },
+                            { name: "Video 2.3", url: "https://www.example.com/video2_3" }
+                        ],
+                        journey3: [
+                            { name: "Video 3.1", url: "https://www.example.com/video3_1" },
+                            { name: "Video 3.2", url: "https://www.example.com/video3_2" },
+                            { name: "Video 3.3", url: "https://www.example.com/video3_3" }
+                        ],
+                        journey4: [
+                            { name: "Video 4.1", url: "https://www.example.com/video4_1" },
+                            { name: "Video 4.2", url: "https://www.example.com/video4_2" },
+                            { name: "Video 4.3", url: "https://www.example.com/video4_3" }
+                        ],
+                        journey5: [
+                            { name: "Video 5.1", url: "https://www.example.com/video5_1" },
+                            { name: "Video 5.2", url: "https://www.example.com/video5_2" },
+                            { name: "Video 5.3", url: "https://www.example.com/video5_3" }
+                        ]
+                    };
+        
+                    if (journey && journeys[journey]) {
+                        journeys[journey].forEach(video => {
+                            const option = document.createElement("option");
+                            option.value = video.url;
+                            option.textContent = video.name;
+                            videoDropdown.appendChild(option);
+                        });
+                    } else {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.value = "";
+                        defaultOption.textContent = "Select a video";
+                        videoDropdown.appendChild(defaultOption);
+                    }
+                }
+        
+                // Function to open the selected video link
+                function openVideo(url) {
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
+                }
+            </script>
         </div>
 
         <div class="section" id="aboutMe">
