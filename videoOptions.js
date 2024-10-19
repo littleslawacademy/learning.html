@@ -41,7 +41,7 @@ function populateVideos(journey) {
             { name: "Neoload Bootcamp | How to Collaborate Neoload with GitHub", url: "https://www.youtube.com/embed/G4mZQr65oRE?si=x22Nsr6FcTo1Fvim" },
             { name: "How to Integrate Apache JMeter with Azure DevOps", url: "https://www.youtube.com/embed/68JFyzcMU3M?si=D2IayvouvNacdvcg" },
             { name: "JMeter with GitLab Integration", url: "https://www.youtube.com/embed/VkJ0HDxT-tk?si=wxKJ3TR4NtuOpK2b" },
-            { name: "Challenges and Our Approach to Overcome Them in Collecting NFR for Performance Testing ", url: "https://www.youtube.com/embed/qJrQ213qH-M?si=QxFkApI4b4hwZaKN" }
+            { name: "Challenges and Our Approach to Overcome Them in Collecting NFR for Performance Testing ", url: "https://www.youtube.com/embed/qJrQ213qH-M?si=QxFkApI4b4hwZaKN" },
         ],
         journey4: [
             { name: "Video 4.1", url: "https://www.example.com/video4_1" },
