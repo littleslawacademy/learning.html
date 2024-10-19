@@ -95,7 +95,15 @@ crossorigin="anonymous">
             </select>
         
                <!-- Include the external JavaScript file -->
-        <script type="module" src="videoOptions.js"></script>
+               <script type="module" src="videoOptions.js"></script>
+
+               <script type="module">
+                   // Ensure that populateVideos is called after the videoOptions.js is loaded
+                   const transformationalJourneySelect = document.getElementById('transformationalJourney');
+                   transformationalJourneySelect.addEventListener('change', function() {
+                       populateVideos(this.value);
+                   });
+               </script>
 
         </div>
 
