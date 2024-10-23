@@ -140,3 +140,27 @@ button[type="submit"]:hover {
     max-width: 560px; /* Max width for the video */
     height: 315px; /* Maintain aspect ratio */
 }
+
+/* Container Styles */
+.container {
+    display: flex; /* Use flexbox for horizontal layout */
+    justify-content: space-between; /* Space sections evenly */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    max-width: 1200px; /* Optional: set a maximum width for the container */
+    margin: 20px auto; /* Center the container */
+    padding: 20px;
+    background-color: white; /* White background for sections */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Subtle shadow for depth */
+}
+
+/* Section Styles */
+.section {
+    flex: 1; /* Allow sections to grow equally */
+    margin: 10px; /* Margin around sections */
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background for sections */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for sections */
+    min-width: 300px; /* Minimum width for sections */
+}
