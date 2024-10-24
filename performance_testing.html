@@ -41,6 +41,27 @@
             border-left: 5px solid #007bff; /* Blue accent */
             border-radius: 5px;
         }
+
+        /* Styles for the LinkedIn share button */
+        .linkedin-share {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .linkedin-share a {
+            display: inline-block;
+            background-color: #0077B5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .linkedin-share a:hover {
+            background-color: #005582;
+        }
     </style>
 </head>
 <body>
@@ -62,67 +83,13 @@
         
         <iframe width="560" height="315" src="https://www.youtube.com/embed/BOEqJ93F9QI?si=9mZEZiepYi1YPEkT&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-        <div class="section">
-            <h3>What is Performance Testing?</h3>
-            <p>Performance testing is a type of testing that measures the speed, responsiveness, and stability of a computer system, software application, or network under a specific workload. Organizations use it to identify performance bottlenecks and ensure smooth operation under various conditions.</p>
-            <p>The main goal of performance testing is to detect and eliminate performance issues to maintain software quality. Without proper performance testing, systems may suffer from slow response times and inconsistent performance across users and operating systems, resulting in a poor user experience (UX).</p>
-            <p>Performance testing helps determine whether a system meets the necessary speed, responsiveness, and stability requirements under varying workloads to ensure a positive UX. Performance tests are typically conducted after functional testing is completed.</p>
-        </div>
+        <!-- Your existing content here -->
 
-        <div class="section">
-            <h3>What is Functional Testing?</h3>
-            <p>Functional testing checks if the software works according to specified requirements by verifying its functionality. Once this is completed, performance testing can begin.</p>
-        </div>
-
-        <div class="section">
-            <h3>Role of Performance Testing in Development</h3>
-            <p>Developers often write performance tests, which may also be reviewed during code reviews. These tests can be transferred between environments, such as from development teams to operations teams monitoring live environments. Performance testing may be carried out in controlled labs or in production environments to evaluate real-world scenarios.</p>
-            <p>Performance testing should identify key performance requirements, including metrics like processing speed, data transfer rates, network bandwidth, and reliability. For instance, an organization may test how long a software takes to respond to user actions and use this data to pinpoint any bottlenecks.</p>
-        </div>
-
-        <div class="section">
-            <h3>Why Use Performance Testing?</h3>
-            <p>Organizations may use performance testing for several reasons:</p>
-            <ul>
-                <li><strong>Diagnostic tool:</strong> It helps identify bottlenecks within a system, such as slow data transfer rates due to hardware limitations or software issues.</li>
-                <li><strong>Software optimization:</strong> Pinpoints areas where software may lag or fail, helping developers address issues before major events.</li>
-                <li><strong>Vendor verification:</strong> Confirms that a system or software meets the specifications claimed by its manufacturer.</li>
-                <li><strong>Stakeholder communication:</strong> Provides updates on the performance of applications, such as speed, stability, and scalability.</li>
-                <li><strong>Reputation management:</strong> Prevents the negative impact of poorly performing software by ensuring the application runs smoothly before release.</li>
-                <li><strong>System comparison:</strong> Helps organizations compare the performance of two or more systems in terms of speed, responsiveness, and stability.</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h3>Key Performance Testing Metrics</h3>
-            <p>Performance testing involves tracking several key metrics or KPIs, such as:</p>
-            <ul>
-                <li><strong>Throughput:</strong> Amount of data processed in a given time frame.</li>
-                <li><strong>Memory usage:</strong> The available working memory for tasks.</li>
-                <li><strong>Response time (latency):</strong> Time elapsed between a user's request and the system's response.</li>
-                <li><strong>Bandwidth:</strong> Data volume transferred per second across a network.</li>
-                <li><strong>CPU interrupts per second:</strong> Frequency of hardware interrupts received by a process.</li>
-                <li><strong>Average latency:</strong> Time it takes to receive the first byte of data after a request.</li>
-                <li><strong>Peak response time:</strong> Longest time it takes to fulfill a request.</li>
-                <li><strong>Error rate:</strong> Percentage of failed requests compared to the total number of requests.</li>
-                <li><strong>Disk time:</strong> Time taken by a disk to read or write data.</li>
-                <li><strong>Session count:</strong> Maximum number of active sessions that can be open at once.</li>
-            </ul>
-            <p>These metrics enable organizations to conduct different types of performance tests based on their specific needs.</p>
-        </div>
-
-        <div class="section">
-            <h3>How to Conduct Performance Testing</h3>
-            <p>Although the process of performance testing can vary depending on the metrics being evaluated, a general process includes the following steps:</p>
-            <ol>
-                <li><strong>Identify the testing environment:</strong> Understand the details of the hardware, software, and network configurations for both test and production environments.</li>
-                <li><strong>Define performance criteria:</strong> Establish goals and constraints for performance metrics like response time, throughput, and resource allocation.</li>
-                <li><strong>Plan the test:</strong> Develop test cases and scripts that cover various use cases based on the defined metrics.</li>
-                <li><strong>Set up the test environment:</strong> Configure resources to create the test environment and implement the test design.</li>
-                <li><strong>Run the test:</strong> Execute the tests while closely monitoring performance.</li>
-                <li><strong>Analyze and retest:</strong> Review the test results, share them with the project team, and make necessary adjustments before running the tests again to see if performance improves.</li>
-            </ol>
-            <p>Organizations should use testing tools that can automate the performance testing process and ensure the environment remains consistent between tests.</p>
+        <!-- LinkedIn share button -->
+        <div class="linkedin-share">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://example.com/performance_testing_basics_day1&title=Performance%20Testing%20Basics%20-%20Day%201&summary=Learn%20about%20the%20fundamentals%20of%20performance%20testing%20with%20this%20simple%20guide&source=LinkedIn" target="_blank">
+                Share on LinkedIn
+            </a>
         </div>
     </main>
 </body>
