@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1173167421419877"
-crossorigin="anonymous">
-</script>
+        crossorigin="anonymous">
+        </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Littles Law YouTube Channel by Vasanth Shanmugam</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/littleslawacademy/learning.html/main/images/littleslaw.png" type="image/x-icon">
+    <link rel="icon" href="https://raw.githubusercontent.com/littleslawacademy/learning.html/main/images/littleslaw.png"
+        type="image/x-icon">
     <link rel="stylesheet" href="style.css">
 
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRJPGDLPMF"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-RRJPGDLPMF');
+    gtag('config', 'G-RRJPGDLPMF');
 </script>
+
 <body>
     <header>
         <nav>
@@ -39,7 +42,8 @@ crossorigin="anonymous">
         <h1>Welcome to Littles Law Academy.</h1>
 
         <!-- YouTube Subscription Button -->
-        <a class="subscribe-button" href="https://www.youtube.com/@littleslawyoutubechannel" target="_blank">Subscribe to My Channel</a>
+        <a class="subscribe-button" href="https://www.youtube.com/@littleslawyoutubechannel" target="_blank">Subscribe
+            to My Channel</a>
     </div>
 
     <div class="container">
@@ -72,23 +76,19 @@ crossorigin="anonymous">
             <select id="videoSelect" name="videoSelect" disabled onchange="showVideo()">
                 <option value="">Select a video</option>
             </select>
-        
 
-           <!-- YouTube Video Embed -->
-    
-        <iframe width="560" height="315" 
-            src="https://www.youtube.com/embed/5rn2ytwyyn0?autoplay=1&mute=1" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="autoplay; encrypted-media" 
-            allowfullscreen>
-        </iframe>
-    </div>
+
+            <!-- YouTube Video Embed -->
+
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/5rn2ytwyyn0?autoplay=1&mute=1"
+                title="YouTube video player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+            </iframe>
+        </div>
 
         <div class="section" id="futureContent">
             <h2>Transformation Journey</h2>
             <p>This section will be updated with new contents.</p>
-        
+
             <!-- Transformational Journey Dropdown -->
             <label for="transformationalJourney">Transformational Journey:</label>
             <select id="transformationalJourney" name="transformationalJourney" onchange="populateVideos(this.value)">
@@ -100,19 +100,19 @@ crossorigin="anonymous">
                 <option value="journey5">Journey 5</option>
             </select>
             <br><br>
-        
+
             <!-- What do you want Dropdown -->
             <label for="videoLinks">What do you want:</label>
             <select id="videoLinks" name="videoLinks" onchange="openVideo(this.value)">
                 <option value="">Select a video</option>
             </select>
-        
+
             <script>
                 // Function to populate video options based on selected journey
                 function populateVideos(journey) {
                     const videoDropdown = document.getElementById("videoLinks");
                     videoDropdown.innerHTML = ''; // Clear previous options
-        
+
                     const journeys = {
                         journey1: [
                             { name: "Day 01 - Performance Testing with JMeter", url: "https://www.youtube.com/embed/W4npOeZBfE0?si=nEIJRJcQat3W2N0P" },
@@ -133,7 +133,7 @@ crossorigin="anonymous">
                             { name: "Day 16 - How to execute Stress test using JMeter ", url: "https://www.youtube.com/embed/FKIxgMQ7kOk?si=-5fzd50OH-78Q58T" },
                             { name: "Day 00 - How to install JMeter in Windows 11", url: "https://www.youtube.com/embed/ypnGdx2syqw?si=X2X0Psi6Fax1L6hy" },
                             { name: "Day 00 - How to Generate Html report in JMeter in GUI Mode", url: "https://www.youtube.com/embed/9c81ZMwdPzo?si=ow1xmYffEERfVIXc" },
-                            { name: "Day 17 - How to create Summary report after JMeter Load Test", url: "https://www.youtube.com/embed/0I7--KdO4Hk?si=VCVcFQsHV_JDVn7a"  }
+                            { name: "Day 17 - How to create Summary report after JMeter Load Test", url: "https://www.youtube.com/embed/0I7--KdO4Hk?si=VCVcFQsHV_JDVn7a" }
 
                         ],
                         journey2: [
@@ -165,7 +165,7 @@ crossorigin="anonymous">
                             { name: "Video 5.3", url: "https://www.example.com/video5_3" }
                         ]
                     };
-        
+
                     if (journey && journeys[journey]) {
                         journeys[journey].forEach(video => {
                             const option = document.createElement("option");
@@ -180,7 +180,7 @@ crossorigin="anonymous">
                         videoDropdown.appendChild(defaultOption);
                     }
                 }
-        
+
                 // Function to open the selected video link
                 function openVideo(url) {
                     if (url) {
@@ -192,16 +192,26 @@ crossorigin="anonymous">
 
         <div class="section" id="aboutMe">
             <h2>About Me and My Channel</h2>
-            <p>Welcome to my YouTube channel! I'm Vasanth Shanmugam, a seasoned professional with 15 years of experience in performance testing, performance engineering, DevOps, Git, Azure Cloud, Jira, and Confluence.</p>
+            <p>Welcome to my YouTube channel! I'm Vasanth Shanmugam, a seasoned professional with 15 years of experience
+                in performance testing, performance engineering, DevOps, Git, Azure Cloud, Jira, and Confluence.</p>
 
-            <p>Join me as we delve into the intricacies of performance testing, performance engineering, DevOps, Git, Azure Cloud, Jira, and Confluence. Through engaging videos, I break down complex concepts into easy-to-understand explanations, walk you through step-by-step tutorials, and share real-world examples to illustrate key principles.</p>
+            <p>Join me as we delve into the intricacies of performance testing, performance engineering, DevOps, Git,
+                Azure Cloud, Jira, and Confluence. Through engaging videos, I break down complex concepts into
+                easy-to-understand explanations, walk you through step-by-step tutorials, and share real-world examples
+                to illustrate key principles.</p>
 
-            <p>With my 15 years of experience, I bring a wealth of knowledge to the table, allowing me to provide in-depth discussions, demonstrate industry-leading tools, and guide you on optimizing performance, ensuring scalability, and enhancing overall software quality.</p>
+            <p>With my 15 years of experience, I bring a wealth of knowledge to the table, allowing me to provide
+                in-depth discussions, demonstrate industry-leading tools, and guide you on optimizing performance,
+                ensuring scalability, and enhancing overall software quality.</p>
 
-            <p>So, software engineers, quality assurance professionals, and anyone interested in learning more hit the subscribe button, turn on notifications, and let's optimize our software together.</p>
+            <p>So, software engineers, quality assurance professionals, and anyone interested in learning more hit the
+                subscribe button, turn on notifications, and let's optimize our software together.</p>
             <h3>Support My Channel</h3>
-            <p><strong>Your support can help me continue creating free, high-quality tutorials and content for the community. Every donation, no matter the size, will make a difference and help fuel the passion I have for sharing knowledge and helping others grow in their careers.</strong></p>
-            <p><em>If you find my content helpful and would like to contribute, feel free to donate. Your generosity will help keep this channel thriving!</em></p>
+            <p><strong>Your support can help me continue creating free, high-quality tutorials and content for the
+                    community. Every donation, no matter the size, will make a difference and help fuel the passion I
+                    have for sharing knowledge and helping others grow in their careers.</strong></p>
+            <p><em>If you find my content helpful and would like to contribute, feel free to donate. Your generosity
+                    will help keep this channel thriving!</em></p>
 
             <!-- PayPal Donate Button -->
             <!-- PayPal Donate Button with improved styling -->
@@ -209,43 +219,87 @@ crossorigin="anonymous">
                 <form action="https://www.paypal.com/donate" method="post" target="_top">
                     <input type="hidden" name="hosted_button_id" value="7TVPJH5RFR37C" />
                     <!-- Larger, high-quality button -->
-                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);" />
+                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0"
+                        name="submit" title="PayPal - The safer, easier way to pay online!"
+                        alt="Donate with PayPal button"
+                        style="border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);" />
                     <img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1" />
                 </form>
             </div>
 
-                
+
             <h3>Links</h3>
-            <a class="link" href="https://youtube.com/channel/UC2h7JI9Sfijk8lAKlG2S6bA" target="_blank">Little's Law YouTube Channel</a>
+            <a class="link" href="https://youtube.com/channel/UC2h7JI9Sfijk8lAKlG2S6bA" target="_blank">Little's Law
+                YouTube Channel</a>
             <a class="link" href="https://linkedin.com/in/vasanthmshanmugam" target="_blank">LinkedIn</a>
             <a class="link" href="https://chat.whatsapp.com/KalLwTLYOEH9gIblYM3teC" target="_blank">WhatsApp Channel</a>
-            <form action="https://formspree.io/f/xgvewbzb" method="POST" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <form action="https://formspree.io/f/xgvewbzb" method="POST"
+                style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                 <h2 style="text-align: center; font-family: Arial, sans-serif;">We'd love your feedback!</h2>
-            
+
                 <div style="margin-bottom: 15px;">
                     <label for="email" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your Email:</label><br>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                    <input type="email" id="email" name="email" required placeholder="Enter your email"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
-            
+
                 <div style="margin-bottom: 15px;">
-                    <label for="message" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your Message:</label><br>
-                    <textarea id="message" name="message" rows="5" required placeholder="Type your message" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+                    <label for="message" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your
+                        Message:</label><br>
+                    <textarea id="message" name="message" rows="5" required placeholder="Type your message"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
                 </div>
-            
+
+                <!-- Text CAPTCHA -->
+                <div style="margin-bottom: 15px;">
+                    <label id="captchaQuestion" style="font-family: Arial, sans-serif; font-size: 1.1em;"></label><br>
+                    <input type="number" id="captchaAnswer" required placeholder="Enter your answer"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                    <input type="hidden" id="captchaCorrectAnswer">
+                </div>
+
+
                 <div style="text-align: center;">
-                    <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 1em; cursor: pointer;">
+                    <button type="submit"
+                        style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 1em; cursor: pointer;">
                         Send
                     </button>
                 </div>
             </form>
-            
 
-    </div>
+
+            <!-- JavaScript for Text CAPTCHA -->
+            <script>
+                function generateCaptcha() {
+                    var num1 = Math.floor(Math.random() * 10) + 1;
+                    var num2 = Math.floor(Math.random() * 10) + 1;
+                    var correctAnswer = num1 + num2;
+                    document.getElementById("captchaQuestion").textContent = "What is " + num1 + " + " + num2 + "?";
+                    document.getElementById("captchaCorrectAnswer").value = correctAnswer;
+                }
+
+                function validateCaptcha() {
+                    var userAnswer = document.getElementById("captchaAnswer").value;
+                    var correctAnswer = document.getElementById("captchaCorrectAnswer").value;
+                    if (parseInt(userAnswer) !== parseInt(correctAnswer)) {
+                        alert("Incorrect CAPTCHA. Please try again.");
+                        return false;
+                    }
+                    return true;
+                }
+
+                // Generate CAPTCHA when the page loads
+                window.onload = generateCaptcha;
+            </script>
+
+        </div>
     </div>
 
     <!-- Common video container to embed YouTube videos -->
     <div class="video-container" id="videoContainer">
-        <iframe id="videoEmbed" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe id="videoEmbed" src="" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
 
     <script>
@@ -262,26 +316,26 @@ crossorigin="anonymous">
             jmeter: {
                 beginner: [
                     { name: "Install JMeter in Windows", url: "https://www.youtube.com/embed/1OO4XcWWMRc?si=25J6dIbktLI_OtA8" },
-                    { name :"Record Script using JMeter", url: "https://www.youtube.com/embed/GJKvvxKIYGU?si=K9bLeyWMlMM1Sw-Y"},
-                    { name :"How to Parameterize in JMeter", url: "https://www.youtube.com/embed/BZ4_JXbRNw4?si=zzJF5F1p2Klu8wYm"},
-                    { name :"How to do Correlation in JMeter", url: "https://www.youtube.com/embed/sDTUibbFryk?si=FuYbGofrYBD9tfMA"},
-                    { name : "How to Create Rest API Script in JMeter", url: "https://www.youtube.com/embed/DFceUcpszjI?si=78sl7hsU2G7sdHho"},
-                    { name : "How to setup Plugins Manager in JMeter", url: "https://www.youtube.com/embed/VHPXXlSEjao?si=6cBOI4mp9ucDlEi3"},
-                    { name : "JMeter Script to Create Test Data", url: "https://www.youtube.com/embed/dN3Z3q4TJnE?si=W6Dx00GQ4973jgJ3" },
-                    { name : "What are the Major changes in JMeter 5.6", url: "https://www.youtube.com/embed/Xf8VltiTVtY?si=YEd9dEi4GFaBi8TL" },
-                    { name : "How to import Apache Root Certificate CA in browsers", url: "https://www.youtube.com/embed/22Y8tMRJESQ?si=2o944XotSmcGKtRe" },
-                    { name : "How to Execute JMeter Test in Non GUI Mode using Apache Ant", url : "https://www.youtube.com/embed/MCf0jfZDPtc?si=pIsyPZL_EQOJtrd4" },
-                    { name : "Exploring HTTP Request Defaults in JMeter", url : "https://www.youtube.com/embed/a7Gu8sqFZhs?si=JzGsykNigcrr1uVc" },
-                    { name : "How to get the Apache JMeter Root certificate in Jmeter  5.6.3", url : "https://www.youtube.com/embed/g0OrP8x1Xg4?si=cIWbnw0Bh9qiU1AO"  },
-                    { name : "How to do Batch Job Load Testing using Jmeter", url : "https://www.youtube.com/embed/e3F596FU_qg?si=esCMLbVfopCllfgo"  },
-                    { name : "Why is it important to integrate JMeter +influxdb + grafana ", url : "https://www.youtube.com/embed/2_sq5zbXMj4?si=ewWxp927Uq1g0LKx"  },
-                    { name : "What makes Jmeter the most liked tool in the world of Performance testing", url : "https://www.youtube.com/embed/aI7pDi86QcY?si=wajt9JYTEs2oIw0Z"  },
-                    { name : "How JMeter works?", url : "https://www.youtube.com/embed/oLtwQipS5Ro?si=drawlXp7vt3AmKMp" },
-                    { name : "How to Use Jmeter  HTTP Cache Manager for effective cache handling in performance testing", url : "https://www.youtube.com/embed/t4fQbvVinFc?si=d5mnAudOSIz7PXRG" },
-                    { name : "What are the new features in the apache jmeter 5.6.3", url : "https://www.youtube.com/embed/_tN54JQb-bQ?si=mzsufH64BSgABJ3H" },
-                    { name : "Why & What is the Industry standard to converting Loadrunner script to Jmeter script", url : "https://www.youtube.com/embed/1AT66cswR5o?si=m1nGoG_WAcHI9esK" },
-                    { name : "How to extend jmeter root certificate validity to 365 days", url : "https://www.youtube.com/embed/jEFI0eU9rnc?si=qpM3h-UFVDt5zlun" },
-                   
+                    { name: "Record Script using JMeter", url: "https://www.youtube.com/embed/GJKvvxKIYGU?si=K9bLeyWMlMM1Sw-Y" },
+                    { name: "How to Parameterize in JMeter", url: "https://www.youtube.com/embed/BZ4_JXbRNw4?si=zzJF5F1p2Klu8wYm" },
+                    { name: "How to do Correlation in JMeter", url: "https://www.youtube.com/embed/sDTUibbFryk?si=FuYbGofrYBD9tfMA" },
+                    { name: "How to Create Rest API Script in JMeter", url: "https://www.youtube.com/embed/DFceUcpszjI?si=78sl7hsU2G7sdHho" },
+                    { name: "How to setup Plugins Manager in JMeter", url: "https://www.youtube.com/embed/VHPXXlSEjao?si=6cBOI4mp9ucDlEi3" },
+                    { name: "JMeter Script to Create Test Data", url: "https://www.youtube.com/embed/dN3Z3q4TJnE?si=W6Dx00GQ4973jgJ3" },
+                    { name: "What are the Major changes in JMeter 5.6", url: "https://www.youtube.com/embed/Xf8VltiTVtY?si=YEd9dEi4GFaBi8TL" },
+                    { name: "How to import Apache Root Certificate CA in browsers", url: "https://www.youtube.com/embed/22Y8tMRJESQ?si=2o944XotSmcGKtRe" },
+                    { name: "How to Execute JMeter Test in Non GUI Mode using Apache Ant", url: "https://www.youtube.com/embed/MCf0jfZDPtc?si=pIsyPZL_EQOJtrd4" },
+                    { name: "Exploring HTTP Request Defaults in JMeter", url: "https://www.youtube.com/embed/a7Gu8sqFZhs?si=JzGsykNigcrr1uVc" },
+                    { name: "How to get the Apache JMeter Root certificate in Jmeter  5.6.3", url: "https://www.youtube.com/embed/g0OrP8x1Xg4?si=cIWbnw0Bh9qiU1AO" },
+                    { name: "How to do Batch Job Load Testing using Jmeter", url: "https://www.youtube.com/embed/e3F596FU_qg?si=esCMLbVfopCllfgo" },
+                    { name: "Why is it important to integrate JMeter +influxdb + grafana ", url: "https://www.youtube.com/embed/2_sq5zbXMj4?si=ewWxp927Uq1g0LKx" },
+                    { name: "What makes Jmeter the most liked tool in the world of Performance testing", url: "https://www.youtube.com/embed/aI7pDi86QcY?si=wajt9JYTEs2oIw0Z" },
+                    { name: "How JMeter works?", url: "https://www.youtube.com/embed/oLtwQipS5Ro?si=drawlXp7vt3AmKMp" },
+                    { name: "How to Use Jmeter  HTTP Cache Manager for effective cache handling in performance testing", url: "https://www.youtube.com/embed/t4fQbvVinFc?si=d5mnAudOSIz7PXRG" },
+                    { name: "What are the new features in the apache jmeter 5.6.3", url: "https://www.youtube.com/embed/_tN54JQb-bQ?si=mzsufH64BSgABJ3H" },
+                    { name: "Why & What is the Industry standard to converting Loadrunner script to Jmeter script", url: "https://www.youtube.com/embed/1AT66cswR5o?si=m1nGoG_WAcHI9esK" },
+                    { name: "How to extend jmeter root certificate validity to 365 days", url: "https://www.youtube.com/embed/jEFI0eU9rnc?si=qpM3h-UFVDt5zlun" },
+
 
 
 
@@ -289,25 +343,25 @@ crossorigin="anonymous">
                 ],
                 intermediate: [
                     { name: "Convert LoadRunner script to JMeter Script", url: "https://www.youtube.com/embed/2829vg1jzhs?si=euOTc9mm6IpxZzy5" },
-                    { name : "How to do Performance testing for Desktop applications", url: "https://www.youtube.com/embed/fnE6V8uClrw?si=2SLvZq0cT5QVQj5k" },
-                    { name : "How to Push JMeter Project to GitHub", url: "https://www.youtube.com/embed/QRLdfUQmCKM?si=iG94hHXl4kvQSwfF" },
-                    { name : "Best Practices", url : "https://www.youtube.com/embed/4UQBPA4mEG4?si=5wn6-lOUi47XhT08" },
-                    { name : "How to Convert Postman API Tests to JMeter Scripts for Load Test", url: "https://www.youtube.com/embed/0FZEaqb6unI?si=eVGeXjs3e-xLd_MU"},
-                    { name : "Connect mysql database with jmeter", url: "https://www.youtube.com/embed/ZYMdWeZ6QvY?si=I4L-Z83YJoX4oVy3" },
-                    { name : "How to Create FTP Test Plan in JMETER", url: "https://www.youtube.com/embed/eqkP6NR8Uyk?si=9CbhnBOZSEzJWxEm"},
-                    { name : "How to use Blazemeter chrome extension to record JMeter script", url : "https://www.youtube.com/embed/crtS0LumUF8?si=QY90IL-GcsEBajov" },
-                    { name : "How to setup Kafka in Windows & How to Load test Kafka using JMeter", url : "https://www.youtube.com/embed/USKbPs1KTf0?si=fe3l_EUy1khKhE2L" },
-                    { name : "How to Convert Neoload Script to JMeter", url : "https://www.youtube.com/embed/U9ABKLOHIUM?si=TQdnut48P_zar7e2" },
-                    { name : "How to do 'Replace All for parameterized values in JMeter' ", url : "https://www.youtube.com/embed/6JNaGsYFw9I?si=FEQoapi0PdDlLr3p" },
+                    { name: "How to do Performance testing for Desktop applications", url: "https://www.youtube.com/embed/fnE6V8uClrw?si=2SLvZq0cT5QVQj5k" },
+                    { name: "How to Push JMeter Project to GitHub", url: "https://www.youtube.com/embed/QRLdfUQmCKM?si=iG94hHXl4kvQSwfF" },
+                    { name: "Best Practices", url: "https://www.youtube.com/embed/4UQBPA4mEG4?si=5wn6-lOUi47XhT08" },
+                    { name: "How to Convert Postman API Tests to JMeter Scripts for Load Test", url: "https://www.youtube.com/embed/0FZEaqb6unI?si=eVGeXjs3e-xLd_MU" },
+                    { name: "Connect mysql database with jmeter", url: "https://www.youtube.com/embed/ZYMdWeZ6QvY?si=I4L-Z83YJoX4oVy3" },
+                    { name: "How to Create FTP Test Plan in JMETER", url: "https://www.youtube.com/embed/eqkP6NR8Uyk?si=9CbhnBOZSEzJWxEm" },
+                    { name: "How to use Blazemeter chrome extension to record JMeter script", url: "https://www.youtube.com/embed/crtS0LumUF8?si=QY90IL-GcsEBajov" },
+                    { name: "How to setup Kafka in Windows & How to Load test Kafka using JMeter", url: "https://www.youtube.com/embed/USKbPs1KTf0?si=fe3l_EUy1khKhE2L" },
+                    { name: "How to Convert Neoload Script to JMeter", url: "https://www.youtube.com/embed/U9ABKLOHIUM?si=TQdnut48P_zar7e2" },
+                    { name: "How to do 'Replace All for parameterized values in JMeter' ", url: "https://www.youtube.com/embed/6JNaGsYFw9I?si=FEQoapi0PdDlLr3p" },
                 ],
                 expert: [
                     { name: "Execute JMeter Load Test using Azure Release Pipeline", url: "https://www.youtube.com/embed/arbbf9MfcJw?si=SK7an4ohpKUNKXHJ" },
                     { name: "Execute JMeter from Azure repo using Azure pipeline", url: "https://www.youtube.com/embed/pFt5G5lVgFA?si=sVkPN0GC9z2TiRGj" },
-                    { name: "Execute JMeter Load test using Jenkins", url: "https://www.youtube.com/embed/h-uKlNHDS_U?si=Ok427q46JwuuYIf1"},
-                    { name: "Execute JMeter Test in Azure DevOps without Installing jmeter", url: "https://www.youtube.com/embed/7gBECXzLe7Y?si=aRBrD887gsc9QoFr"},
+                    { name: "Execute JMeter Load test using Jenkins", url: "https://www.youtube.com/embed/h-uKlNHDS_U?si=Ok427q46JwuuYIf1" },
+                    { name: "Execute JMeter Test in Azure DevOps without Installing jmeter", url: "https://www.youtube.com/embed/7gBECXzLe7Y?si=aRBrD887gsc9QoFr" },
                     { name: "How to execute multiple JMX file in Single Pipeline", url: "https://www.youtube.com/embed/5sURQwGvy1Y?si=xPIG916C4uTYwWyd" },
                     { name: "How to Run JMeter test from GITHUB using Jenkins", url: "https://www.youtube.com/embed/yjw_elLKrco?si=zS8Rqm1HLvalBu9y" },
-                    { name : "JMeter-Selenium Webdriver Integration", url : "https://www.youtube.com/embed/xVDAHESoG70?si=ZmKSrrVPincHz4d4" },
+                    { name: "JMeter-Selenium Webdriver Integration", url: "https://www.youtube.com/embed/xVDAHESoG70?si=ZmKSrrVPincHz4d4" },
 
 
                 ]
@@ -372,4 +426,5 @@ crossorigin="anonymous">
     </script>
 
 </body>
+
 </html>
