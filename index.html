@@ -233,20 +233,25 @@
                 YouTube Channel</a>
             <a class="link" href="https://linkedin.com/in/vasanthmshanmugam" target="_blank">LinkedIn</a>
             <a class="link" href="https://chat.whatsapp.com/KalLwTLYOEH9gIblYM3teC" target="_blank">WhatsApp Channel</a>
-            <form action="https://formspree.io/f/xgvewbzb" method="POST" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" id="feedbackForm">
+            <form action="https://formspree.io/f/xgvewbzb" method="POST"
+                style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"
+                id="feedbackForm">
                 <h2 style="text-align: center; font-family: Arial, sans-serif;">We'd love your feedback!</h2>
-            
+
                 <div style="margin-bottom: 15px;">
                     <label for="email" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your Email:</label><br>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                    <input type="email" id="email" name="email" required placeholder="Enter your email"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
                 </div>
-            
+
                 <div style="margin-bottom: 15px;">
-                    <label for="message" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your Message:</label><br>
-                    <textarea id="message" name="message" rows="5" required placeholder="Type your message" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
+                    <label for="message" style="font-family: Arial, sans-serif; font-size: 1.1em;">Your
+                        Message:</label><br>
+                    <textarea id="message" name="message" rows="5" required placeholder="Type your message"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
                 </div>
-            
-                <!-- Text CAPTCHA -->
+
+                <!-- Text CAPTCHA 
                 <div style="margin-bottom: 15px;">
                     <label id="captchaQuestion" style="font-family: Arial, sans-serif; font-size: 1.1em;"></label><br>
                     <input type="number" id="captchaAnswer" required placeholder="Enter your answer" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
@@ -260,7 +265,7 @@
                 </div>
             </form>
             
-            <!-- JavaScript for Text CAPTCHA -->
+            <!-- JavaScript for Text CAPTCHA 
             <script>
                 function generateCaptcha() {
                     var num1 = Math.floor(Math.random() * 10) + 1;
@@ -284,7 +289,48 @@
             
                 // Attach event listener to the form
                 document.getElementById("feedbackForm").addEventListener("submit", validateCaptcha);
+            </script> -->
+
+
+                <!-- CAPTCHA Section (Disabled) -->
+                <div style="margin-bottom: 15px; display: none;">
+                    <label id="captchaQuestion" style="font-family: Arial, sans-serif; font-size: 1.1em;"></label><br>
+                    <input type="number" id="captchaAnswer" placeholder="Enter your answer"
+                        style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                    <input type="hidden" id="captchaCorrectAnswer">
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit"
+                        style="background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 1em; cursor: pointer;">
+                        Send
+                    </button>
+                </div>
+            </form>
+
+            <!-- JavaScript (CAPTCHA Disabled) -->
+            <script>
+                function generateCaptcha() {
+                    // CAPTCHA is disabled for performance testing
+
+
+                    document.getElementById("captchaQuestion").textContent = "CAPTCHA Disabled";
+                    document.getElementById("captchaCorrectAnswer").value = "0";
+                }
+
+                function validateCaptcha(event) {
+                    // Bypassing CAPTCHA validation for testing
+                    return true;
+                }
+
+                window.onload = generateCaptcha;
+
+                // Removing CAPTCHA validation check
+                document.getElementById("feedbackForm").addEventListener("submit", function (event) {
+                    return true;
+                });
             </script>
+
 
         </div>
     </div>
