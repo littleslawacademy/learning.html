@@ -250,8 +250,7 @@
                     <textarea id="message" name="message" rows="5" required placeholder="Type your message"
                         style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;"></textarea>
                 </div>
-                <!--
-                 Text CAPTCHA 
+                <!--  Text CAPTCHA  -->
                 <div style="margin-bottom: 15px;">
                     <label id="captchaQuestion" style="font-family: Arial, sans-serif; font-size: 1.1em;"></label><br>
                     <input type="number" id="captchaAnswer" required placeholder="Enter your answer" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px;">
@@ -265,7 +264,7 @@
                 </div>
             </form> 
             
-             JavaScript for Text CAPTCHA 
+            <!-- JavaScript for Text CAPTCHA  -->
              
             <script>
                 function generateCaptcha() {
@@ -290,10 +289,10 @@
             
                 // Attach event listener to the form
                 document.getElementById("feedbackForm").addEventListener("submit", validateCaptcha);
-            </script> -->
+            </script> 
 
 
-                 <!-- CAPTCHA Section (Disabled)  -->
+                 <!-- CAPTCHA Section (Disabled) 
                 <div style="margin-bottom: 15px; display: none;">
                     <label id="captchaQuestion" style="font-family: Arial, sans-serif; font-size: 1.1em;"></label><br>
                     <input type="number" id="captchaAnswer" placeholder="Enter your answer"
@@ -309,7 +308,7 @@
                 </div>
             </form>
 
-            <!-- JavaScript (CAPTCHA Disabled)  -->
+             JavaScript (CAPTCHA Disabled) 
             <script>
                 function generateCaptcha() {
                     // CAPTCHA is disabled for performance testing
@@ -330,7 +329,7 @@
                 document.getElementById("feedbackForm").addEventListener("submit", function (event) {
                     return true;
                 });
-            </script>
+            </script> -->
 
 
         </div>
