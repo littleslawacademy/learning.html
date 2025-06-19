@@ -15,17 +15,17 @@
     ]
   },
   {
-    "title": "Performance Testing with JMeter",
-    "description": "Master JMeter for load testing with hands-on tutorials.",
+    "title": "Performance Testing Basics to Advanced",
+    "description": "Master Performance testing from Basics to Advanced with hands-on tutorials.",
     "playlistId": "PLyyyyyy",
     "videos": [
       {
-        "title": "JMeter Basics",
-        "videoId": "ghi789"
+        "title": "📌What is Performance Testing | #performancetesting",
+        "videoId": "https://youtu.be/BOEqJ93F9QI"
       },
       {
-        "title": "Using Assertions in JMeter",
-        "videoId": "jkl012"
+        "title": "📌Performance Testing Types Made Simple: What You Need to Know Performance Engineering Episode 2 - YouTube",
+        "videoId": "https://youtu.be/lTjxlv8N5NU"
       }
     ]
   }
