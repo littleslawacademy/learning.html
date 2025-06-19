@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Little's Law Academy</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/css/style.css" />
 </head>
-
 <body class="bg-gray-100 text-gray-900">
-  <header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Little's Law Academy</h1>
-      <nav>
-        <ul class="flex gap-4 text-sm font-medium">
-          <li><a href="#" class="hover:text-blue-500">Home</a></li>
-          <li><a href="#" class="hover:text-blue-500">Playlists</a></li>
-          <li><a href="#" class="hover:text-blue-500">About</a></li>
-        </ul>
-      </nav>
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow p-4 flex justify-between">
+    <h1 class="text-xl font-bold">Little's Law Academy</h1>
+    <div class="space-x-4">
+      <a href="#" class="text-blue-500 hover:underline">Home</a>
+      <a href="#" class="text-blue-500 hover:underline">Playlists</a>
+      <a href="#" class="text-blue-500 hover:underline">About</a>
     </div>
-  </header>
+  </nav>
 
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <h2 class="text-xl font-bold mb-4">All Learning Playlists</h2>
-    <div id="playlist-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  <!-- Section Title -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">All Learning Playlists</h2>
+    
+    <!-- Dynamic content goes here -->
+    <div id="playlist-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </section>
 
-    <!-- Modal for Video Preview -->
-    <div id="video-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
-      <div class="bg-white p-4 rounded-lg max-w-3xl w-full">
-        <div class="flex justify-between items-center mb-2">
-          <h3 id="modal-title" class="text-lg font-semibold"></h3>
-          <button id="close-modal" class="text-gray-500 hover:text-red-600">&times;</button>
-        </div>
-        <iframe id="modal-iframe" class="w-full aspect-video" src="" frameborder="0" allowfullscreen></iframe>
-        <div id="up-next" class="mt-4 text-sm text-blue-600 cursor-pointer">Up Next</div>
-      </div>
+  <!-- Modal for video preview -->
+  <div id="video-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded shadow-lg w-11/12 max-w-3xl relative">
+      <button id="close-modal" class="absolute top-2 right-2 text-gray-600 hover:text-black">✖</button>
+      <h2 id="modal-title" class="text-lg font-bold mb-2"></h2>
+      <iframe id="modal-iframe" width="100%" height="400" class="rounded" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 
-  <script src="/js/playlists.js"></script>
+  <!-- Playlist script -->
+  <script src="js/playlists.js"></script>
 </body>
-
 </html>
