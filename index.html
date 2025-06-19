@@ -1,72 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Little's Law Academy - YouTube Learning Hub</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <title>Little's Law Academy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <!-- Header -->
-  <header class="bg-white shadow sticky top-0 z-50">
+
+<body class="bg-gray-100 text-gray-900">
+  <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-blue-600">Little's Law Academy</h1>
-      <nav class="space-x-4">
-        <a href="#playlist-sre" class="text-gray-700 hover:text-blue-500">SRE</a>
-        <a href="#playlist-performance" class="text-gray-700 hover:text-blue-500">Performance</a>
-        <a href="#playlist-devops" class="text-gray-700 hover:text-blue-500">DevOps</a>
+      <h1 class="text-2xl font-bold">Little's Law Academy</h1>
+      <nav>
+        <ul class="flex gap-4 text-sm font-medium">
+          <li><a href="#" class="hover:text-blue-500">Home</a></li>
+          <li><a href="#" class="hover:text-blue-500">Playlists</a></li>
+          <li><a href="#" class="hover:text-blue-500">About</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 py-10 space-y-16">
-    <!-- Sample Playlist Section -->
-    <section id="playlist-sre">
-      <h2 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-300">Site Reliability Engineering (SRE)</h2>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="aspect-w-16 aspect-h-9">
-          <iframe class="w-full h-72" src="https://www.youtube.com/embed/videoseries?list=PLkD2nF5nHPE9rfkbywFBrHFDuWJlEDHfB" frameborder="0" allowfullscreen></iframe>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <h2 class="text-xl font-bold mb-4">All Learning Playlists</h2>
+    <div id="playlist-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <!-- Modal for Video Preview -->
+    <div id="video-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+      <div class="bg-white p-4 rounded-lg max-w-3xl w-full">
+        <div class="flex justify-between items-center mb-2">
+          <h3 id="modal-title" class="text-lg font-semibold"></h3>
+          <button id="close-modal" class="text-gray-500 hover:text-red-600">&times;</button>
         </div>
-        <div>
-          <p class="text-gray-600 mb-3">Master the core principles of SRE including SLIs, SLOs, alerting, and automation with this in-depth playlist.</p>
-          <ul class="list-disc list-inside text-sm space-y-1">
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video1" target="_blank">Intro to SRE</a></li>
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video2" target="_blank">Understanding SLIs & SLOs</a></li>
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video3" target="_blank">Automated Incident Response</a></li>
-          </ul>
-        </div>
+        <iframe id="modal-iframe" class="w-full aspect-video" src="" frameborder="0" allowfullscreen></iframe>
+        <div id="up-next" class="mt-4 text-sm text-blue-600 cursor-pointer">Up Next</div>
       </div>
-    </section>
-
-    <!-- Add more sections below following the same structure -->
-    <section id="playlist-performance">
-      <h2 class="text-2xl font-bold mb-4 border-b pb-2 border-gray-300">Performance Testing</h2>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="aspect-w-16 aspect-h-9">
-          <iframe class="w-full h-72" src="https://www.youtube.com/embed/videoseries?list=PLkD2nF5nHPE91E8BOSMNaYu6UuvtD9FQb" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div>
-          <p class="text-gray-600 mb-3">Learn everything about JMeter, NeoLoad, and k6 scripting and analysis in this dedicated performance series.</p>
-          <ul class="list-disc list-inside text-sm space-y-1">
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video4" target="_blank">Getting Started with JMeter</a></li>
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video5" target="_blank">Using Dynatrace for Performance Insights</a></li>
-            <li><a class="text-blue-600 hover:underline" href="https://www.youtube.com/watch?v=video6" target="_blank">Advanced Load Test Design</a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- More playlists like DevOps, GitHub Actions, Terraform, etc. -->
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-white border-t mt-20">
-    <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-center text-gray-500">
-      © 2025 Little's Law Academy. All rights reserved.
     </div>
-  </footer>
+  </div>
+
+  <script src="/js/playlists.js"></script>
 </body>
+
 </html>
