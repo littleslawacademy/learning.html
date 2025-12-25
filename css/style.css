@@ -332,3 +332,35 @@ footer {
 .fav-btn:hover {
     transform: scale(1.2);
 }
+
+.stats-bar {
+    background: #222;
+    color: #ffd700;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Card Completed State */
+.playlist-card.completed {
+    border-top: 4px solid #28a745 !important;
+    opacity: 0.85;
+}
+
+.done-btn {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #666;
+    transition: 0.3s;
+}
+
+.done-btn.active {
+    background: #28a745;
+    color: white;
+}
