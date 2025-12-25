@@ -3,16 +3,22 @@
     {
         "title": "Performance Testing with JMeter",
         "description": "Deep dive into JMeter for real-world performance testing.",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMBWRllG4klIUDpS_DTjLKt"
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMBWRllG4klIUDpS_DTjLKt",
+        "category":"Performance Testing",
+        "tool": "JMeter"
     },
     {
         "title": "Performance Testing with Neoload",
         "description": "Basics to Advanced in Neoload Training",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMFQ5EP8Ir7Er9UsyXbj3vf"
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMFQ5EP8Ir7Er9UsyXbj3vf",
+        "category":"Performance Testing",
+        "tool": "Neoload"
     },
     {
         "title": "Performance Testing with LoadRunner",
         "description": "A beginner-friendly series on Loadrunner tutotrials",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xPRwNi8cb5bvTajrWd8kIZf"
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xPRwNi8cb5bvTajrWd8kIZf",
+        "category":"Performance Testing",
+        "tool": "Loadrunner"
     }
 ]
