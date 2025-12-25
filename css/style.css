@@ -21,7 +21,7 @@ body {
 header {
     background: var(--primary-red);
     color: white;
-    padding: 2.5rem 1rem 0 1rem; /* Added space for the search bar */
+    padding: 2.5rem 1rem 0 1rem;
     text-align: center;
 }
 
@@ -42,7 +42,7 @@ header {
     max-width: 600px;
     margin: 0 auto;
     position: relative;
-    transform: translateY(20px); /* Overlaps slightly with navbar for a modern look */
+    transform: translateY(20px);
     z-index: 1100;
 }
 
@@ -65,7 +65,7 @@ header {
     color: #888;
 }
 
-/* STICKY NAVBAR & DROPDOWNS */
+/* STICKY NAVBAR */
 .navbar {
     background: var(--white);
     border-bottom: 1px solid var(--border);
@@ -74,13 +74,14 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    padding-top: 25px; /* Creates room for the floating search bar */
+    padding-top: 25px;
     box-shadow: var(--shadow);
 }
 
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
     margin: 0;
     padding: 0;
 }
@@ -99,10 +100,58 @@ header {
     color: var(--primary-red);
 }
 
-/* Dropdown Menu logic */
-.dropdown {
-    position: relative;
+/* AUTH BUTTONS & PROFILE */
+#auth-section {
+    padding-left: 1rem;
+    border-left: 1px solid #eee;
+    margin-left: 0.5rem;
 }
+
+.auth-btn {
+    background: var(--dark-bg);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.auth-btn:hover {
+    background: var(--primary-red);
+}
+
+#user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#user-pic {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-red);
+}
+
+#logout-btn {
+    background: none;
+    border: 1px solid #ddd;
+    color: #666;
+    padding: 4px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+#logout-btn:hover {
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+/* DROPDOWN MENU */
+.dropdown { position: relative; }
 
 .dropdown-menu {
     position: absolute;
@@ -113,15 +162,12 @@ header {
     list-style: none;
     padding: 10px 0;
     min-width: 220px;
-    display: none; /* Hidden by default */
+    display: none;
     border-radius: 0 0 8px 8px;
     border-top: 3px solid var(--primary-red);
 }
 
-.dropdown:hover .dropdown-menu {
-    display: block;
-    animation: fadeIn 0.2s ease-in;
-}
+.dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.2s ease-in; }
 
 .dropdown-menu li a {
     padding: 12px 20px;
@@ -129,7 +175,6 @@ header {
     text-decoration: none;
     color: #555;
     font-size: 0.9rem;
-    transition: 0.2s;
 }
 
 .dropdown-menu li a:hover {
@@ -138,10 +183,14 @@ header {
     padding-left: 25px;
 }
 
-.divider {
-    height: 1px;
-    background: #eee;
-    margin: 8px 0;
+/* STATS BAR */
+.stats-bar {
+    background: #222;
+    color: #ffd700;
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* MAIN GRID */
@@ -165,6 +214,7 @@ main {
     display: flex;
     flex-direction: column;
     animation: fadeInUp 0.5s ease forwards;
+    position: relative;
 }
 
 .playlist-card:hover {
@@ -172,28 +222,64 @@ main {
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
+.playlist-card.completed {
+    border-top: 5px solid #28a745 !important;
+}
+
+/* LEVEL BADGES */
 .card-tag {
     font-size: 0.7rem;
     font-weight: bold;
     text-transform: uppercase;
-    background: #ffeeee;
-    color: var(--primary-red);
+    background: #f0f0f0;
     padding: 4px 10px;
     border-radius: 4px;
-    align-self: flex-start;
     margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
 }
 
-.playlist-card h2 {
-    font-size: 1.25rem;
-    margin: 0.5rem 0;
+.badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    color: white;
 }
 
-.playlist-card p {
-    font-size: 0.95rem;
-    color: #666;
-    flex-grow: 1;
-    margin-bottom: 1.5rem;
+.beginner { background: #28a745; }
+.intermediate { background: #ffc107; color: black; }
+.advanced { background: #dc3545; }
+
+/* FAV & DONE BUTTONS */
+.fav-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ddd;
+    transition: 0.3s;
+}
+
+.fav-btn.active { color: var(--primary-red); }
+
+.done-btn {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.done-btn.active {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
 }
 
 /* CARD BUTTON */
@@ -201,76 +287,48 @@ main {
     background: var(--dark-bg);
     color: white;
     border: none;
-    padding: 14px;
+    padding: 12px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
+    margin-top: auto;
     transition: 0.3s;
 }
 
-.open-video-btn:hover {
-    background: var(--primary-red);
-}
+.open-video-btn:hover { background: var(--primary-red); }
 
 /* VIDEO MODAL (OVERLAY) */
 .overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
     backdrop-filter: blur(8px);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    padding: 20px;
 }
 
 .modal-content {
     background: white;
-    width: 100%;
-    max-width: 1000px;
-    border-radius: 16px;
-    overflow: hidden;
+    width: 90%; max-width: 900px;
+    border-radius: 15px;
     position: relative;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 
 .close-modal {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 35px;
-    color: #aaa;
+    top: 15px; right: 20px;
+    font-size: 2rem; color: #fff;
     cursor: pointer;
     z-index: 2100;
 }
 
-.close-modal:hover { color: var(--primary-red); }
+.video-wrapper { padding-bottom: 56.25%; position: relative; height: 0; }
+.video-wrapper iframe { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
 
-.video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-}
-
-.video-wrapper iframe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-}
-
-.modal-info { padding: 25px; }
-
-.watch-link {
-    display: inline-block;
-    color: var(--primary-red);
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: 10px;
-}
+.modal-info { padding: 20px; }
 
 /* FOOTER */
 footer {
@@ -278,7 +336,6 @@ footer {
     color: white;
     text-align: center;
     padding: 3rem;
-    margin-top: 5rem;
 }
 
 /* ANIMATIONS */
@@ -288,216 +345,13 @@ footer {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* RESULTS FEEDBACK */
+/* FEEDBACK */
 #no-results {
     text-align: center;
     grid-column: 1 / -1;
     padding: 5rem;
-    color: #999;
 }
-
-/* Level Badges */
-.badge {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
-    font-weight: bold;
-}
-.beginner { background: #d4edda; color: #155724; }
-.intermediate { background: #fff3cd; color: #856404; }
-.advanced { background: #f8d7da; color: #721c24; }
-
-/* Favorite Icon Styling */
-.fav-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.2s;
-    color: #ddd; /* Unselected color */
-}
-
-.fav-btn.active {
-    color: var(--primary-red);
-}
-
-.fav-btn:hover {
-    transform: scale(1.2);
-}
-
-.stats-bar {
-    background: #222;
-    color: #ffd700;
-    padding: 8px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-/* Card Completed State */
-.playlist-card.completed {
-    border-top: 4px solid #28a745 !important;
-    opacity: 0.85;
-}
-
-.done-btn {
-    background: #f0f0f0;
-    border: none;
-    padding: 8px;
-    margin-top: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    color: #666;
-    transition: 0.3s;
-}
-
-.done-btn.active {
-    background: #28a745;
-    color: white;
-}
-
-let favorites = JSON.parse(localStorage.getItem('ll-favorites')) || [];
-let completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
-
-function updateStats() {
-    document.getElementById('progress-count').textContent = completed.length;
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // 1. DATA INITIALIZATION
-    let playlists = [];
-    try {
-        const response = await fetch('data/playlists.json');
-        playlists = await response.json();
-    } catch (error) {
-        console.error("Error loading playlists:", error);
-    }
-
-    const container = document.getElementById('playlist-container');
-    const searchInput = document.getElementById('search-input');
-    const navItems = document.querySelectorAll('[data-filter]');
-    
-    // Global state
-    let currentFilter = 'All';
-    let searchTerm = '';
-
-    // 2. SEARCH LOGIC
-    searchInput.addEventListener('input', (e) => {
-        searchTerm = e.target.value.toLowerCase();
-        filterAndRender();
-    });
-
-    // 3. DROPDOWN / NAVBAR FILTERING LOGIC
-    navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            // Only prevent default if it's a filter link (href="#")
-            if (item.getAttribute('href') === '#') {
-                e.preventDefault();
-            }
-
-            currentFilter = item.getAttribute('data-filter');
-
-            // Update Active UI state
-            document.querySelectorAll('.nav-item').forEach(link => link.classList.remove('active'));
-            // If it's a dropdown item, highlight the parent "Performance Testing" or "DevOps" link
-            const parentNavLink = item.closest('.dropdown')?.querySelector('.nav-item');
-            if (parentNavLink) {
-                parentNavLink.classList.add('active');
-            } else {
-                item.classList.add('active');
-            }
-
-            filterAndRender();
-
-            // Smooth scroll to top of content when filtering
-            window.scrollTo({ top: searchInput.offsetTop - 100, behavior: 'smooth' });
-        });
-    });
-
-    // 4. THE FILTER ENGINE (Combines Search + Category)
-function filterAndRender() {
-    const filtered = playlists.filter(p => {
-        const matchesSearch = p.title.toLowerCase().includes(searchTerm) || 
-                              p.tool.toLowerCase().includes(searchTerm);
-        
-        // New logic for favorites filter
-        if (currentFilter === 'Favorites') {
-            return favorites.includes(p.playlistId) && matchesSearch;
-        }
-
-        const matchesFilter = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
-        return matchesFilter && matchesSearch;
-    });
-
-    renderPlaylists(filtered);
-}
-
-    // 5. RENDERING THE CARDS
-function renderPlaylists(items) {
-    container.innerHTML = '';
-    
-    items.forEach((p) => {
-        const isFav = favorites.includes(p.playlistId);
-        const isDone = completed.includes(p.playlistId); // NEW check
-
-        const card = document.createElement('div');
-        card.className = `playlist-card ${isDone ? 'completed' : ''}`;
-        
-        card.innerHTML = `
-            <button class="fav-btn ${isFav ? 'active' : ''}" data-fav-id="${p.playlistId}">
-                ${isFav ? '❤️' : '🤍'}
-            </button>
-            <div class="card-tag">
-                ${p.tool} <span class="badge ${p.level.toLowerCase()}">${p.level}</span>
-            </div>
-            <h2>${p.title}</h2>
-            <p>${p.description}</p>
-            <button class="open-video-btn" data-id="${p.playlistId}" data-title="${p.title}">
-                ▶ Watch Lessons
-            </button>
-            <button class="done-btn ${isDone ? 'active' : ''}" data-done-id="${p.playlistId}">
-                ${isDone ? '✓ Completed' : 'Mark as Done'}
-            </button>
-        `;
-        container.appendChild(card);
-    });
-    updateStats(); // Refresh count on top bar
-}
-
-    // 6. VIDEO MODAL (POPUP) INTERACTION
-    const overlay = document.getElementById('video-overlay');
-    const player = document.getElementById('video-player');
-    const modalTitle = document.getElementById('modal-title');
-    const modalLink = document.getElementById('modal-link');
-    const closeBtn = document.querySelector('.close-modal');
-
-    // Use event delegation for buttons inside cards
-container.addEventListener('click', (e) => {
-    // 1. Logic for Favorite (existing) ...
-
-    // 2. Logic for Completed (NEW)
-    const doneBtn = e.target.closest('.done-btn');
-    if (doneBtn) {
-        const id = doneBtn.getAttribute('data-done-id');
-        if (completed.includes(id)) {
-            completed = completed.filter(c => c !== id);
-        } else {
-            completed.push(id);
-        }
-        localStorage.setItem('ll-completed', JSON.stringify(completed));
-        renderPlaylists(playlists.filter(p => /* handle your current active filter */ true));
-        // Simple trick: Just re-trigger current filter
-        filterAndRender(); 
-    }
-});
-
-    
