@@ -6,7 +6,6 @@
     <title>Little's Law Academy</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,64 +13,54 @@
     <header>
         <div class="header-content">
             <h1>🎓 Little's Law Academy</h1>
-            <p>Performance Testing, SRE, and DevOps Learning Hub</p>
+            <p>Mastering Performance Testing, SRE, and DevOps</p>
             
-            <!-- Interactive Search Bar -->
             <div class="search-container">
                 <input type="text" id="search-input" placeholder="Search topics (e.g. JMeter, Linux, K6)...">
                 <span class="search-icon">🔍</span>
             </div>
         </div>
 
-        <div class="stats-bar">
-    <span>🏆 Academy Progress: <span id="progress-count">0</span> playlists completed</span>
-</div>
-
-        <!-- Navigation System with Dropdowns -->
         <nav class="navbar">
             <ul class="nav-links">
                 <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
                 
                 <li class="dropdown">
-                    <a href="#" class="nav-item">Performance Testing ▾</a>
+                    <a href="#" class="nav-item">Courses ▾</a>
                     <ul class="dropdown-menu">
-                        <li><a href="#" data-filter="JMeter">JMeter</a></li>
-                        <li><a href="#" data-filter="LoadRunner">LoadRunner</a></li>
-                        <li><a href="#" data-filter="NeoLoad">NeoLoad</a></li>
-                        <li><a href="#" data-filter="k6">k6</a></li>
-                        <li><a href="#" data-filter="Locust">Locust</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" data-filter="Performance Engineering">Engineering</a></li>
-                        <li><a href="#" class="nav-item" data-filter="Favorites">❤️ My Watchlist</a></li>
+                        <li><a href="#" data-filter="Performance Testing">Performance Testing</a></li>
+                        <li><a href="#" data-filter="SRE">SRE Basics</a></li>
+                        <li><a href="#" data-filter="DevOps">DevOps Hub</a></li>
                     </ul>
                 </li>
 
-                <li class="dropdown">
-                    <a href="#" class="nav-item">DevOps & SRE ▾</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" data-filter="SRE">SRE Fundamentals</a></li>
-                        <li><a href="#" data-filter="GitHub">GitHub Actions</a></li>
-                        <li><a href="#" data-filter="Linux">Linux for SRE</a></li>
-                        <li><a href="#" data-filter="Docker">Docker & Kubernetes</a></li>
-                    </ul>
+                <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
+                
+                <!-- LOGIN / USER SECTION -->
+                <li id="auth-section">
+                    <button id="login-btn" class="auth-btn">Sign in with Google</button>
+                    <div id="user-profile" style="display: none;">
+                        <img id="user-pic" src="" alt="Profile">
+                        <button id="logout-btn">Sign Out</button>
+                    </div>
                 </li>
-
-                <!-- Legacy container for automated category buttons if needed -->
-                <div id="category-menu" style="display:none;"></div>
             </ul>
         </nav>
+        
+        <div class="stats-bar">
+            <span>🏆 Progress: <span id="progress-count">0</span> lessons completed</span>
+        </div>
     </header>
 
-    <!-- Playlist Grid -->
     <main id="playlist-container">
         <!-- JS will inject playlist cards here -->
     </main>
 
     <footer>
-        <p>© 2025 Little's Law Academy. All rights reserved.</p>
+        <p>© 2025 Little's Law Academy. Built for SREs & Testers.</p>
     </footer>
 
-    <!-- Video Modal Shell -->
+    <!-- Video Modal -->
     <div id="video-overlay" class="overlay">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -80,12 +69,17 @@
             </div>
             <div class="modal-info">
                 <h2 id="modal-title"></h2>
-                <a id="modal-link" href="#" target="_blank" class="watch-link">Open Playlist on YouTube ↗</a>
+                <a id="modal-link" href="#" target="_blank" class="watch-link">Open on YouTube ↗</a>
             </div>
         </div>
     </div>
 
-    <!-- Main JavaScript Logic -->
+    <!-- Firebase SDKs (v9 Compat mode for ease of use) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Your App Scripts -->
     <script src="js/main.js"></script>
 </body>
 </html>
