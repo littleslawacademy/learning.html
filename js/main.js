@@ -4,51 +4,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const container = document.getElementById('playlist-container');
     const menuContainer = document.getElementById('category-menu');
+    const searchInput = document.getElementById('search-input');
 
-    // 1. Get unique categories from your JSON
-    // We add "All" at the beginning
+    let currentCategory = 'All';
+    let searchTerm = '';
+
+    // 1. Setup Menu
     const categories = ['All', ...new Set(playlists.map(item => item.category))];
-
-    // 2. Generate Menu Buttons Dynamically
-    categories.forEach(category => {
+    categories.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = category === 'All' ? 'menu-btn active' : 'menu-btn';
-        btn.textContent = category;
-        btn.addEventListener('click', () => filterCategory(category, btn));
+        btn.className = cat === 'All' ? 'menu-btn active' : 'menu-btn';
+        btn.textContent = cat;
+        btn.onclick = () => {
+            currentCategory = cat;
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterAndRender();
+        };
         menuContainer.appendChild(btn);
     });
 
-    // 3. Filter Logic
-    function filterCategory(category, activeBtn) {
-        // Toggle Active Class on buttons
-        document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-        activeBtn.classList.add('active');
+    // 2. Search Logic
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.toLowerCase();
+        filterAndRender();
+    });
 
-        // Filter Playlists
-        const filtered = category === 'All' 
-            ? playlists 
-            : playlists.filter(p => p.category === category);
+    // 3. Combined Filter Engine
+    function filterAndRender() {
+        const filtered = playlists.filter(p => {
+            const matchesCategory = (currentCategory === 'All' || p.category === currentCategory);
+            const matchesSearch = p.title.toLowerCase().includes(searchTerm) || 
+                                  p.description.toLowerCase().includes(searchTerm) ||
+                                  p.tool.toLowerCase().includes(searchTerm);
+            
+            return matchesCategory && matchesSearch;
+        });
 
         renderPlaylists(filtered);
     }
 
-    // 4. Render Function
+    // 4. Visual Render
     function renderPlaylists(items) {
-        container.innerHTML = ''; // Clear current
+        container.innerHTML = '';
         
-        items.forEach(playlist => {
+        if (items.length === 0) {
+            container.innerHTML = `<div id="no-results"><h3>No matching playlists found. Try a different search!</h3></div>`;
+            return;
+        }
+
+        items.forEach((p, index) => {
             const card = document.createElement('div');
             card.className = 'playlist-card';
+            // Staggered animation delay
+            card.style.animationDelay = `${index * 0.05}s`; 
+            
             card.innerHTML = `
-                <div class="card-tag">${playlist.tool}</div>
-                <h2>${playlist.title}</h2>
-                <p>${playlist.description}</p>
-                <a href="${playlist.link}" target="_blank" class="watch-link">Watch on YouTube</a>
+                <div class="card-tag">${p.tool}</div>
+                <h2>${p.title}</h2>
+                <p>${p.description}</p>
+                <a href="${p.link}" target="_blank" class="watch-link">▶ Watch Playlist</a>
             `;
             container.appendChild(card);
         });
     }
 
-    // Initial load
-    renderPlaylists(playlists);
+    filterAndRender(); // Initial load
 });

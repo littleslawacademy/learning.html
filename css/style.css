@@ -131,3 +131,53 @@ footer {
     padding: 2rem;
     margin-top: 4rem;
 }
+
+/* Search Bar Styling */
+.search-container {
+    max-width: 600px;
+    margin: 1.5rem auto 0;
+    position: relative;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Entry Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.playlist-card {
+    /* Keep existing styles, but add the animation below */
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Feedback for no results */
+#no-results {
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 3rem;
+    color: #666;
+}
