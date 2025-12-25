@@ -3,16 +3,16 @@
     {
         "title": "Performance Testing with JMeter",
         "description": "Deep dive into JMeter for real-world performance testing.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx1"
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMBWRllG4klIUDpS_DTjLKt"
     },
     {
-        "title": "Site Reliability Engineering (SRE) Basics",
-        "description": "Fundamentals of SRE explained with hands-on examples.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx2"
+        "title": "Performance Testing with Neoload",
+        "description": "Basics to Advanced in Neoload Training",
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMFQ5EP8Ir7Er9UsyXbj3vf"
     },
     {
-        "title": "DevOps Essentials",
-        "description": "A beginner-friendly series on GitHub Actions, CI/CD and more.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx3"
+        "title": "Performance Testing with LoadRunner",
+        "description": "A beginner-friendly series on Loadrunner tutotrials",
+        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xPRwNi8cb5bvTajrWd8kIZf"
     }
 ]
