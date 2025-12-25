@@ -1,3 +1,5 @@
+let favorites = JSON.parse(localStorage.getItem('ll-favorites')) || [];
+
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. DATA INITIALIZATION
     let playlists = [];
@@ -50,47 +52,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // 4. THE FILTER ENGINE (Combines Search + Category)
-    function filterAndRender() {
-        const filtered = playlists.filter(p => {
-            const matchesFilter = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
-            const matchesSearch = p.title.toLowerCase().includes(searchTerm) || 
-                                  p.description.toLowerCase().includes(searchTerm) ||
-                                  p.tool.toLowerCase().includes(searchTerm);
-            
-            return matchesFilter && matchesSearch;
-        });
-
-        renderPlaylists(filtered);
-    }
-
-    // 5. RENDERING THE CARDS
-    function renderPlaylists(items) {
-        container.innerHTML = '';
+function filterAndRender() {
+    const filtered = playlists.filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(searchTerm) || 
+                              p.tool.toLowerCase().includes(searchTerm);
         
-        if (items.length === 0) {
-            container.innerHTML = `<div id="no-results"><h3>No matches found for "${searchTerm}" in ${currentFilter}.</h3></div>`;
-            return;
+        // New logic for favorites filter
+        if (currentFilter === 'Favorites') {
+            return favorites.includes(p.playlistId) && matchesSearch;
         }
 
-        items.forEach((p, index) => {
-            const card = document.createElement('div');
-            card.className = 'playlist-card';
-            card.style.animationDelay = `${index * 0.05}s`; // Staggered appearance
-            
-            card.innerHTML = `
-                <div class="card-tag">${p.tool}</div>
-                <h2>${p.title}</h2>
-                <p>${p.description}</p>
-                <button class="open-video-btn" 
-                        data-id="${p.playlistId}" 
-                        data-title="${p.title}" 
-                        data-link="${p.link}">
-                    ▶ Watch Lessons
-                </button>
-            `;
-            container.appendChild(card);
-        });
+        const matchesFilter = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
+        return matchesFilter && matchesSearch;
+    });
+
+    renderPlaylists(filtered);
+}
+
+    // 5. RENDERING THE CARDS
+function renderPlaylists(items) {
+    container.innerHTML = '';
+    
+    if (items.length === 0) {
+        container.innerHTML = `<div id="no-results"><h3>No playlists found here.</h3></div>`;
+        return;
     }
+
+    items.forEach((p) => {
+        const isFav = favorites.includes(p.playlistId); // Check if favorited
+        const card = document.createElement('div');
+        card.className = 'playlist-card';
+        
+        // Define Badge class
+        const levelClass = (p.level || 'Beginner').toLowerCase();
+
+        card.innerHTML = `
+            <button class="fav-btn ${isFav ? 'active' : ''}" data-fav-id="${p.playlistId}">
+                ${isFav ? '❤️' : '🤍'}
+            </button>
+            <div class="card-tag">
+                ${p.tool} <span class="badge ${levelClass}">${p.level || 'Beginner'}</span>
+            </div>
+            <h2>${p.title}</h2>
+            <p>${p.description}</p>
+            <button class="open-video-btn" data-id="${p.playlistId}" data-title="${p.title}">
+                ▶ Watch Lessons
+            </button>
+        `;
+        container.appendChild(card);
+    });
+}    
 
     // 6. VIDEO MODAL (POPUP) INTERACTION
     const overlay = document.getElementById('video-overlay');
@@ -100,23 +111,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeBtn = document.querySelector('.close-modal');
 
     // Use event delegation for buttons inside cards
-    container.addEventListener('click', (e) => {
-        const btn = e.target.closest('.open-video-btn');
-        if (btn) {
-            const pId = btn.getAttribute('data-id');
-            const pTitle = btn.getAttribute('data-title');
-            const pLink = btn.getAttribute('data-link');
-
-            // Setup Iframe (Youtube Playlist Mode)
-            player.src = `https://www.youtube.com/embed/videoseries?list=${pId}&autoplay=1`;
-            modalTitle.textContent = pTitle;
-            modalLink.href = pLink;
-            
-            // Show Overlay
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Stop page scrolling
+container.addEventListener('click', (e) => {
+    const favBtn = e.target.closest('.fav-btn');
+    if (favBtn) {
+        const id = favBtn.getAttribute('data-fav-id');
+        if (favorites.includes(id)) {
+            favorites = favorites.filter(fav => fav !== id); // Remove
+            favBtn.classList.remove('active');
+            favBtn.textContent = '🤍';
+        } else {
+            favorites.push(id); // Add
+            favBtn.classList.add('active');
+            favBtn.textContent = '❤️';
         }
-    });
+        localStorage.setItem('ll-favorites', JSON.stringify(favorites));
+        
+        // If we are currently on the favorites page, re-render to remove the card
+        if (currentFilter === 'Favorites') filterAndRender();
+    }
+});
 
     // Close Modal Function
     const closeModal = () => {

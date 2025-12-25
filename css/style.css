@@ -299,3 +299,36 @@ footer {
     padding: 5rem;
     color: #999;
 }
+
+/* Level Badges */
+.badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+.beginner { background: #d4edda; color: #155724; }
+.intermediate { background: #fff3cd; color: #856404; }
+.advanced { background: #f8d7da; color: #721c24; }
+
+/* Favorite Icon Styling */
+.fav-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    color: #ddd; /* Unselected color */
+}
+
+.fav-btn.active {
+    color: var(--primary-red);
+}
+
+.fav-btn:hover {
+    transform: scale(1.2);
+}
