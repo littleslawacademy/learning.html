@@ -1,52 +1,86 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Little's Law Academy</title>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
- <header>
-    <div class="header-content">
-        <h1>🎓 Littles Law Academy</h1>
-        <p>Performance Testing, SRE, and DevOps Hub</p>
-    </div>
 
-    <!-- Search Bar Section -->
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search for tools, topics, or keywords (e.g., JMeter, SRE)...">
-            <span class="search-icon">🔍</span>
+    <header>
+        <div class="header-content">
+            <h1>🎓 Little's Law Academy</h1>
+            <p>Performance Testing, SRE, and DevOps Learning Hub</p>
+            
+            <!-- Interactive Search Bar -->
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search topics (e.g. JMeter, Linux, K6)...">
+                <span class="search-icon">🔍</span>
+            </div>
         </div>
-    </div>
-    
-    <nav id="category-menu">
-        <button class="menu-btn active" data-category="all">All Topics</button>
-        <!-- Categories like 'Performance Testing', 'DevOps' will be injected here -->
-    </nav>
-</header>
+
+        <!-- Navigation System with Dropdowns -->
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="nav-item">Performance Testing ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-filter="JMeter">JMeter</a></li>
+                        <li><a href="#" data-filter="LoadRunner">LoadRunner</a></li>
+                        <li><a href="#" data-filter="NeoLoad">NeoLoad</a></li>
+                        <li><a href="#" data-filter="k6">k6</a></li>
+                        <li><a href="#" data-filter="Locust">Locust</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" data-filter="Performance Engineering">Engineering</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="nav-item">DevOps & SRE ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-filter="SRE">SRE Fundamentals</a></li>
+                        <li><a href="#" data-filter="GitHub">GitHub Actions</a></li>
+                        <li><a href="#" data-filter="Linux">Linux for SRE</a></li>
+                        <li><a href="#" data-filter="Docker">Docker & Kubernetes</a></li>
+                    </ul>
+                </li>
+
+                <!-- Legacy container for automated category buttons if needed -->
+                <div id="category-menu" style="display:none;"></div>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Playlist Grid -->
     <main id="playlist-container">
-        <!-- Dynamic playlist sections will be injected here by JS -->
+        <!-- JS will inject playlist cards here -->
     </main>
-    <footer>
-        <p>© 2026 Littles Law Academy. All rights reserved.</p>
-    </footer>
-    <script src="js/main.js"></script>
 
-    <!-- Video Modal -->
-<div id="video-overlay" class="overlay">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <div class="video-wrapper">
-            <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
-        <div class="modal-info">
-            <h2 id="modal-title"></h2>
-            <a id="modal-link" href="#" target="_blank" class="watch-link">Open Playlist on YouTube ↗</a>
+    <footer>
+        <p>© 2025 Little's Law Academy. All rights reserved.</p>
+    </footer>
+
+    <!-- Video Modal Shell -->
+    <div id="video-overlay" class="overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-wrapper">
+                <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="modal-info">
+                <h2 id="modal-title"></h2>
+                <a id="modal-link" href="#" target="_blank" class="watch-link">Open Playlist on YouTube ↗</a>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="js/main.js"></script>
 </body>
 </html>
