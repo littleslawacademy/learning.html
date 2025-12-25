@@ -69,5 +69,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Modal Elements
+    const overlay = document.getElementById('video-overlay');
+    const player = document.getElementById('video-player');
+    const modalTitle = document.getElementById('modal-title');
+    const modalLink = document.getElementById('modal-link');
+    const closeBtn = document.querySelector('.close-modal');
+
+    // 1. Updated Render Function (Changed the button behavior)
+    function renderPlaylists(items) {
+        container.innerHTML = '';
+        
+        items.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = 'playlist-card';
+            card.style.animationDelay = `${index * 0.05}s`;
+            
+            card.innerHTML = `
+                <div class="card-tag">${p.tool}</div>
+                <h2>${p.title}</h2>
+                <p>${p.description}</p>
+                <button class="open-video-btn" data-id="${p.playlistId}" data-title="${p.title}" data-link="${p.link}">
+                    ▶ Watch Lessons
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 2. Click Event for Opening Modal
+    container.addEventListener('click', (e) => {
+        if (e.target.classList.contains('open-video-btn')) {
+            const pId = e.target.getAttribute('data-id');
+            const pTitle = e.target.getAttribute('data-title');
+            const pLink = e.target.getAttribute('data-link');
+
+            // Set the iframe source to YouTube embed URL
+            player.src = `https://www.youtube.com/embed/videoseries?list=${pId}&autoplay=1`;
+            modalTitle.textContent = pTitle;
+            modalLink.href = pLink;
+            
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Stop scrolling behind modal
+        }
+    });
+
+    // 3. Close Modal Logic
+    closeBtn.onclick = () => {
+        overlay.style.display = 'none';
+        player.src = ''; // Stop video when closing
+        document.body.style.overflow = 'auto'; // Re-enable scroll
+    };
+
+    // Close on clicking outside the content box
+    window.onclick = (e) => {
+        if (e.target == overlay) {
+            closeBtn.onclick();
+        }
+    };
+
     filterAndRender(); // Initial load
 });
