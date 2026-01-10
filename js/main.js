@@ -1,34 +1,28 @@
+// ==========================================
 // 1. FIREBASE CONFIGURATION
-// Replace the values below with your specific config from the Firebase Console
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
-  authDomain: "littleslawacademy-f45e7.firebaseapp.com",
-  projectId: "littleslawacademy-f45e7",
-  storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
-  messagingSenderId: "393189119362",
-  appId: "1:393189119362:web:659d157ab482c4a660ab9b",
-  measurementId: "G-S40XF238WM"
+    apiKey: "AIza...", // REPLACE THESE
+    authDomain: "your-id.firebaseapp.com",
+    projectId: "your-id",
+    storageBucket: "your-id.appspot.com",
+    messagingSenderId: "123...",
+    appId: "1:123..."
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Check if Firebase is already initialized
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase Initialized");
+}
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
+// ==========================================
 // 2. GLOBAL APP STATE
+// ==========================================
 let playlists = [];
 let favorites = JSON.parse(localStorage.getItem('ll-favorites')) || [];
 let completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
@@ -36,8 +30,10 @@ let currentUser = null;
 let currentFilter = 'All';
 let searchTerm = '';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // 3. UI ELEMENTS
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("✅ DOM Loaded");
+    
+    // UI Elements
     const container = document.getElementById('playlist-container');
     const searchInput = document.getElementById('search-input');
     const loginBtn = document.getElementById('login-btn');
@@ -45,197 +41,172 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userProfile = document.getElementById('user-profile');
     const userPic = document.getElementById('user-pic');
     const navItems = document.querySelectorAll('[data-filter]');
-    
-    // A. FETCH PLAYLIST DATA
-    try {
-        const response = await fetch('data/playlists.json');
-        playlists = await response.json();
-    } catch (error) {
-        console.error("Error loading JSON:", error);
+
+    // --- A. DATA FETCHING ---
+    const fetchPlaylists = async () => {
+        try {
+            const res = await fetch('data/playlists.json');
+            playlists = await res.json();
+            console.log("✅ Playlists loaded:", playlists.length);
+            filterAndRender();
+        } catch (err) {
+            console.error("❌ Failed to load playlists.json:", err);
+        }
+    };
+    fetchPlaylists();
+
+    // --- B. AUTHENTICATION LOGIC ---
+    // Using explicit event listener to ensure it works
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            console.log("🔘 Login button clicked...");
+            auth.signInWithPopup(provider)
+                .then((result) => console.log("✅ User signed in:", result.user.displayName))
+                .catch((error) => {
+                    console.error("❌ Sign-in error:", error.code, error.message);
+                    alert("Authentication Error: " + error.message);
+                });
+        });
     }
 
-    // B. AUTHENTICATION HANDLERS
-    loginBtn.onclick = () => auth.signInWithPopup(provider);
-    logoutBtn.onclick = () => auth.signOut();
+    if (logoutBtn) {
+        logoutBtn.onclick = () => auth.signOut();
+    }
 
-    // LISTEN FOR LOGIN CHANGES
+    // Auth State Monitor
     auth.onAuthStateChanged(async (user) => {
         if (user) {
+            console.log("👤 User authenticated:", user.email);
             currentUser = user;
             loginBtn.style.display = 'none';
             userProfile.style.display = 'flex';
-            userPic.src = user.photoURL;
-            
-            // Sync progress from Cloud to App
-            await fetchFromFirestore();
+            userPic.src = user.photoURL || '';
+
+            // Sync from Cloud Firestore
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                if (doc.exists) {
+                    favorites = doc.data().favorites || [];
+                    completed = doc.data().completed || [];
+                    console.log("✅ Progress synced from cloud");
+                }
+            } catch (err) {
+                console.warn("⚠️ Firestore access denied. Check your Rules tab!");
+            }
         } else {
+            console.log("👤 User is signed out.");
             currentUser = null;
             loginBtn.style.display = 'block';
             userProfile.style.display = 'none';
-            // Use LocalStorage if guest
-            favorites = JSON.parse(localStorage.getItem('ll-favorites')) || [];
-            completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
         }
         filterAndRender();
     });
 
-    // C. CLOUD SYNC FUNCTIONS
-    async function saveToFirestore() {
+    // --- C. SYNC PROGRESS ---
+    const syncData = async () => {
         if (!currentUser) {
-            // Save to local storage for guest users
             localStorage.setItem('ll-favorites', JSON.stringify(favorites));
             localStorage.setItem('ll-completed', JSON.stringify(completed));
             return;
         }
-        // Save to Cloud for logged in users
         try {
             await db.collection('users').doc(currentUser.uid).set({
                 favorites: favorites,
                 completed: completed
             });
-        } catch (e) { console.error("Cloud Save Failed:", e); }
-    }
-
-    async function fetchFromFirestore() {
-        const doc = await db.collection('users').doc(currentUser.uid).get();
-        if (doc.exists) {
-            favorites = doc.data().favorites || [];
-            completed = doc.data().completed || [];
+            console.log("☁️ Data synced to Firestore");
+        } catch (err) {
+            console.error("❌ Sync failed:", err);
         }
-    }
+    };
 
-    // D. SEARCH & NAVBAR LOGIC
-    searchInput.addEventListener('input', (e) => {
-        searchTerm = e.target.value.toLowerCase();
-        filterAndRender();
-    });
-
-    navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            if (item.getAttribute('href') === '#') e.preventDefault();
-            currentFilter = item.getAttribute('data-filter');
-            
-            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
-            const parent = item.closest('.dropdown')?.querySelector('.nav-item');
-            if (parent) parent.classList.add('active'); else item.classList.add('active');
-
-            filterAndRender();
-        });
-    });
-
-    // E. FILTERING & RENDERING
+    // --- D. RENDERING ---
     function filterAndRender() {
         const filtered = playlists.filter(p => {
-            const matchesSearch = p.title.toLowerCase().includes(searchTerm) || 
-                                  p.tool.toLowerCase().includes(searchTerm);
-            
+            const matchesSearch = (p.title + p.tool + p.description).toLowerCase().includes(searchTerm);
             if (currentFilter === 'Favorites') return favorites.includes(p.playlistId) && matchesSearch;
-            
-            const matchesFilter = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
-            return matchesFilter && matchesSearch;
+            const matchesCat = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
+            return matchesCat && matchesSearch;
         });
-        renderCards(filtered);
-    }
 
-    function renderCards(items) {
-        container.innerHTML = '';
-        if (items.length === 0) {
-            container.innerHTML = `<div id="no-results"><h3>No training sessions found for this selection.</h3></div>`;
-            return;
-        }
+        container.innerHTML = filtered.length > 0 ? '' : '<p id="no-results">No playlists found.</p>';
 
-        items.forEach((p) => {
+        filtered.forEach(p => {
             const isFav = favorites.includes(p.playlistId);
             const isDone = completed.includes(p.playlistId);
-            
+            const level = p.level || "Beginner";
+
             const card = document.createElement('div');
             card.className = `playlist-card ${isDone ? 'completed' : ''}`;
-            
-            // Clean logic for the badge level (defaults to Beginner)
-            const level = p.level ? p.level : 'Beginner';
-
             card.innerHTML = `
-                <button class="fav-btn ${isFav ? 'active' : ''}" data-type="favorite" data-id="${p.playlistId}">
+                <button class="fav-btn ${isFav ? 'active' : ''}" data-action="favorite" data-pid="${p.playlistId}">
                     ${isFav ? '❤️' : '🤍'}
                 </button>
-                <div class="card-tag">
-                    ${p.tool} <span class="badge ${level.toLowerCase()}">${level}</span>
-                </div>
+                <div class="card-tag">${p.tool} <span class="badge ${level.toLowerCase()}">${level}</span></div>
                 <h2>${p.title}</h2>
                 <p>${p.description}</p>
-                <button class="open-video-btn" data-pid="${p.playlistId}" data-title="${p.title}" data-link="${p.link}">
-                    ▶ Watch Lessons
+                <button class="open-video-btn" data-action="play" data-pid="${p.playlistId}" data-title="${p.title}" data-link="${p.link}">
+                    ▶ Watch Training
                 </button>
-                <button class="done-btn ${isDone ? 'active' : ''}" data-type="done" data-id="${p.playlistId}">
-                    ${isDone ? '✓ Completed' : 'Mark as Finished'}
+                <button class="done-btn ${isDone ? 'active' : ''}" data-action="complete" data-pid="${p.playlistId}">
+                    ${isDone ? '✓ Completed' : 'Mark as Done'}
                 </button>
             `;
             container.appendChild(card);
         });
-        document.getElementById('progress-count').textContent = completed.length;
+
+        const progCount = document.getElementById('progress-count');
+        if (progCount) progCount.textContent = completed.length;
     }
 
-    // F. MAIN INTERACTION HANDLER (Using delegation for high efficiency)
-    const overlay = document.getElementById('video-overlay');
-    const player = document.getElementById('video-player');
-    const modalTitle = document.getElementById('modal-title');
-    const modalLink = document.getElementById('modal-link');
-    const closeBtn = document.querySelector('.close-modal');
+    // --- E. GLOBAL CLICKS ---
+    document.addEventListener('click', async (e) => {
+        const target = e.target.closest('[data-pid]');
+        if (!target) return;
 
-    container.addEventListener('click', async (e) => {
-        // Toggle Favorite
-        const favBtn = e.target.closest('[data-type="favorite"]');
-        if (favBtn) {
-            const id = favBtn.dataset.id;
+        const id = target.dataset.pid;
+        const action = target.dataset.action;
+
+        if (action === 'favorite') {
             favorites = favorites.includes(id) ? favorites.filter(f => f !== id) : [...favorites, id];
-            await saveToFirestore();
+            await syncData();
             filterAndRender();
-            return;
         }
 
-        // Toggle Mark Done
-        const doneBtn = e.target.closest('[data-type="done"]');
-        if (doneBtn) {
-            const id = doneBtn.dataset.id;
+        if (action === 'complete') {
             completed = completed.includes(id) ? completed.filter(c => c !== id) : [...completed, id];
-            await saveToFirestore();
+            await syncData();
             filterAndRender();
-            return;
         }
 
-        // Open Modal
-        const watchBtn = e.target.closest('.open-video-btn');
-        if (watchBtn) {
-            const id = watchBtn.dataset.pid;
-            const title = watchBtn.dataset.title;
-            const link = watchBtn.dataset.link;
-            
-            // Check JSON 'type' to see if it is a single video or playlist series
-            const item = playlists.find(p => p.playlistId === id);
-            if (item && item.type === 'video') {
-                player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-            } else {
-                player.src = `https://www.youtube.com/embed/videoseries?list=${id}&autoplay=1`;
-            }
-
-            modalTitle.textContent = title;
-            modalLink.href = link;
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+        if (action === 'play') {
+            const modal = document.getElementById('video-overlay');
+            const player = document.getElementById('video-player');
+            player.src = `https://www.youtube.com/embed/videoseries?list=${id}&autoplay=1`;
+            document.getElementById('modal-title').textContent = target.dataset.title;
+            document.getElementById('modal-link').href = target.dataset.link;
+            modal.style.display = 'flex';
         }
     });
 
-    // Close Modal Logic
-    const closeModal = () => {
-        overlay.style.display = 'none';
-        player.src = '';
-        document.body.style.overflow = 'auto';
-    };
+    // Close Modal
+    const closeModalBtn = document.querySelector('.close-modal');
+    if (closeModalBtn) {
+        closeModalBtn.onclick = () => {
+            document.getElementById('video-overlay').style.display = 'none';
+            document.getElementById('video-player').src = '';
+        };
+    }
 
-    closeBtn.onclick = closeModal;
-    overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-    document.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
-
-    // Initial Render
-    filterAndRender();
+    // Filters and Search
+    searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); filterAndRender(); };
+    navItems.forEach(nav => {
+        nav.onclick = (e) => {
+            e.preventDefault();
+            currentFilter = nav.dataset.filter;
+            navItems.forEach(i => i.classList.remove('active'));
+            nav.classList.add('active');
+            filterAndRender();
+        };
+    });
 });
