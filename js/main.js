@@ -2,13 +2,15 @@
 // 1. FIREBASE CONFIGURATION (Copy from Firebase Console)
 // ==========================================
 // Make sure this DOES NOT say 'import' anywhere
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "your-id.firebaseapp.com",
-    projectId: "your-id",
-    storageBucket: "your-id.appspot.com",
-    messagingSenderId: "123...",
-    appId: "1:123..."
+  apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
+  authDomain: "littleslawacademy-f45e7.firebaseapp.com",
+  projectId: "littleslawacademy-f45e7",
+  storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
+  messagingSenderId: "393189119362",
+  appId: "1:393189119362:web:659d157ab482c4a660ab9b",
+  measurementId: "G-S40XF238WM"
 };
 
 // Check if Firebase is already initialized
