@@ -53,8 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
             auth.signInWithPopup(provider).catch(err => {
-                console.error("Login Failed:", err.message);
-                alert("Auth Error: Check if you enabled Google in Firebase and added 'localhost' or your URL to Authorized Domains.");
+        console.error("🔥 Error Code:", err.code); 
+        console.error("🔥 Error Message:", err.message);
+        alert("Firebase Auth says: " + err.message);
             });
         });
     }
