@@ -13,19 +13,19 @@ const firebaseConfig = {
   measurementId: "G-S40XF238WM"
 };
 
-// Check if Firebase is already initialized
+// Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// Global Variables using the firebase global object
 const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
+// Global App State
 let playlists = [];
-let favorites = JSON.parse(localStorage.getItem('ll-favorites')) || [];
-let completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
+let favorites = [];
+let completed = [];
 let currentUser = null;
 let currentFilter = 'All';
 let searchTerm = '';
@@ -38,77 +38,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const userProfile = document.getElementById('user-profile');
     const userPic = document.getElementById('user-pic');
     const navItems = document.querySelectorAll('[data-filter]');
+    const statsBar = document.querySelector('.stats-bar');
 
-    // --- A. LOAD DATA ---
-    const loadPlaylists = async () => {
+    // --- A. LOAD DATA (But don't display yet) ---
+    const loadData = async () => {
         try {
             const res = await fetch('data/playlists.json');
             playlists = await res.json();
+            // We call filterAndRender here just to be safe, 
+            // but the logic inside will prevent guest viewing.
             filterAndRender();
-        } catch (err) {
-            console.error("Error loading JSON:", err);
-        }
+        } catch (err) { console.error("JSON Data failed:", err); }
     };
-    loadPlaylists();
+    loadData();
 
-    // --- B. AUTHENTICATION ---
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            auth.signInWithPopup(provider).catch(err => {
-        console.error("🔥 Error Code:", err.code); 
-        console.error("🔥 Error Message:", err.message);
-        alert("Firebase Auth says: " + err.message);
-            });
-        });
-    }
-
-    if (logoutBtn) logoutBtn.onclick = () => auth.signOut();
+    // --- B. AUTHENTICATION & LOCKING LOGIC ---
+    loginBtn.addEventListener('click', () => auth.signInWithPopup(provider));
+    logoutBtn.onclick = () => auth.signOut();
 
     auth.onAuthStateChanged(async (user) => {
         if (user) {
+            console.log("🔓 User logged in:", user.displayName);
             currentUser = user;
+            
+            // UI Setup for Logged In
             loginBtn.style.display = 'none';
             userProfile.style.display = 'flex';
-            userPic.src = user.photoURL || '';
+            userPic.src = user.photoURL;
+            if (statsBar) statsBar.style.display = 'block';
 
-            // Pull user's specific favorites/completed from Cloud
-            try {
-                const doc = await db.collection('users').doc(user.uid).get();
-                if (doc.exists) {
-                    favorites = doc.data().favorites || [];
-                    completed = doc.data().completed || [];
-                }
-            } catch (err) { console.warn("Firestore Rules prevent cloud fetch:", err); }
+            // Sync User Data from Cloud
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                favorites = doc.data().favorites || [];
+                completed = doc.data().completed || [];
+            }
         } else {
+            console.log("🔒 Access Restricted: User logged out");
             currentUser = null;
+            
+            // UI Setup for Logged Out
             loginBtn.style.display = 'block';
             userProfile.style.display = 'none';
+            if (statsBar) statsBar.style.display = 'none';
+            
+            // Clear lists for privacy
+            favorites = [];
+            completed = [];
         }
+        // Every time Auth status changes, re-evaluate what they see
         filterAndRender();
     });
 
-    // --- C. SYNC ---
+    // --- C. SYNC ENGINE ---
     const sync = async () => {
-        if (!currentUser) {
-            localStorage.setItem('ll-favorites', JSON.stringify(favorites));
-            localStorage.setItem('ll-completed', JSON.stringify(completed));
-            return;
-        }
+        if (!currentUser) return;
         try {
             await db.collection('users').doc(currentUser.uid).set({ favorites, completed });
-        } catch (err) { console.error("Cloud Save Fail:", err); }
+        } catch (err) { console.error("Save failed:", err); }
     };
 
-    // --- D. RENDERING ---
+    // --- D. RENDER ENGINE (The Locking Mechanism) ---
     function filterAndRender() {
+        // If NO USER is logged in, show a "Welcome/Locked" screen
+        if (!currentUser) {
+            container.innerHTML = `
+                <div id="locked-content" style="grid-column: 1/-1; text-align: center; padding: 100px 20px;">
+                    <div style="font-size: 4rem;">🔒</div>
+                    <h2>Exclusive Access Only</h2>
+                    <p>Please sign in with your Google account to access the JMeter, SRE, and DevOps training videos.</p>
+                    <button class="auth-btn" style="padding: 15px 30px; margin-top: 20px;" onclick="auth.signInWithPopup(provider)">Sign in to Start Learning</button>
+                </div>
+            `;
+            return;
+        }
+
+        // IF USER IS LOGGED IN, proceed to show data
         const filtered = playlists.filter(p => {
             const matchesSearch = (p.title + p.tool).toLowerCase().includes(searchTerm);
             if (currentFilter === 'Favorites') return favorites.includes(p.playlistId) && matchesSearch;
-            const matchesCat = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
-            return matchesCat && matchesSearch;
+            return (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter) && matchesSearch;
         });
 
-        container.innerHTML = filtered.length ? '' : '<p id="no-results">No matches found.</p>';
+        container.innerHTML = filtered.length ? '' : '<p id="no-results">No playlists match your search.</p>';
 
         filtered.forEach(p => {
             const isFav = favorites.includes(p.playlistId);
@@ -119,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="fav-btn ${isFav ? 'active' : ''}" data-action="fav" data-id="${p.playlistId}">
                     ${isFav ? '❤️' : '🤍'}
                 </button>
-                <div class="card-tag">${p.tool} <span class="badge ${p.level ? p.level.toLowerCase() : 'beginner'}">${p.level || 'Beginner'}</span></div>
+                <div class="card-tag">${p.tool} <span class="badge ${(p.level || 'Beginner').toLowerCase()}">${p.level || 'Beginner'}</span></div>
                 <h2>${p.title}</h2>
                 <p>${p.description}</p>
                 <button class="open-video-btn" data-action="watch" data-id="${p.playlistId}" data-title="${p.title}" data-link="${p.link}">
@@ -131,14 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             container.appendChild(card);
         });
-        const stat = document.getElementById('progress-count');
-        if (stat) stat.textContent = completed.length;
+
+        const progress = document.getElementById('progress-count');
+        if (progress) progress.textContent = completed.length;
     }
 
-    // --- E. EVENT DELEGATION ---
+    // --- E. GLOBAL CLICKS & INTERACTIVITY ---
     container.addEventListener('click', async (e) => {
+        if (!currentUser) return; // Prevent any interaction if logged out
+
         const btn = e.target.closest('button');
         if (!btn) return;
+        
         const id = btn.dataset.id;
         const action = btn.dataset.action;
 
@@ -160,21 +176,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close Modal Logic
+    // Basic UI Setup (Modal/Search/Nav)
     document.querySelector('.close-modal').onclick = () => {
         document.getElementById('video-overlay').style.display = 'none';
         document.getElementById('video-player').src = '';
     };
 
-    // Nav and Search logic
-    searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); filterAndRender(); };
-    navItems.forEach(n => {
-        n.onclick = (e) => {
+    searchInput.oninput = (e) => { 
+        searchTerm = e.target.value.toLowerCase(); 
+        if (currentUser) filterAndRender(); 
+    };
+
+    navItems.forEach(nav => {
+        nav.onclick = (e) => {
             e.preventDefault();
-            currentFilter = n.dataset.filter;
-            navItems.forEach(item => item.classList.remove('active'));
-            n.classList.add('active');
+            if (!currentUser) return;
+            currentFilter = nav.dataset.filter;
+            navItems.forEach(n => n.classList.remove('active'));
+            nav.classList.add('active');
             filterAndRender();
-        }
+        };
     });
 });
