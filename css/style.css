@@ -45,3 +45,52 @@ footer {
     text-align: center;
     padding: 1rem;
 }
+
+/* LMS Layout Styling */
+.lms-view { width: 95%; max-width: 1400px; height: 90vh; }
+
+.lms-layout { display: flex; height: 100%; }
+
+.lms-video-area { flex: 3; background: #000; display: flex; flex-direction: column; }
+
+.lms-sidebar { 
+    flex: 1; 
+    background: #fff; 
+    border-left: 1px solid #ddd; 
+    display: flex; 
+    flex-direction: column; 
+    min-width: 350px;
+}
+
+#curriculum-list { overflow-y: auto; flex: 1; padding: 0; margin: 0; list-style: none; }
+
+.sidebar-header { padding: 20px; border-bottom: 2px solid #eee; background: #fafafa; }
+
+/* Sidebar Items */
+.lesson-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.lesson-item:hover { background: #fef1f1; }
+.lesson-item.active { background: #fff0f0; border-left: 4px solid var(--primary-red); }
+
+.lesson-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+/* Home Page Course Progress Bar */
+.card-progress {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    margin: 15px 0 5px 0;
+}

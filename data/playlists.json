@@ -1,18 +1,34 @@
-
 [
-    {
-        "title": "Performance Testing with JMeter",
-        "description": "Deep dive into JMeter for real-world performance testing.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx1"
-    },
-    {
-        "title": "Site Reliability Engineering (SRE) Basics",
-        "description": "Fundamentals of SRE explained with hands-on examples.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx2"
-    },
-    {
-        "title": "DevOps Essentials",
-        "description": "A beginner-friendly series on GitHub Actions, CI/CD and more.",
-        "link": "https://www.youtube.com/playlist?list=PLxxxxxxx3"
-    }
+  {
+    "courseId": "perf_foundations",
+    "title": "Performance Testing Foundations",
+    "description": "Essential concepts for every Performance Engineer.",
+    "category": "Performance Testing",
+    "tool": "Foundations",
+    "level": "Beginner",
+    "videos": [
+      { "id": "YOUTUBE_ID_1", "title": "What is Performance Testing" },
+      { "id": "YOUTUBE_ID_2", "title": "Performance Testing Types Made Simple" },
+      { "id": "YOUTUBE_ID_3", "title": "Common Mistakes to Avoid" }
+    ]
+  },
+  {
+    "courseId": "neoload_course",
+    "title": "NeoLoad Complete Course",
+    "description": "Master Neoload from installation to advanced variable management.",
+    "category": "Performance Testing",
+    "tool": "NeoLoad",
+    "level": "Intermediate",
+    "videos": [
+      { "id": "VIDEO_ID_NL1", "title": "Download & Install Neoload Windows" },
+      { "id": "VIDEO_ID_NL2", "title": "Download & Install Root Certificate" },
+      { "id": "VIDEO_ID_NL3", "title": "How to Record Web Application" },
+      { "id": "VIDEO_ID_NL4", "title": "Variable Manager Step by Step" },
+      { "id": "VIDEO_ID_NL5", "title": "Parameterization & Variable Types" },
+      { "id": "VIDEO_ID_NL6", "title": "Replace Created Variables" },
+      { "id": "VIDEO_ID_NL7", "title": "Check User Path Validity" },
+      { "id": "VIDEO_ID_NL8", "title": "Think Time and Pacing" },
+      { "id": "VIDEO_ID_NL9", "title": "How to Install Free License" }
+    ]
+  }
 ]
