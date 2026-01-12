@@ -1,5 +1,4 @@
 [
-<<<<<<< HEAD
   {
     "courseId": "perf_foundations",
     "title": "Performance Testing Foundations",
@@ -32,36 +31,4 @@
       { "id": "VIDEO_ID_NL9", "title": "How to Install Free License" }
     ]
   }
-=======
-    {
-        "title": "Performance Testing with JMeter",
-        "description": "Deep dive into JMeter for real-world performance testing.",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMBWRllG4klIUDpS_DTjLKt",
-        "playlistId": "PLMPJ2amkI7xMBWRllG4klIUDpS_DTjLKt",
-        "category":"Performance Testing",
-        "tool": "JMeter",
-        "type": "playlist",
-        "level": "Intermediate"
-    },
-    {
-        "title": "Performance Testing with Neoload",
-        "description": "Basics to Advanced in Neoload Training",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xMFQ5EP8Ir7Er9UsyXbj3vf",
-        "playlistId": "PLMPJ2amkI7xMFQ5EP8Ir7Er9UsyXbj3vf",
-        "category":"Performance Testing",
-        "tool": "Neoload",
-        "type": "playlist",
-        "level": "Beginner"
-    },
-    {
-        "title": "Performance Testing with LoadRunner",
-        "description": "A beginner-friendly series on Loadrunner tutotrials",
-        "link": "https://www.youtube.com/playlist?list=PLMPJ2amkI7xPRwNi8cb5bvTajrWd8kIZf",
-        "playlistId": "PLMPJ2amkI7xPRwNi8cb5bvTajrWd8kIZf",
-        "category":"Performance Testing",
-        "tool": "Loadrunner",
-        "type": "playlist",
-        "level": "Beginner"
-    }
->>>>>>> 1412a6852368de99c34ce7fefd640d03f2d8c2e2
 ]

@@ -338,7 +338,6 @@ footer {
     padding: 3rem;
 }
 
-<<<<<<< HEAD
 /* LMS Layout Styling */
 .lms-view { width: 95%; max-width: 1400px; height: 90vh; }
 
@@ -386,22 +385,4 @@ footer {
     background: #eee;
     border-radius: 4px;
     margin: 15px 0 5px 0;
-=======
-/* ANIMATIONS */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* FEEDBACK */
-#no-results {
-    text-align: center;
-    grid-column: 1 / -1;
-    padding: 5rem;
->>>>>>> 1412a6852368de99c34ce7fefd640d03f2d8c2e2
 }
