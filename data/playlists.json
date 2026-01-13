@@ -7,9 +7,9 @@
     "tool": "Foundations",
     "level": "Beginner",
     "videos": [
-      { "id": "YOUTUBE_ID_1", "title": "What is Performance Testing" },
-      { "id": "YOUTUBE_ID_2", "title": "Performance Testing Types Made Simple" },
-      { "id": "YOUTUBE_ID_3", "title": "Common Mistakes to Avoid" }
+      { "id": "BOEqJ93F9QI", "title": "What is Performance Testing" },
+      { "id": "lTjxlv8N5NU", "title": "Performance Testing Types Made Simple" },
+      { "id": "OTOpZ4nLEV8", "title": "Common Mistakes to Avoid" }
     ]
   },
   {
@@ -20,15 +20,15 @@
     "tool": "NeoLoad",
     "level": "Intermediate",
     "videos": [
-      { "id": "VIDEO_ID_NL1", "title": "Download & Install Neoload Windows" },
-      { "id": "VIDEO_ID_NL2", "title": "Download & Install Root Certificate" },
-      { "id": "VIDEO_ID_NL3", "title": "How to Record Web Application" },
-      { "id": "VIDEO_ID_NL4", "title": "Variable Manager Step by Step" },
-      { "id": "VIDEO_ID_NL5", "title": "Parameterization & Variable Types" },
-      { "id": "VIDEO_ID_NL6", "title": "Replace Created Variables" },
-      { "id": "VIDEO_ID_NL7", "title": "Check User Path Validity" },
-      { "id": "VIDEO_ID_NL8", "title": "Think Time and Pacing" },
-      { "id": "VIDEO_ID_NL9", "title": "How to Install Free License" }
+      { "id": "yqvvDKT1KIs", "title": "Download & Install Neoload Windows" },
+      { "id": "PfdggV0wxUA", "title": "Download & Install Root Certificate" },
+      { "id": "r4I0st1FM3U", "title": "How to Record Web Application" },
+      { "id": "u-e1QtcYnRY", "title": "Variable Manager Step by Step" },
+      { "id": "e-2PIow1FY4", "title": "Parameterization & Variable Types" },
+      { "id": "t5CLYiD2lzA", "title": "Replace Created Variables" },
+      { "id": "pI_Yw1raj28", "title": "Check User Path Validity" },
+      { "id": "k-UVgms70W4", "title": "Think Time and Pacing" },
+      { "id": "C0q9z7-iUNI", "title": "How to Install Free License" }
     ]
   }
 ]
