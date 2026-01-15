@@ -386,3 +386,21 @@ footer {
     border-radius: 4px;
     margin: 15px 0 5px 0;
 }
+
+.cert-download-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    display: none; /* Only shows when 100% complete */
+}
+
+.cert-download-btn.visible {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}

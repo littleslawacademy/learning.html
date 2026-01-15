@@ -88,8 +88,24 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Main JS -->
     <script src="js/main.js"></script>
+
+    <!-- Hidden Certificate Template -->
+<div id="certificate-template" style="display: none;">
+    <div style="width: 800px; padding: 50px; text-align: center; border: 10px solid #e52e2e; font-family: 'Poppins', sans-serif; background: white;">
+        <h1 style="color: #e52e2e; font-size: 50px; margin: 0;">CERTIFICATE</h1>
+        <p style="font-size: 20px; margin-top: 10px;">OF COMPLETION</p>
+        <hr style="width: 50%; border: 1px solid #ddd; margin: 30px auto;">
+        <p>This is to certify that</p>
+        <h2 id="cert-user-name" style="font-size: 35px; text-decoration: underline;">[User Name]</h2>
+        <p>has successfully completed the bootcamp</p>
+        <h3 id="cert-course-name" style="font-size: 28px; color: #333;">[Course Title]</h3>
+        <p style="margin-top: 40px;">Granted by <b>Little's Law Academy</b></p>
+        <p id="cert-date" style="color: #666;"></p>
+        <div style="margin-top: 50px; font-weight: bold; font-size: 20px;">🎓 Congratulations!</div>
+    </div>
+</div>
 </body>
 </html>
