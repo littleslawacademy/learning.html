@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little's Law Academy</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>🎓 Little's Law Academy</h1>
+            <p>Mastering Performance Testing, SRE, and DevOps</p>
+            
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search topics (e.g. JMeter, Linux, K6)...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
+                
+                <li class="dropdown">
+                    <a href="#" class="nav-item">Courses ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-filter="Performance Testing">Performance Testing</a></li>
+                        <li><a href="#" data-filter="SRE">SRE Basics</a></li>
+                        <li><a href="#" data-filter="DevOps">DevOps Hub</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
+                
+                <!-- LOGIN / USER SECTION -->
+                <li id="auth-section">
+                    <button id="login-btn" class="auth-btn">Sign in with Google</button>
+                    <div id="user-profile" style="display: none;">
+                        <img id="user-pic" src="" alt="Profile">
+                        <button id="logout-btn">Sign Out</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="stats-bar">
+            <span>🏆 Progress: <span id="progress-count">0</span> lessons completed</span>
+        </div>
+    </header>
+<!-- Inside the Navbar, add the Auth UI as before -->
+<!-- Under Search, add the Main Grid -->
+<main id="playlist-container"></main>
+
+<!-- SPLIT-VIEW LMS MODAL -->
+<div id="video-overlay" class="overlay">
+    <div class="modal-content lms-view">
+        <span class="close-modal">&times;</span>
+        <div class="lms-layout">
+            
+            <!-- VIDEO AREA (Left) -->
+            <div class="lms-video-area">
+                <div class="video-wrapper">
+                    <iframe 
+                        id="video-player" 
+                        src="" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="lms-details">
+                    <h2 id="current-lesson-title">Select a lesson</h2>
+                    <p id="course-title-label"></p>
+                </div>
+            </div>
+
+            <!-- CURRICULUM AREA (Right) -->
+            <div class="lms-sidebar">
+                <div class="sidebar-header">
+                    <h3>Course Content</h3>
+                    <div class="progress-container">
+                        <div id="modal-progress-bar" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <span id="modal-progress-text">0% Complete</span>
+                </div>
+                <ul id="curriculum-list">
+                    <!-- JS will inject 50+ videos here -->
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <footer>
+        <p>© 2025 Little's Law Academy. Built for SREs & Testers.</p>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-overlay" class="overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="video-wrapper">
+                <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="modal-info">
+                <h2 id="modal-title"></h2>
+                <a id="modal-link" href="#" target="_blank" class="watch-link">Open on YouTube ↗</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (v9 Compat mode for ease of use) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Your App Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html>
