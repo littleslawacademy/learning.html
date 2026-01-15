@@ -2,14 +2,25 @@
 // 1. FIREBASE CONFIGURATION
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
-  authDomain: "littleslawacademy-f45e7.firebaseapp.com",
-  projectId: "littleslawacademy-f45e7",
-  storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
-  messagingSenderId: "393189119362",
-  appId: "1:393189119362:web:659d157ab482c4a660ab9b",
-  measurementId: "G-S40XF238WM"
+    apiKey: "__FIREBASE_API_KEY__",
+    authDomain: "__FIREBASE_AUTH_DOMAIN__",
+    projectId: "__FIREBASE_PROJECT_ID__",
+    storageBucket: "__STORAGEBUCKET__",
+    messagingSenderId: "__MESSAGINGSENDERID__",
+    appId: "__FIREBASE_APP_ID__",
+    measurementId: "__MEASUREMENTID__"
 };
+
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
+//   authDomain: "littleslawacademy-f45e7.firebaseapp.com",
+//   projectId: "littleslawacademy-f45e7",
+//   storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
+//   messagingSenderId: "393189119362",
+//   appId: "1:393189119362:web:659d157ab482c4a660ab9b",
+//   measurementId: "G-S40XF238WM"
+// };
 
 // Global Firebase Instance Check
 if (!firebase.apps.length) {
