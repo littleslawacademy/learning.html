@@ -20,26 +20,71 @@
         </div>
 
         <nav class="navbar">
-            <ul class="nav-links">
-                <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
-                <li class="dropdown">
-                    <a href="#" class="nav-item">Courses ▾</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" data-filter="Performance Testing">Performance Testing</a></li>
-                        <li><a href="#" data-filter="SRE">SRE Basics</a></li>
-                        <li><a href="#" data-filter="DevOps">DevOps Hub</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
-                <li id="auth-section">
-                    <button id="login-btn" class="auth-btn">Sign in with Google</button>
-                    <div id="user-profile" style="display: none;">
-                        <img id="user-pic" src="" alt="Profile">
-                        <button id="logout-btn">Sign Out</button>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+    <ul class="nav-links">
+        <li><a href="#" class="nav-item active" data-filter="All">Academy Home</a></li>
+        
+        <!-- MEGA MENU 1: Performance Testing -->
+        <li class="dropdown mega">
+            <a href="#" class="nav-item">Performance Tools ▾</a>
+            <div class="mega-menu">
+                <div class="mega-col">
+                    <h4>Industry Standard</h4>
+                    <a href="#" data-filter="JMeter">JMeter Bootcamp</a>
+                    <a href="#" data-filter="Loadrunner">LoadRunner Masterclass</a>
+                    <a href="#" data-filter="Neoload">NeoLoad Training</a>
+                </div>
+                <div class="mega-col">
+                    <h4>Modern Load Testing</h4>
+                    <a href="#" data-filter="k6">k6 Performance (JS)</a>
+                    <a href="#" data-filter="Locust">Locust (Python)</a>
+                    <a href="#" data-filter="Gatling">Gatling (Scala)</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- MEGA MENU 2: SRE & Observability -->
+        <li class="dropdown mega">
+            <a href="#" class="nav-item">SRE & Cloud ▾</a>
+            <div class="mega-menu">
+                <div class="mega-col">
+                    <h4>Platforms</h4>
+                    <a href="#" data-filter="Kubernetes">Kubernetes & AKS</a>
+                    <a href="#" data-filter="AWS">AWS Solutions</a>
+                    <a href="#" data-filter="Azure">Azure Cloud Hub</a>
+                </div>
+                <div class="mega-col">
+                    <h4>Observability</h4>
+                    <a href="#" data-filter="Grafana">Grafana Dashboards</a>
+                    <a href="#" data-filter="Datadog">Datadog Mastery</a>
+                    <a href="#" data-filter="Dynatrace">Dynatrace AI</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- MEGA MENU 3: DevOps -->
+        <li class="dropdown mega">
+            <a href="#" class="nav-item">DevOps & CICD ▾</a>
+            <div class="mega-menu">
+                <div class="mega-col">
+                    <h4>VCS & Workflow</h4>
+                    <a href="#" data-filter="GitHub">GitHub & Git Actions</a>
+                    <a href="#" data-filter="Jenkins">Jenkins Pipelines</a>
+                    <a href="#" data-filter="Linux">Linux Performance</a>
+                </div>
+            </div>
+        </li>
+
+        <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
+        
+        <li id="auth-section">
+            <button id="login-btn" class="auth-btn">Academy Login</button>
+            <div id="user-profile" style="display: none;">
+                <img id="user-pic" src="" alt="Profile">
+                <button id="logout-btn">Logout</button>
+            </div>
+        </li>
+    </ul>
+</nav>
         
         <div class="stats-bar">
             <span>🏆 Progress: <span id="progress-count">0</span> lessons completed</span>

@@ -404,3 +404,95 @@ footer {
     display: block;
     animation: fadeInUp 0.5s ease;
 }
+
+#ai-tip-banner {
+    background: #ffffff;
+    border-left: 8px solid var(--primary-red);
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    line-height: 1.8;
+    color: #2d3436;
+    font-size: 1.05rem;
+    grid-column: 1 / -1; /* Take full width above course cards */
+    white-space: pre-line; /* Keeps the line breaks from the AI output */
+}
+
+#ai-tip-banner h4 {
+    margin-top: 0;
+    color: var(--primary-red);
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+#ai-tip-banner::first-letter {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-red);
+    float: left;
+    margin-right: 8px;
+    line-height: 1;
+}
+
+/* MEGA MENU SPECIFIC */
+.navbar { position: relative; } /* Necessary for absolute children */
+
+.dropdown-menu { display: none; } /* Use standard if simple, but Mega Menu below */
+
+.mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: none; /* Only show on hover */
+    grid-template-columns: repeat(3, 1fr);
+    padding: 30px;
+    z-index: 2000;
+    border-top: 4px solid var(--primary-red);
+}
+
+.dropdown.mega:hover .mega-menu {
+    display: grid;
+    animation: fadeIn 0.3s ease;
+}
+
+.mega-col h4 {
+    color: var(--primary-red);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.mega-col a {
+    display: block;
+    padding: 8px 0;
+    text-decoration: none;
+    color: #444;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.mega-col a:hover {
+    color: var(--primary-red);
+    padding-left: 10px; /* Interaction effect */
+}
+
+/* AI Banner Aesthetic - Veteran Look */
+#ai-tip-banner {
+    background: #fdfdfd !important;
+    border-left: 8px solid #333 !important;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    font-style: italic;
+    color: #333 !important;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}

@@ -201,10 +201,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+   // ==========================================
+    // 5. INTERACTION, MEGA MENU & CERTIFICATE
     // ==========================================
-    // 5. INTERACTION & CERTIFICATE
-    // ==========================================
+
+    /**
+     * CERTIFICATE GENERATOR
+     * Triggered when a course hits 100%
+     */
     function generateCertificate(courseTitle) {
+        if (!currentUser) return;
+
+        // Set the text in the hidden certificate template
         document.getElementById('cert-user-name').textContent = currentUser.displayName;
         document.getElementById('cert-course-name').textContent = courseTitle;
         document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
@@ -220,48 +228,132 @@ document.addEventListener('DOMContentLoaded', () => {
             jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
 
+        // Download and then hide the template again
         html2pdf().set(opt).from(element).save().then(() => {
             element.style.display = 'none';
         });
     }
 
-    document.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('lms-btn')) openLMS(e.target.dataset.cid);
+    /**
+     * MEGA MENU / NAVBAR LISTENER
+     * Handles all filtering from the top menu
+     */
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        navbar.addEventListener('click', (e) => {
+            const filterTarget = e.target.closest('[data-filter]');
+            if (!filterTarget) return;
 
+            e.preventDefault();
+            if (!currentUser) {
+                alert("Please sign in to filter by specific toolsets.");
+                return;
+            }
+
+            currentFilter = filterTarget.dataset.filter;
+
+            // UI: Update Active status for the nav link and parent dropdown
+            document.querySelectorAll('.nav-item').forEach(link => link.classList.remove('active'));
+            const parentNav = filterTarget.closest('.dropdown')?.querySelector('.nav-item');
+            
+            if (parentNav) {
+                parentNav.classList.add('active');
+            } else {
+                filterTarget.classList.add('active');
+            }
+
+            // Update View
+            renderDashboard();
+
+            // Mobile: Close menu automatically after selection
+            if (window.innerWidth < 1000) {
+                const menu = filterTarget.closest('.mega-menu') || filterTarget.closest('.dropdown-menu');
+                if (menu) {
+                    menu.style.display = 'none';
+                    setTimeout(() => menu.style.removeProperty('display'), 500);
+                }
+            }
+        });
+    }
+
+    /**
+     * MAIN INTERACTION LISTENER
+     * Handles Dashboard Buttons, Lesson Selection, and Completion Checks
+     */
+    document.addEventListener('click', async (e) => {
+        if (!currentUser) return;
+
+        // 1. Open Course Dashboard (LMS)
+        if (e.target.classList.contains('lms-btn')) {
+            openLMS(e.target.dataset.cid);
+        }
+
+        // 2. Play specific lesson in sidebar
         if (e.target.classList.contains('lesson-link')) {
             const vidId = e.target.dataset.vid;
-            // FIXED VIDEO LINK LOGIC
-            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0`;
+            const player = document.getElementById('video-player');
+            
+            // Build safe embed URL
+            player.src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0&modestbranding=1`;
+            
             document.getElementById('current-lesson-title').textContent = e.target.textContent;
             
+            // Highlight current selection
             document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
             e.target.parentElement.classList.add('active');
         }
 
+        // 3. Mark Lesson as Done (Checkbox)
         if (e.target.type === 'checkbox' && e.target.dataset.gid) {
-            const gid = e.target.dataset.gid;
-            completed = e.target.checked ? [...completed, gid] : completed.filter(i => i !== gid);
+            const gid = e.target.dataset.gid; // Format: "courseId_videoId"
+            const cid = gid.split('_')[0];
+
+            if (e.target.checked) {
+                if (!completed.includes(gid)) completed.push(gid);
+                e.target.closest('.lesson-item').classList.add('completed');
+            } else {
+                completed = completed.filter(i => i !== gid);
+                e.target.closest('.lesson-item').classList.remove('completed');
+            }
+
+            // Sync with Cloud
             await syncCloud();
-            updateLMSProgress(gid.split('_')[0]);
-            renderDashboard();
+            // Update UI
+            updateLMSProgress(cid);
+            renderDashboard(); 
         }
     });
 
-    document.querySelector('.close-modal').onclick = () => {
-        document.getElementById('video-overlay').style.display = 'none';
-        document.getElementById('video-player').src = '';
-        document.body.style.overflow = 'auto';
-    };
-
-    searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); renderDashboard(); };
-    navItems.forEach(n => {
-        n.onclick = (e) => {
-            e.preventDefault();
-            if (!currentUser) return;
-            currentFilter = n.dataset.filter;
-            navItems.forEach(i => i.classList.remove('active'));
-            n.classList.add('active');
+    /**
+     * SEARCH & UTILITIES
+     */
+    if (searchInput) {
+        searchInput.oninput = (e) => {
+            searchTerm = e.target.value.toLowerCase();
             renderDashboard();
         };
-    });
+    }
+
+    // Modal Close logic
+    const closeBtn = document.querySelector('.close-modal');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            document.getElementById('video-overlay').style.display = 'none';
+            document.getElementById('video-player').src = ''; // Kill video stream
+            document.body.style.overflow = 'auto'; // Unlock background scroll
+        };
+    }
+
+    // Close on overlay background click
+    const overlay = document.getElementById('video-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeBtn.onclick();
+            }
+        });
+    }
+    
+    // Final check for initial load
+    loadData();
 });
