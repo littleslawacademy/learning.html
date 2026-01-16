@@ -1,0 +1,21 @@
+name: Hourly AI Training Tip
+on:
+  schedule:
+    - cron: '0 * * * *' # Every hour on the dot
+  workflow_dispatch:   # Allows you to click "Run" manually to test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install firebase-admin @google/generative-ai
+      - name: Run AI script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/generate-ai-tip.js

@@ -59,10 +59,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     loadData();
 
+    // AI Insight Loader (Only for Logged in Users)
+    async function loadHourlyAITip() {
+    try {
+        const doc = await db.collection('admin_data').doc('hourly_tip').get();
+        if (doc.exists) {
+            const data = doc.data();
+            const tipEl = document.getElementById('ai-tip-banner');
+            if (tipEl) {
+                tipEl.style.display = 'block';
+                // Update with nice icon and AI text
+                tipEl.innerHTML = `💡 <b>Hourly SRE Insight:</b> ${data.content}`;
+            }
+        }
+    } catch (e) {
+        console.log("No AI Tip found yet. Run the GitHub Action manually first.");
+    }
+}
+
     if (loginBtn) {
         loginBtn.onclick = () => {
             auth.signInWithPopup(provider).catch(error => {
-                console.warn("Popup blocked, trying redirect...");
                 auth.signInWithRedirect(provider);
             });
         };
@@ -76,11 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
             loginBtn.style.display = 'none';
             userProfile.style.display = 'flex';
             userPic.src = user.photoURL;
+            
+            // Load Cloud Progress
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
                 favorites = doc.data().favorites || [];
                 completed = doc.data().completed || [];
             }
+            // Load the AI tip now that we have a connection
+            loadHourlyAITip();
         } else {
             currentUser = null;
             loginBtn.style.display = 'block';
@@ -111,13 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Add an AI Banner Placeholder at the top if it doesn't exist
+        container.innerHTML = `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; background:#f0f7ff; color:#0056b3; border:1px solid #cce5ff; display:none; margin-bottom:20px; border-radius:8px; padding:15px; font-size:0.9rem;"></div>`;
+
         const filtered = playlists.filter(p => {
             const matchesSearch = (p.title + p.tool).toLowerCase().includes(searchTerm);
             if (currentFilter === 'Favorites') return favorites.includes(p.courseId) && matchesSearch;
             return (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter) && matchesSearch;
         });
 
-        container.innerHTML = '';
         filtered.forEach(p => {
             const stats = getCourseStats(p);
             const card = document.createElement('div');
@@ -132,44 +155,37 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             container.appendChild(card);
         });
+        
+        // Load the AI Tip content into the placeholder we just created
+        loadHourlyAITip();
+
         document.getElementById('progress-count').textContent = completed.length;
     }
 
     function openLMS(cid) {
         const course = playlists.find(p => p.courseId === cid);
-        if(!course) return;
-
         const list = document.getElementById('curriculum-list');
         list.innerHTML = '';
-        
         course.videos.forEach(v => {
             const gid = `${cid}_${v.id}`;
-            const isChecked = completed.includes(gid);
             const li = document.createElement('li');
-            li.className = `lesson-item ${isChecked ? 'completed' : ''}`;
+            li.className = `lesson-item ${completed.includes(gid) ? 'completed' : ''}`;
             li.innerHTML = `
-                <input type="checkbox" ${isChecked ? 'checked' : ''} data-gid="${gid}">
+                <input type="checkbox" ${completed.includes(gid) ? 'checked' : ''} data-gid="${gid}">
                 <span class="lesson-link" data-vid="${v.id}">${v.title}</span>
             `;
             list.appendChild(li);
         });
-
-        document.getElementById('course-title-label').textContent = course.title;
         updateLMSProgress(cid);
         document.getElementById('video-overlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
     function updateLMSProgress(cid) {
-        const course = playlists.find(p => p.courseId === cid);
-        const stats = getCourseStats(course);
-        const bar = document.getElementById('modal-progress-bar');
-        const text = document.getElementById('modal-progress-text');
-        
-        if (bar) bar.style.width = stats.percent + '%';
-        if (text) text.textContent = `${stats.percent}% Complete`;
+        const stats = getCourseStats(playlists.find(p => p.courseId === cid));
+        document.getElementById('modal-progress-bar').style.width = stats.percent + '%';
+        document.getElementById('modal-progress-text').textContent = stats.percent + '% Complete';
 
-        // CERTIFICATE BUTTON LOGIC
         const sidebarHeader = document.querySelector('.sidebar-header');
         const existingBtn = document.getElementById('dl-cert-btn');
         if (existingBtn) existingBtn.remove();
@@ -178,8 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.id = 'dl-cert-btn';
             btn.className = 'cert-download-btn visible';
+            btn.style.display = 'block';
             btn.innerHTML = '🥇 Download My Certificate';
-            btn.onclick = () => generateCertificate(course.title);
+            btn.onclick = () => generateCertificate(playlists.find(p => p.courseId === cid).title);
             sidebarHeader.appendChild(btn);
         }
     }
@@ -209,52 +226,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('click', async (e) => {
-        // Handle course card click
-        if (e.target.classList.contains('lms-btn')) {
-            openLMS(e.target.dataset.cid);
-        }
+        if (e.target.classList.contains('lms-btn')) openLMS(e.target.dataset.cid);
 
-        // Handle clicking a specific video title in the sidebar
         if (e.target.classList.contains('lesson-link')) {
             const vidId = e.target.dataset.vid;
-            const player = document.getElementById('video-player');
-            player.src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0`;
+            // FIXED VIDEO LINK LOGIC
+            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0`;
             document.getElementById('current-lesson-title').textContent = e.target.textContent;
             
-            // Highlight active lesson
-            document.querySelectorAll('.lesson-item').forEach(li => li.classList.remove('active'));
-            e.target.closest('.lesson-item').classList.add('active');
+            document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
+            e.target.parentElement.classList.add('active');
         }
 
-        // Handle checking off a video
         if (e.target.type === 'checkbox' && e.target.dataset.gid) {
             const gid = e.target.dataset.gid;
-            const cid = gid.split('_')[0];
-            
-            if (e.target.checked) {
-                if (!completed.includes(gid)) completed.push(gid);
-                e.target.closest('.lesson-item').classList.add('completed');
-            } else {
-                completed = completed.filter(id => id !== gid);
-                e.target.closest('.lesson-item').classList.remove('completed');
-            }
-            
+            completed = e.target.checked ? [...completed, gid] : completed.filter(i => i !== gid);
             await syncCloud();
-            updateLMSProgress(cid);
-            renderDashboard(); // Update progress bar on background home screen
+            updateLMSProgress(gid.split('_')[0]);
+            renderDashboard();
         }
     });
 
-    // Modal Close
     document.querySelector('.close-modal').onclick = () => {
         document.getElementById('video-overlay').style.display = 'none';
         document.getElementById('video-player').src = '';
         document.body.style.overflow = 'auto';
     };
 
-    // Filter and Search inputs
     searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); renderDashboard(); };
-    
     navItems.forEach(n => {
         n.onclick = (e) => {
             e.preventDefault();
