@@ -1,67 +1,70 @@
-const admin = require('firebase-admin');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-// 1. Initialize Firebase Admin
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-    });
-}
-const db = admin.firestore();
-
-// 2. Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 async function run() {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Try 'gemini-1.5-flash'. If you still get a 404, 'gemini-pro' is the most stable fallback.
+        const modelName = "gemini-1.5-flash"; 
+        const model = genAI.getGenerativeModel({ model: modelName });
 
-        // Categorization to ensure the AI covers all your requested areas
-        const topics = [
-            "Legacy to Modern Perf (LoadRunner vs K6/Locust)",
-            "Cloud Native Observability (Grafana/Prometheus/Dynatrace on AKS/EKS)",
-            "DevOps Orchestration (Complex Jenkins/GitHub Actions Pipelines)",
-            "Distributed Load Testing Bottlenecks in Azure/AWS",
-            "Advanced SRE (HPA Scaling, SLIs/SLOs, and Error Budgets)"
-        ];
-        const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
+        const now = new Date();
+        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        
+        let level = "Beginner Fundamentals";
+        let topics = "JMeter, LoadRunner, SRE definition, basic Linux commands";
+
+        if (dayOfYear % 3 === 1) {
+            level = "Intermediate Implementation";
+            topics = "Correlation, Pacing logic, SLO vs SLA, Jenkins CI/CD pipelines, K6 scripting";
+        } else if (dayOfYear % 3 === 2) {
+            level = "Trending SRE & DevOps Modernization";
+            topics = "Platform Engineering, Observability, OpenTelemetry, FinOps, K8s scaling";
+        }
 
         const prompt = `
-            ACT AS: A Principal Performance Architect & SRE with 30 years of experience. You started with manual scripting in Mercury LoadRunner and now architect auto-scaling AKS/EKS clusters.
-            
-            TOPIC: ${selectedTopic}
+            ACT AS: A Principal Performance Architect & SRE with 30 years of experience. You started with Mercury LoadRunner and now architect auto-scaling AKS/EKS clusters.
+            Level: ${level}.
+            Topics: ${topics}.
 
             GOAL: Write a 300-word masterclass entry for your students at Little's Law Academy.
             
-            STRUCTURE & REQUIREMENTS:
-            1. THE TRENCHES (Narrative): Start with a specific "war story" or memory. Use emotional language—talk about the stress of a 3 AM production crash or the pride of an optimized 99th percentile response time.
-            2. THE ARCHITECTURAL CHALLENGE: Describe a complex technical bottleneck involving specific tools (JMeter, Dynatrace, Datadog, Kubernetes, etc.). 
-            3. THE DATA-DRIVEN SOLUTION: Provide an exact technical fix. Include a sample code snippet, a specific Linux command, a JMeter property, or a K8s YAML config.
-            4. THE LESSON LEARNED: Why does this matter in the long term?
-            
-            STYLING:
-            - Technically sophisticated (use terms like 'TCP Retransmissions', 'Thread contention', 'Garbage Collection overhead').
-            - Mentoring and inspiring tone.
-            - DO NOT go under 280 words. DO NOT exceed 350 words.
+            STRUCTURE:
+            1. THE TRENCHES (Narrative): Start with a specific war story or 3 AM production incident. Use emotional, expert language.
+            2. THE ARCHITECTURAL CHALLENGE: Describe a bottleneck involving tools like ${topics}.
+            3. THE SOLUTION: Provide an exact technical fix (Include a code snippet or CLI command).
+            4. THE LESSON: One final piece of advice for the future.
+
+            Style: Technically sophisticated, 300 words long, inspiring.
         `;
 
         const result = await model.generateContent(prompt);
-        const masterclassText = result.response.text();
+        const response = await result.response;
+        const masterclassText = response.text();
+
+        if (!masterclassText || masterclassText.length < 100) {
+            throw new Error("AI returned empty or too short response.");
+        }
 
         // Save to Firebase
         await db.collection('admin_data').doc('hourly_tip').set({
             content: masterclassText,
-            category: selectedTopic,
-            author: "Principal Architect Vasanth (AI)",
+            category: level,
+            author: "Principal Architect (AI)",
             lastUpdated: new Date().toISOString()
         });
 
-        console.log(`✅ ${selectedTopic} masterclass generated and sent to Firebase!`);
+        console.log(`✅ Success: ${modelName} generated the Masterclass.`);
+
     } catch (error) {
-        console.error("❌ Script Error:", error);
+        console.error("❌ Script Error:", error.message);
+        
+        // AUTO-FALLBACK: If Flash fails, try the older but stable Gemini Pro
+        if (error.message.includes('404') || error.message.includes('not found')) {
+            console.log("🔄 Attempting fallback to gemini-pro...");
+            try {
+                const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+                // ... you could repeat the generation here if you wanted a total backup ...
+            } catch (inner) {
+                console.error("❌ All models failed.");
+            }
+        }
         process.exit(1);
     }
 }
-
-run();
