@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>`; // Note: Marked.js library recommended for proper parsing
                 
                 document.getElementById('video-overlay').style.display = 'flex';
-            } catch (err) { alert("This documentation chapter is currently being written by our AI. Check back next hour!"); }
+            } catch (err) { alert("This documentation chapter is currently being written by our Team. Check back next hour!"); }
             return;
         }
 
