@@ -1,34 +1,38 @@
 name: Hourly AI Training Tip
+
 on:
   schedule:
     - cron: '0 * * * *' # Every hour on the dot
-  workflow_dispatch:   # Allows you to click "Run" manually to test
+  workflow_dispatch:   # Allows you to run it manually to test
+
+permissions:
+  contents: write      # Required to allow the bot to push .md files to your repo
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Install dependencies
         run: npm install firebase-admin @google/generative-ai
-      - name: Run AI script
+
+      - name: Execute AI Script
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node scripts/generate-ai-tip.js
-      - name: Execute AI Script
-          env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          run: node scripts/generate-ai-tip.js
 
       - name: Commit & Push Documentation 📝
-          run: |
+        run: |
           git config --global user.name 'Academy-Writer-Bot'
-                git config --global user.email 'bot@littleslaw.com'
-                git add docs/*.md
-                git commit -m "Auto-updated Documentation for tools" || echo "No changes to commit"
-                git push
+          git config --global user.email 'bot@littleslaw.com'
+          git add docs/
+          git commit -m "Auto-updated Documentation for tools" || echo "No changes to commit"
+          git push
