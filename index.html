@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Little's Law Academy</title>
-    <!-- Fonts -->
+    <title>Little's Law Academy | Master Performance & SRE</title>
+    <!-- Modern Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,112 +14,176 @@
     <header>
         <div class="header-content">
             <h1>🎓 Little's Law Academy</h1>
-            <p>Mastering Performance Testing, SRE, and DevOps</p>
-            
+            <p>Mastering Performance Testing, SRE, and DevOps Orchestration</p>
             <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search topics (e.g. JMeter, Linux, K6)...">
+                <input type="text" id="search-input" placeholder="Search 900+ topics (e.g. JMeter, Kubernetes, CI/CD)...">
                 <span class="search-icon">🔍</span>
             </div>
         </div>
 
         <nav class="navbar">
             <ul class="nav-links">
-                <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
+                <li><a href="#" class="nav-item active" data-filter="All">Academy Home</a></li>
                 
-                <li class="dropdown">
-                    <a href="#" class="nav-item">Courses ▾</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" data-filter="Performance Testing">Performance Testing</a></li>
-                        <li><a href="#" data-filter="SRE">SRE Basics</a></li>
-                        <li><a href="#" data-filter="DevOps">DevOps Hub</a></li>
-                    </ul>
+                <!-- MEGA MENU 1: Performance Testing -->
+                <li class="dropdown mega">
+                    <a href="#" class="nav-item">Video Courses ▾</a>
+                    <div class="mega-menu">
+                        <div class="mega-col">
+                            <h4>Performance Engineering</h4>
+                            <a href="#" data-filter="JMeter">JMeter Bootcamp</a>
+                            <a href="#" data-filter="Loadrunner">LoadRunner Masterclass</a>
+                            <a href="#" data-filter="Neoload">NeoLoad Training</a>
+                            <a href="#" data-filter="k6">k6 Performance</a>
+                            <a href="#" data-filter="Locust">Locust / Python</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>SRE & Observability</h4>
+                            <a href="#" data-filter="Kubernetes">Kubernetes & AKS</a>
+                            <a href="#" data-filter="Grafana">Grafana Dashboards</a>
+                            <a href="#" data-filter="Datadog">Datadog Mastery</a>
+                            <a href="#" data-filter="Azure">Azure Cloud Hub</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>DevOps & CICD</h4>
+                            <a href="#" data-filter="GitHub">GitHub Actions</a>
+                            <a href="#" data-filter="Jenkins">Jenkins Pipelines</a>
+                            <a href="#" data-filter="Linux">Linux Performance</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- MEGA MENU 2: Docs Wiki (AI Generated Library) -->
+                <li class="dropdown mega">
+                    <a href="#" class="nav-item">Knowledge Wiki ▾</a>
+                    <div class="mega-menu">
+                        <div class="mega-col">
+                            <h4>Performance Docs</h4>
+                            <a href="#" data-doc="JMeter">JMeter Guides</a>
+                            <a href="#" data-doc="k6">k6 Documentation</a>
+                            <a href="#" data-doc="Loadrunner">LoadRunner Wiki</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>SRE & Cloud Docs</h4>
+                            <a href="#" data-doc="Kubernetes">K8s Orchestration</a>
+                            <a href="#" data-doc="Grafana">Observability Tips</a>
+                            <a href="#" data-doc="Azure">AKS Best Practices</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>Automation Docs</h4>
+                            <a href="#" data-doc="GitHub">Git Workflows</a>
+                            <a href="#" data-doc="Jenkins">CI/CD Standards</a>
+                            <a href="#" data-doc="Linux">Linux Tuning</a>
+                        </div>
+                    </div>
                 </li>
 
                 <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
                 
-                <!-- LOGIN / USER SECTION -->
+                <!-- AUTH SECTION -->
                 <li id="auth-section">
-                    <button id="login-btn" class="auth-btn">Sign in with Google</button>
-                    <div id="user-profile" style="display: none;">
-                        <img id="user-pic" src="" alt="Profile">
-                        <button id="logout-btn">Sign Out</button>
-                    </div>
-                </li>
+                        <button id="login-btn" class="auth-btn">Academy Login</button>
+                        <div id="user-profile" style="display: none; align-items: center; gap: 10px;">
+                            <img id="user-pic" src="" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%;">
+                            <button id="logout-btn" class="auth-btn" style="background: transparent; color: #444; border: 1px solid #ddd;">Sign Out</button>
+                        </div>
+                    </li>
             </ul>
         </nav>
         
         <div class="stats-bar">
-            <span>🏆 Progress: <span id="progress-count">0</span> lessons completed</span>
+            <span>🏆 Learning Journey: <span id="progress-count">0</span> videos mastered</span>
         </div>
     </header>
-<!-- Inside the Navbar, add the Auth UI as before -->
-<!-- Under Search, add the Main Grid -->
-<main id="playlist-container"></main>
 
-<!-- SPLIT-VIEW LMS MODAL -->
-<div id="video-overlay" class="overlay">
-    <div class="modal-content lms-view">
-        <span class="close-modal">&times;</span>
-        <div class="lms-layout">
-            
-            <!-- VIDEO AREA (Left) -->
-            <div class="lms-video-area">
-                <div class="video-wrapper">
-                    <iframe 
-                        id="video-player" 
-                        src="" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                <div class="lms-details">
-                    <h2 id="current-lesson-title">Select a lesson</h2>
-                    <p id="course-title-label"></p>
-                </div>
-            </div>
+    <main id="playlist-container">
+        <!-- AI Tips and Course Cards Injected Here -->
+    </main>
 
-            <!-- CURRICULUM AREA (Right) -->
-            <div class="lms-sidebar">
-                <div class="sidebar-header">
-                    <h3>Course Content</h3>
-                    <div class="progress-container">
-                        <div id="modal-progress-bar" class="progress-fill" style="width: 0%"></div>
+    <!-- PROFESSIONAL SPLIT-VIEW LMS MODAL -->
+    <div id="video-overlay" class="overlay">
+        <div class="modal-content lms-view">
+            <span class="close-modal">&times;</span>
+            <div class="lms-layout">
+                
+                <!-- LEFT SIDE: MEDIA & DOC VIEWER -->
+                <div class="lms-video-area">
+                    <div class="video-wrapper">
+                        <iframe id="video-player" src="" frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen></iframe>
                     </div>
-                    <span id="modal-progress-text">0% Complete</span>
+                    <div class="lms-details">
+                        <h2 id="current-lesson-title">Select a lesson</h2>
+                        <p id="course-title-label"></p>
+                    </div>
                 </div>
-                <ul id="curriculum-list">
-                    <!-- JS will inject 50+ videos here -->
-                </ul>
-            </div>
 
+                <!-- RIGHT SIDE: CURRICULUM & MENTOR CONNECT -->
+                <div class="lms-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Course Progress</h3>
+                        <div class="progress-container">
+                            <div id="modal-progress-bar" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="modal-progress-text">0% Complete</span>
+
+                        <!-- MENTOR WIDGET: Engagement Hub -->
+                        <div class="mentor-connect">
+                            <p>Learning path curated by <b>Vasanth Shanmugam</b></p>
+                            <div class="social-actions">
+                                <a href="https://www.youtube.com/@littleslawyoutubechannel?sub_confirmation=1" target="_blank" class="yt-sub">🔔 Subscribe</a>
+                                <a href="https://www.linkedin.com/in/vasanthmshanmugam/" target="_blank" class="ln-connect">🤝 Connect</a>
+                            </div>
+                        </div>
+                    </div>
+                    <ul id="curriculum-list"></ul>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Professional Footer -->
     <footer>
-        <p>© 2025 Little's Law Academy. Built for SREs & Testers.</p>
+        <h2>Little's Law Academy</h2>
+        <p>Built for Performance Engineers, by Performance Engineers.</p>
+        <div class="footer-socials">
+            <a href="https://www.youtube.com/@littleslawyoutubechannel" target="_blank">YouTube Training</a>
+            <a href="https://www.linkedin.com/in/vasanthmshanmugam/" target="_blank">LinkedIn Profile</a>
+            <a href="mailto:vasanthtce@gmail.com">Request Consultation</a>
+        </div>
+        <p style="margin-top: 30px; opacity: 0.4; font-size: 0.8rem;">
+            © 2025 Little's Law Academy. All Rights Reserved.
+        </p>
     </footer>
 
-    <!-- Video Modal -->
-    <div id="video-overlay" class="overlay">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="video-wrapper">
-                <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="modal-info">
-                <h2 id="modal-title"></h2>
-                <a id="modal-link" href="#" target="_blank" class="watch-link">Open on YouTube ↗</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase SDKs (v9 Compat mode for ease of use) -->
+    <!-- EXTERNAL LIBRARIES -->
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- PDF Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Firebase SDK Compat -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    <!-- Your App Scripts -->
+    <!-- Academy Main Logic -->
     <script src="js/main.js"></script>
+
+    <!-- CERTIFICATE TEMPLATE (Hidden) -->
+    <div id="certificate-template" style="display: none;">
+        <div style="width: 800px; padding: 50px; text-align: center; border: 12px solid #e52e2e; font-family: 'Poppins', sans-serif; background: white;">
+            <h1 style="color: #e52e2e; font-size: 55px; margin: 0;">CERTIFICATE</h1>
+            <p style="font-size: 20px; margin-top: 5px;">PROFESSIONAL COMPLETION</p>
+            <hr style="width: 60%; border: 1px solid #eee; margin: 25px auto;">
+            <p>This recognizes that</p>
+            <h2 id="cert-user-name" style="font-size: 40px; margin: 10px 0; border-bottom: 2px solid #333; display: inline-block; padding: 0 20px;">[User Name]</h2>
+            <p>has mastered the core competencies in</p>
+            <h3 id="cert-course-name" style="font-size: 26px; color: #e52e2e;">[Course Title]</h3>
+            <p style="margin-top: 35px; line-height: 1.6;">Successfully validated through <br><b>Little's Law Academy</b></p>
+            <p id="cert-date" style="color: #888; font-size: 0.9rem; margin-top: 20px;"></p>
+            <div style="margin-top: 40px;">🏅 Authenticated Learning Record</div>
+        </div>
+    </div>
 </body>
 </html>

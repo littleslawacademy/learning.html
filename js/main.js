@@ -1,6 +1,7 @@
 // ==========================================
 // 1. FIREBASE CONFIGURATION
 // ==========================================
+
 const firebaseConfig = {
     apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
     authDomain: "littleslawacademy-f45e7.firebaseapp.com",
@@ -10,35 +11,45 @@ const firebaseConfig = {
     appId: "1:393189119362:web:659d157ab482c4a660ab9b",
     measurementId: "G-S40XF238WM"
 };
-
-
 // const firebaseConfig = {
-//   apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
-//   authDomain: "littleslawacademy-f45e7.firebaseapp.com",
-//   projectId: "littleslawacademy-f45e7",
-//   storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
-//   messagingSenderId: "393189119362",
-//   appId: "1:393189119362:web:659d157ab482c4a660ab9b",
-//   measurementId: "G-S40XF238WM"
+//     apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
+//     authDomain: "littleslawacademy-f45e7.firebaseapp.com",
+//     projectId: "littleslawacademy-f45e7",
+//     storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
+//     messagingSenderId: "393189119362",
+//     appId: "1:393189119362:web:659d157ab482c4a660ab9b",
+//     measurementId: "G-S40XF238WM"
 // };
 
-// Global Firebase Instance Check
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// Initialize Firebase Instance
+if (!firebase.apps.length) { 
+    firebase.initializeApp(firebaseConfig); 
 }
 const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// App Global State
+// ==========================================
+// 2. GLOBAL APP STATE
+// ==========================================
 let playlists = []; 
-let favorites = []; 
-let completed = JSON.parse(localStorage.getItem('ll-completed')) || []; // Default to local
+let completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
 let currentUser = null;
 let currentFilter = 'All';
 let searchTerm = '';
 
-// Progress Calculation Helper
+// Mapping for the Documentation Wiki Subfolders
+const DOC_PATHS = {
+    'jmeter': 'performance', 'neoload': 'performance', 'loadrunner': 'performance', 'k6': 'performance', 'locust': 'performance',
+    'kubernetes': 'sre', 'aks': 'sre', 'azure': 'sre', 'grafana': 'sre', 'datadog': 'sre', 'dynatrace': 'sre',
+    'github': 'devops', 'jenkins': 'devops', 'linux': 'devops', 'docker': 'devops'
+};
+
+// ==========================================
+// 3. CORE ENGINES
+// ==========================================
+
+// Helper: Progress Stats Engine
 function getCourseStats(course) {
     if (!course.videos || course.videos.length === 0) return { done: 0, total: 0, percent: 0 };
     const total = course.videos.length;
@@ -47,190 +58,266 @@ function getCourseStats(course) {
     return { done, total, percent };
 }
 
+// Sync current user progress to Firebase Cloud
+const syncToCloud = async () => {
+    if (currentUser) {
+        try {
+            await db.collection('users').doc(currentUser.uid).set({ completed: completed });
+            console.log("☁️ Progress saved to cloud");
+        } catch (e) { console.error("Cloud Sync Fail:", e); }
+    } else {
+        localStorage.setItem('ll-completed', JSON.stringify(completed));
+    }
+};
+
+// ==========================================
+// 4. MAIN UI CONTROLLER
+// ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
-    // UI Selectors
     const container = document.getElementById('playlist-container');
     const searchInput = document.getElementById('search-input');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const userProfile = document.getElementById('user-profile');
     const userPic = document.getElementById('user-pic');
-    const navItems = document.querySelectorAll('[data-filter]');
 
-    // ==========================================
-    // 2. DATA LOADING
-    // ==========================================
-    const loadPlaylists = async () => {
+    // Fetch JSON Course Data
+    const loadAcademyData = async () => {
         try {
             const res = await fetch('data/playlists.json');
             playlists = await res.json();
-            console.log("Playlists Loaded");
+            console.log("📂 Courses Loaded:", playlists.length);
             renderDashboard();
-        } catch (e) { console.error("Could not load data:", e); }
+        } catch (e) { console.error("Could not find playlists.json:", e); }
     };
-    loadPlaylists();
 
-    // ==========================================
-    // 3. LOGIN / AUTHENTICATION
-    // ==========================================
-    if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-            console.log("Opening Sign-In Popup...");
-            auth.signInWithPopup(provider).catch(error => {
-                console.error("Auth Error:", error.message);
-                alert("Sign-In failed. Make sure your GitHub URL or localhost is added to 'Authorized Domains' in the Firebase Console Settings.");
-            });
-        });
-    }
+    // Render the Daily AI Technical Tip
+    const loadHourlyAIFeed = async () => {
+        try {
+            const doc = await db.collection('admin_data').doc('hourly_tip').get();
+            if (doc.exists) {
+                const el = document.getElementById('ai-tip-banner');
+                if (el) {
+                    el.style.display = 'block';
+                    el.innerHTML = `<h4>💡 Expert Masterclass: 30-Year Architect Insights</h4>
+                                   <div class="ai-content">${doc.data().content}</div>`;
+                }
+            }
+        } catch (e) { console.log("AI Feed refreshing..."); }
+    };
 
-    if (logoutBtn) logoutBtn.onclick = () => auth.signOut();
+    // Authentication Logic
+    const handleLogin = () => {
+        auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+    };
+
+    if (loginBtn) loginBtn.onclick = handleLogin;
+    if (logoutBtn) logoutBtn.onclick = () => auth.signOut().then(() => window.location.reload());
 
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             currentUser = user;
-            console.log("Logged in as:", user.displayName);
-            loginBtn.style.display = 'none';
-            userProfile.style.display = 'flex';
-            userPic.src = user.photoURL;
+            if(loginBtn) loginBtn.style.display = 'none';
+            if(userProfile) userProfile.style.display = 'flex';
+            if(userPic) userPic.src = user.photoURL;
 
-            // SAFE SYNC: Pull cloud data, but don't crash if it fails
-            try {
-                const doc = await db.collection('users').doc(user.uid).get();
-                if (doc.exists) {
-                    favorites = doc.data().favorites || [];
-                    completed = doc.data().completed || [];
-                    console.log("Sync Complete");
-                }
-            } catch (err) { console.warn("Cloud Fetch Failed (using local backup)"); }
+            // Fetch User Progress from Firebase
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                completed = doc.data().completed || [];
+            }
+            loadHourlyAIFeed();
         } else {
             currentUser = null;
-            loginBtn.style.display = 'block';
-            userProfile.style.display = 'none';
+            if(loginBtn) loginBtn.style.display = 'block';
+            if(userProfile) userProfile.style.display = 'none';
         }
         renderDashboard();
     });
 
-    const syncToCloud = async () => {
-        if (!currentUser) {
-            localStorage.setItem('ll-completed', JSON.stringify(completed));
-            return;
-        }
-        try {
-            await db.collection('users').doc(currentUser.uid).set({ favorites, completed });
-        } catch (e) { console.error("Save error:", e); }
-    };
-
-    // ==========================================
-    // 4. RENDERING & UI LOGIC
-    // ==========================================
+    // Main Renderer for Course Cards
     function renderDashboard() {
         if (!currentUser) {
             container.innerHTML = `
-            <div id="locked-view" style="grid-column: 1/-1; text-align: center; padding: 60px;">
-                <h1>🔐 Welcome Performance Engineer</h1>
-                <p>Login with your account to access 900+ lessons and track your bootcamp progress.</p>
-                <button class="auth-btn" id="guest-login-btn">Sign in to Academy</button>
-            </div>`;
-            document.getElementById('guest-login-btn')?.addEventListener('click', () => auth.signInWithPopup(provider));
+                <div style="grid-column:1/-1; text-align:center; padding:100px;">
+                    <h1 style="font-size:3rem">🎓 Little's Law Academy</h1>
+                    <p style="margin:20px; font-size:1.2rem">Please sign in to unlock your SRE, Performance, and DevOps training path.</p>
+                    <button class="auth-btn" style="padding:15px 40px; font-size:1.1rem;" onclick="handleLogin()">Sign in with Google</button>
+                </div>`;
             return;
         }
 
-        const filtered = playlists.filter(p => {
-            const matchesSearch = (p.title + p.tool).toLowerCase().includes(searchTerm);
-            if (currentFilter === 'Favorites') return favorites.includes(p.courseId) && matchesSearch;
-            return (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter) && matchesSearch;
-        });
+        // Reset with AI Insight space at top
+        container.innerHTML = `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:6px solid red; background:#fff; padding:30px; margin-bottom:40px; line-height:1.7; white-space:pre-line;"></div>`;
 
-        container.innerHTML = filtered.length ? '' : '<p>No bootcamps match your search.</p>';
+        // Filtering Logic
+        const filtered = playlists.filter(p => {
+            const pool = (p.title + p.tool + (p.category || '')).toLowerCase();
+            const matchesSearch = pool.includes(searchTerm);
+            const matchesCat = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
+            return matchesCat && matchesSearch;
+        });
 
         filtered.forEach(p => {
             const stats = getCourseStats(p);
             const card = document.createElement('div');
             card.className = 'playlist-card';
             card.innerHTML = `
-                <div class="card-tag">${p.tool} <span class="badge ${p.level ? p.level.toLowerCase() : 'beginner'}">${p.level || 'Beginner'}</span></div>
+                <div class="card-tag">${p.tool} <span class="badge ${p.level ? p.level.toLowerCase() : 'beginner'}">${p.level || 'Expert'}</span></div>
                 <h2>${p.title}</h2>
                 <div class="card-progress"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
-                <small>${stats.percent}% Completed (${stats.done}/${stats.total} videos)</small>
+                <small>${stats.percent}% Mastery (${stats.done}/${stats.total} Lessons)</small>
                 <p>${p.description}</p>
-                <button class="lms-btn" data-cid="${p.courseId}">Open Course Dashboard</button>
+                <button class="lms-btn" data-cid="${p.courseId}">Open Bootcamp View</button>
             `;
             container.appendChild(card);
         });
-        document.getElementById('progress-count').textContent = completed.length;
+
+        loadHourlyAIFeed();
+        if(document.getElementById('progress-count')) document.getElementById('progress-count').textContent = completed.length;
     }
 
-    // ==========================================
-    // 5. LMS / MODAL ACTIONS
-    // ==========================================
-    const openLMS = (cid) => {
-        const course = playlists.find(p => p.courseId === cid);
-        const list = document.getElementById('curriculum-list');
-        list.innerHTML = '';
-        
-        course.videos.forEach(v => {
-            const gid = `${cid}_${v.id}`;
-            const li = document.createElement('li');
-            li.className = 'lesson-item';
-            li.innerHTML = `
-                <input type="checkbox" ${completed.includes(gid) ? 'checked' : ''} data-gid="${gid}">
-                <span class="lesson-link" data-vid="${v.id}">${v.title}</span>
-            `;
-            list.appendChild(li);
-        });
-
-        updateLMSUI(cid);
-        document.getElementById('video-overlay').style.display = 'flex';
-    };
-
-    const updateLMSUI = (cid) => {
-        const course = playlists.find(p => p.courseId === cid);
-        const stats = getCourseStats(course);
-        document.getElementById('modal-progress-bar').style.width = stats.percent + '%';
-        document.getElementById('modal-progress-text').textContent = stats.percent + '% Done';
-    };
-
-    // Global Interaction Handler
+    // Interaction Listener
     document.addEventListener('click', async (e) => {
-        // Dashboard Open
-        if (e.target.classList.contains('lms-btn')) openLMS(e.target.dataset.cid);
+        const target = e.target;
 
-        // Sidebar Lesson Click
-        if (e.target.classList.contains('lesson-link')) {
-            const id = e.target.dataset.vid;
-            document.getElementById('video-player').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-            document.getElementById('current-lesson-title').textContent = e.target.textContent;
-            document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
-            e.target.parentElement.classList.add('active');
-        }
-
-        // Checkbox Click
-        if (e.target.type === 'checkbox' && e.target.dataset.gid) {
-            const gid = e.target.dataset.gid;
-            const cid = gid.split('_')[0];
-            completed = e.target.checked ? [...completed, gid] : completed.filter(i => i !== gid);
-            await syncToCloud();
-            updateLMSUI(cid);
-            renderDashboard();
-        }
-    });
-
-    // Simple search & Nav
-    searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); renderDashboard(); };
-    
-    navItems.forEach(n => {
-        n.onclick = (e) => {
+        // Mega Menu Category Selection
+        if (target.closest('[data-filter]')) {
             e.preventDefault();
-            if (!currentUser) return;
-            currentFilter = n.dataset.filter;
-            navItems.forEach(i => i.classList.remove('active'));
-            n.classList.add('active');
+            if(!currentUser) return;
+            currentFilter = target.closest('[data-filter]').dataset.filter;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const parent = target.closest('.dropdown')?.querySelector('.nav-item') || target;
+            parent.classList.add('active');
             renderDashboard();
-        };
+            return;
+        }
+
+        // Documentation Loading (MD Library)
+        if (target.closest('[data-doc]')) {
+            e.preventDefault();
+            const toolName = target.closest('[data-doc]').dataset.doc.toLowerCase();
+            const subFolder = DOC_PATHS[toolName] || 'performance';
+            try {
+                const response = await fetch(`docs/${subFolder}/${toolName}.md`);
+                const md = await response.text();
+                const lmsArea = document.querySelector('.lms-video-area');
+                document.getElementById('current-lesson-title').textContent = `${toolName.toUpperCase()} Architecture Wiki`;
+                lmsArea.innerHTML = `<div class="doc-viewer" style="background:#fff; padding:60px; height:100%; overflow-y:auto; color:#222; font-size:1.1rem; line-height:1.8;">${typeof marked !== 'undefined' ? marked.parse(md) : md}</div>`;
+                document.getElementById('video-overlay').style.display = 'flex';
+            } catch (e) { alert("Documentation being updated. Please try again soon!"); }
+            return;
+        }
+
+        // Open specific Bootcamp view
+        if (target.classList.contains('lms-btn')) {
+            const course = playlists.find(p => p.courseId === target.dataset.cid);
+            if (!course) return;
+
+            const listEl = document.getElementById('curriculum-list');
+            listEl.innerHTML = '';
+            course.videos.forEach(v => {
+                const gid = `${course.courseId}_${v.id}`;
+                const checked = completed.includes(gid);
+                const li = document.createElement('li');
+                li.className = `lesson-item ${checked ? 'completed' : ''}`;
+                li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} data-gid="${gid}">
+                                <span class="lesson-link" data-vid="${v.id}">${v.title}</span>`;
+                listEl.appendChild(li);
+            });
+
+            document.getElementById('course-title-label').textContent = "Learning Journey: " + course.title;
+            updateUIProgress(course.courseId);
+            document.getElementById('video-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Select a lesson inside Sidebar
+        if (target.classList.contains('lesson-link')) {
+            const vidId = target.dataset.vid;
+            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0&origin=${window.location.origin}`;
+            document.getElementById('current-lesson-title').textContent = target.textContent;
+            document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
+            target.parentElement.classList.add('active');
+        }
+
+        // Mark specific lesson completed (Checkbox)
+        if (target.type === 'checkbox' && target.dataset.gid) {
+            const gid = target.dataset.gid;
+            const cid = gid.split('_')[0];
+            if (target.checked) {
+                if (!completed.includes(gid)) completed.push(gid);
+            } else {
+                completed = completed.filter(id => id !== gid);
+            }
+            await syncToCloud();
+            updateUIProgress(cid);
+            renderDashboard();
+        }
     });
 
+    // Helper: Progress update for LMS Modal
+    function updateUIProgress(cid) {
+        const stats = getCourseStats(playlists.find(p => p.courseId === cid));
+        const bar = document.getElementById('modal-progress-bar');
+        const text = document.getElementById('modal-progress-text');
+        if(bar) bar.style.width = stats.percent + '%';
+        if(text) text.textContent = `${stats.percent}% Processed`;
+
+        // CERTIFICATE AWARDING
+        if (stats.percent === 100) {
+            handleCertAward(playlists.find(p => p.courseId === cid).title);
+        } else {
+            const existing = document.getElementById('dl-cert-btn');
+            if (existing) existing.remove();
+        }
+    }
+
+    // Modal Control: Cleanup stream on close
     document.querySelector('.close-modal').onclick = () => {
         document.getElementById('video-overlay').style.display = 'none';
         document.getElementById('video-player').src = '';
+        document.body.style.overflow = 'auto';
     };
+
+    // Listeners for Search input
+    if(searchInput) searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); renderDashboard(); };
+
+    loadAcademyData();
 });
+
+// ==========================================
+// 5. CERTIFICATE OF ACHIEVEMENT LOGIC
+// ==========================================
+function handleCertAward(courseTitle) {
+    if (document.getElementById('dl-cert-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.id = 'dl-cert-btn';
+    btn.className = 'cert-download-btn visible';
+    btn.innerHTML = '🥇 Unlock Official Certificate';
+    btn.onclick = () => {
+        // Hydrate the certificate template with live user data
+        document.getElementById('cert-user-name').textContent = auth.currentUser.displayName;
+        document.getElementById('cert-course-name').textContent = courseTitle;
+        document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+        
+        const certView = document.getElementById('certificate-template');
+        certView.style.display = 'block';
+
+        const opt = { 
+            margin: 0.5, 
+            filename: `Certification_${courseTitle.replace(/\s+/g,'_')}.pdf`, 
+            image: { type:'jpeg', quality:0.98 }, 
+            html2canvas: { scale: 2 }, 
+            jsPDF: { unit:'in', format:'letter', orientation:'landscape' } 
+        };
+
+        // Captures UI template to PDF via external lib
+        html2pdf().set(opt).from(certView).save().then(() => {
+            certView.style.display = 'none';
+        });
+    };
+    document.querySelector('.sidebar-header').appendChild(btn);
+}
