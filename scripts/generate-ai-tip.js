@@ -1,70 +1,93 @@
+const admin = require('firebase-admin');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const fs = require('fs');
+const path = require('path');
+
+// 1. FIREBASE ADMIN SETUP
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+}
+const db = admin.firestore();
+
+// 2. AI SETUP
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 async function run() {
     try {
-        // Try 'gemini-1.5-flash'. If you still get a 404, 'gemini-pro' is the most stable fallback.
-        const modelName = "gemini-1.5-flash"; 
+        const modelName = "gemini-1.5-flash";
         const model = genAI.getGenerativeModel({ model: modelName });
 
-        const now = new Date();
-        const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-        
-        let level = "Beginner Fundamentals";
-        let topics = "JMeter, LoadRunner, SRE definition, basic Linux commands";
+        // TOOLSETS FOR WIKI DIVERSIFICATION
+        const tools = [
+            "JMeter Masterclass", "NeoLoad Fundamentals", "LoadRunner Architecture",
+            "k6 Modern Performance", "Locust Python Testing", "Kubernetes SRE",
+            "Azure AKS Optimization", "Grafana Observability", "Dynatrace AI",
+            "DevOps Pipeline Hardening", "Linux Kernel Tuning", "Datadog Monitors"
+        ];
+        const selectedTool = tools[Math.floor(Math.random() * tools.length)];
 
-        if (dayOfYear % 3 === 1) {
-            level = "Intermediate Implementation";
-            topics = "Correlation, Pacing logic, SLO vs SLA, Jenkins CI/CD pipelines, K6 scripting";
-        } else if (dayOfYear % 3 === 2) {
-            level = "Trending SRE & DevOps Modernization";
-            topics = "Platform Engineering, Observability, OpenTelemetry, FinOps, K8s scaling";
-        }
-
+        // THE EXPERT PROMPT
         const prompt = `
-            ACT AS: A Principal Performance Architect & SRE with 30 years of experience. You started with Mercury LoadRunner and now architect auto-scaling AKS/EKS clusters.
-            Level: ${level}.
-            Topics: ${topics}.
+            ACT AS: A Principal Performance Architect & SRE with 30 years of enterprise experience. 
+            You have managed massive systems using ${selectedTool} and are a mentor at Little's Law Academy.
 
-            GOAL: Write a 300-word masterclass entry for your students at Little's Law Academy.
-            
-            STRUCTURE:
-            1. THE TRENCHES (Narrative): Start with a specific war story or 3 AM production incident. Use emotional, expert language.
-            2. THE ARCHITECTURAL CHALLENGE: Describe a bottleneck involving tools like ${topics}.
-            3. THE SOLUTION: Provide an exact technical fix (Include a code snippet or CLI command).
-            4. THE LESSON: One final piece of advice for the future.
+            GOAL: Write a technical masterclass/wiki entry (Approx 300-350 words).
 
-            Style: Technically sophisticated, 300 words long, inspiring.
+            REQUIRED STRUCTURE (Format in Markdown):
+            1. # ${selectedTool} Deep Dive
+            2. THE TRENCHES (Narrative): A short "war story" from 10-20 years ago. Share an emotional moment—a crash that happened on a holiday, the stress of a million-dollar memory leak, or a 3 AM rescue.
+            3. ARCHITECTURAL CHALLENGE: Describe a complex technical bottleneck specific to ${selectedTool} or related cloud architecture (Azure/AKS/AWS).
+            4. TECHNICAL FIX (High Authority): Provide an advanced technical example (a code snippet, shell command, or specific property config).
+            5. THE PHILOSOPHY: One piece of wisdom about the future of Performance Engineering.
+
+            STYLE: Sophisticated, technical (use terms like 'Latency', 'Concurrency', 'Thread Contention', 'Distributed Tracing'), yet emotional and mentor-like.
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const masterclassText = response.text();
+        const masterclassMD = response.text();
 
-        if (!masterclassText || masterclassText.length < 100) {
-            throw new Error("AI returned empty or too short response.");
+        if (!masterclassMD || masterclassMD.length < 500) {
+            throw new Error("AI response was too short for a masterclass.");
         }
 
-        // Save to Firebase
+        // 3. PERSISTENCE LAYER A: FIREBASE (For the Live Dashboard)
         await db.collection('admin_data').doc('hourly_tip').set({
-            content: masterclassText,
-            category: level,
-            author: "Principal Architect (AI)",
-            lastUpdated: new Date().toISOString()
+            content: masterclassMD, // Stored as MD so our JS can parse it
+            tool: selectedTool,
+            lastUpdated: new Date().toISOString(),
+            author: "Architect Vasanth (AI)"
         });
 
-        console.log(`✅ Success: ${modelName} generated the Masterclass.`);
+        // 4. PERSISTENCE LAYER B: GITHUB DOCS (For the Wiki)
+        const docsDir = path.join(__dirname, '../docs');
+        
+        // Ensure the docs directory exists
+        if (!fs.existsSync(docsDir)) {
+            fs.mkdirSync(docsDir, { recursive: true });
+        }
+
+        // Clean filename (e.g. "JMeter Masterclass" -> "jmeter_masterclass.md")
+        const fileName = `${selectedTool.toLowerCase().replace(/\s+/g, '_')}.md`;
+        const filePath = path.join(docsDir, fileName);
+
+        // Write the file (Every hour this specific tool file will get better)
+        fs.writeFileSync(filePath, masterclassMD);
+
+        console.log(`✅ Success! [${selectedTool}] Masterclass written to Firebase and /docs/${fileName}`);
 
     } catch (error) {
         console.error("❌ Script Error:", error.message);
         
-        // AUTO-FALLBACK: If Flash fails, try the older but stable Gemini Pro
-        if (error.message.includes('404') || error.message.includes('not found')) {
-            console.log("🔄 Attempting fallback to gemini-pro...");
-            try {
-                const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
-                // ... you could repeat the generation here if you wanted a total backup ...
-            } catch (inner) {
-                console.error("❌ All models failed.");
-            }
+        // Error handling fallback
+        if (error.message.includes('404')) {
+            console.log("🔄 Model version mismatch. Check Google AI API Studio model availability.");
         }
         process.exit(1);
     }
 }
+
+run();

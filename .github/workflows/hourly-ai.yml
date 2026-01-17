@@ -19,3 +19,16 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node scripts/generate-ai-tip.js
+      - name: Execute AI Script
+          env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          run: node scripts/generate-ai-tip.js
+
+      - name: Commit & Push Documentation 📝
+          run: |
+          git config --global user.name 'Academy-Writer-Bot'
+                git config --global user.email 'bot@littleslaw.com'
+                git add docs/*.md
+                git commit -m "Auto-updated Documentation for tools" || echo "No changes to commit"
+                git push
