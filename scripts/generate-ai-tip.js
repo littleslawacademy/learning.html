@@ -13,79 +13,86 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 // 2. AI SETUP
+// Ensure your GEMINI_API_KEY secret is correct in GitHub
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function run() {
     try {
-        const modelName = "gemini-1.5-flash";
-        const model = genAI.getGenerativeModel({ model: modelName });
+        // Use "gemini-1.5-flash" - this is the most current stable identifier
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        // TOOLSETS FOR WIKI DIVERSIFICATION
-        const tools = [
-            "JMeter Masterclass", "NeoLoad Fundamentals", "LoadRunner Architecture",
-            "k6 Modern Performance", "Locust Python Testing", "Kubernetes SRE",
-            "Azure AKS Optimization", "Grafana Observability", "Dynatrace AI",
-            "DevOps Pipeline Hardening", "Linux Kernel Tuning", "Datadog Monitors"
+        // Tool categories and their respective folders
+        const categories = [
+            {
+                folder: 'performance',
+                tools: ['JMeter', 'NeoLoad', 'LoadRunner', 'k6', 'Locust', 'Gatling'],
+                topics: 'Correlation, Parameterization, Think Time, Pacing, Throughput, Workload Modeling'
+            },
+            {
+                folder: 'sre',
+                tools: ['Kubernetes', 'AKS', 'Azure-Monitor', 'Grafana', 'Datadog', 'Dynatrace', 'AppDynamics'],
+                topics: 'SLOs, SLIs, Error Budgets, Auto-scaling, Observability, AKS clusters, Circuit Breaking'
+            },
+            {
+                folder: 'devops',
+                tools: ['GitHub-Actions', 'Jenkins', 'Linux-Performance', 'Docker', 'GitLab-CI', 'Ansible'],
+                topics: 'Pipelines, CI/CD, Shell Scripting, Kernel Tuning, TCP/IP Optimization, Container Hardening'
+            }
         ];
-        const selectedTool = tools[Math.floor(Math.random() * tools.length)];
 
-        // THE EXPERT PROMPT
+        // Randomly pick a category and then a tool
+        const selectedCat = categories[Math.floor(Math.random() * categories.length)];
+        const selectedTool = selectedCat.tools[Math.floor(Math.random() * selectedCat.tools.length)];
+
         const prompt = `
-            ACT AS: A Principal Performance Architect & SRE with 30 years of enterprise experience. 
-            You have managed massive systems using ${selectedTool} and are a mentor at Little's Law Academy.
+            ACT AS: A World-Class Principal Performance Architect & SRE with 30 years of experience.
+            You are mentoring students at Little's Law Academy.
 
-            GOAL: Write a technical masterclass/wiki entry (Approx 300-350 words).
+            GOAL: Write a Technical Wiki entry for ${selectedTool} focused on ${selectedCat.topics}.
+            
+            STRUCTURE (Markdown):
+            1. # ${selectedTool}: Advanced Architecture Insight
+            2. THE TRENCHES (Narrative): Start with a "war story". Talk about an emotional moment early in your career involving high-stakes performance failure and the lesson learned.
+            3. TECHNICAL DEEP DIVE: Explain a specific concept related to ${selectedTool} (e.g. Memory profiling, TCP tuning, or async workloads).
+            4. PRACTICAL EXAMPLE: Provide a real-world code snippet, CLI command, or configuration snippet (YAML, JMX, or Script).
+            5. THE VETERAN'S WISDOM: Closing emotional/professional advice for future-proofing an SRE career.
 
-            REQUIRED STRUCTURE (Format in Markdown):
-            1. # ${selectedTool} Deep Dive
-            2. THE TRENCHES (Narrative): A short "war story" from 10-20 years ago. Share an emotional moment—a crash that happened on a holiday, the stress of a million-dollar memory leak, or a 3 AM rescue.
-            3. ARCHITECTURAL CHALLENGE: Describe a complex technical bottleneck specific to ${selectedTool} or related cloud architecture (Azure/AKS/AWS).
-            4. TECHNICAL FIX (High Authority): Provide an advanced technical example (a code snippet, shell command, or specific property config).
-            5. THE PHILOSOPHY: One piece of wisdom about the future of Performance Engineering.
-
-            STYLE: Sophisticated, technical (use terms like 'Latency', 'Concurrency', 'Thread Contention', 'Distributed Tracing'), yet emotional and mentor-like.
+            TONE: Professional, sophisticated, inspiring, and strictly technical.
+            LENGTH: Exactly around 300 words.
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const masterclassMD = response.text();
 
-        if (!masterclassMD || masterclassMD.length < 500) {
-            throw new Error("AI response was too short for a masterclass.");
-        }
+        if (!masterclassMD) throw new Error("Response was empty.");
 
-        // 3. PERSISTENCE LAYER A: FIREBASE (For the Live Dashboard)
+        // 3. SYNC TO FIREBASE (For the Homepage Banner)
         await db.collection('admin_data').doc('hourly_tip').set({
-            content: masterclassMD, // Stored as MD so our JS can parse it
+            content: masterclassMD,
             tool: selectedTool,
-            lastUpdated: new Date().toISOString(),
-            author: "Architect Vasanth (AI)"
+            folder: selectedCat.folder,
+            lastUpdated: new Date().toISOString()
         });
 
-        // 4. PERSISTENCE LAYER B: GITHUB DOCS (For the Wiki)
-        const docsDir = path.join(__dirname, '../docs');
-        
-        // Ensure the docs directory exists
-        if (!fs.existsSync(docsDir)) {
-            fs.mkdirSync(docsDir, { recursive: true });
+        // 4. SYNC TO GITHUB (Create Folders & Save MD)
+        // Correct path for sub-folders inside 'docs'
+        const baseDocsDir = path.join(__dirname, '../docs');
+        const categoryDir = path.join(baseDocsDir, selectedCat.folder);
+
+        if (!fs.existsSync(categoryDir)) {
+            fs.mkdirSync(categoryDir, { recursive: true });
         }
 
-        // Clean filename (e.g. "JMeter Masterclass" -> "jmeter_masterclass.md")
-        const fileName = `${selectedTool.toLowerCase().replace(/\s+/g, '_')}.md`;
-        const filePath = path.join(docsDir, fileName);
+        const fileName = `${selectedTool.toLowerCase()}.md`;
+        const filePath = path.join(categoryDir, fileName);
 
-        // Write the file (Every hour this specific tool file will get better)
         fs.writeFileSync(filePath, masterclassMD);
 
-        console.log(`✅ Success! [${selectedTool}] Masterclass written to Firebase and /docs/${fileName}`);
+        console.log(`✅ [${selectedCat.folder}] ${selectedTool} Masterclass generated.`);
 
     } catch (error) {
         console.error("❌ Script Error:", error.message);
-        
-        // Error handling fallback
-        if (error.message.includes('404')) {
-            console.log("🔄 Model version mismatch. Check Google AI API Studio model availability.");
-        }
         process.exit(1);
     }
 }

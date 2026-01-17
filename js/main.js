@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tipEl.innerHTML = `<h4 style="margin-bottom:10px">📝 Principal Architect Insight</h4>${data.content}`;
                 }
             }
-        } catch (e) { console.log("AI Feed refreshing..."); }
+        } catch (e) { console.log("Feed refreshing..."); }
     }
 
     if (loginBtn) {
