@@ -1,0 +1,33 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main  # Trigger only when you push to main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Inject Secrets into main.js 💉
+        run: |
+          # We use '|' as a delimiter because it is not present in Firebase keys
+          sed -i "s|GH_INJECT_API_KEY|${{ secrets.FIREBASE_API_KEY }}|g" js/main.js
+          sed -i "s|GH_INJECT_AUTH_DOMAIN|${{ secrets.FIREBASE_AUTH_DOMAIN }}|g" js/main.js
+          sed -i "s|GH_INJECT_PROJECT_ID|${{ secrets.FIREBASE_PROJECT_ID }}|g" js/main.js
+          sed -i "s|GH_INJECT_STORAGE_BUCKET|${{ secrets.STORAGEBUCKET }}|g" js/main.js
+          sed -i "s|GH_INJECT_SENDER_ID|${{ secrets.MESSAGINGSENDERID }}|g" js/main.js
+          sed -i "s|GH_INJECT_APP_ID|${{ secrets.FIREBASE_APP_ID }}|g" js/main.js
+          sed -i "s|GH_INJECT_MEASUREMENT_ID|${{ secrets.MEASUREMENTID }}|g" js/main.js
+
+      - name: Deploy to GitHub Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
