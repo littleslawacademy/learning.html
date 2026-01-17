@@ -2,24 +2,15 @@
 // 1. FIREBASE CONFIGURATION
 // ==========================================
 
-// const firebaseConfig = {
-//     apiKey: "GH_INJECT_API_KEY",
-//     authDomain: "GH_INJECT_AUTH_DOMAIN",
-//     projectId: "GH_INJECT_PROJECT_ID",
-//     storageBucket: "GH_INJECT_STORAGE_BUCKET",
-//     messagingSenderId: "GH_INJECT_SENDER_ID",
-//     appId: "GH_INJECT_APP_ID",
-//     measurementId: "GH_INJECT_MEASUREMENT_ID"
-// };
-// const firebaseConfig = {
-//     apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
-//     authDomain: "littleslawacademy-f45e7.firebaseapp.com",
-//     projectId: "littleslawacademy-f45e7",
-//     storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
-//     messagingSenderId: "393189119362",
-//     appId: "1:393189119362:web:659d157ab482c4a660ab9b",
-//     measurementId: "G-S40XF238WM"
-// };
+const firebaseConfig = {
+    apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
+    authDomain: "littleslawacademy-f45e7.firebaseapp.com",
+    projectId: "littleslawacademy-f45e7",
+    storageBucket: "littleslawacademy-f45e7.firebasestorage.app",
+    messagingSenderId: "393189119362",
+    appId: "1:393189119362:web:659d157ab482c4a660ab9b",
+    measurementId: "G-S40XF238WM"
+};
 
 // Initialize Firebase Instance
 if (!firebase.apps.length) { 
