@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 // 1. FIREBASE ADMIN SETUP
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 if (!admin.apps.length) {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
     });
@@ -17,82 +17,79 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function run() {
     try {
-        // Using 'gemini-1.5-flash' - adding '-latest' is often more stable in CI
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // AUTOMATIC MODEL SELECTION: 
+        // We try the most stable identifiers to bypass the 404
+        const modelList = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+        let model;
+        
+        // Loop through until we find one that works in your region
+        for (const name of modelList) {
+            try {
+                model = genAI.getGenerativeModel({ model: name });
+                console.log(`📡 Attempting connection with: ${name}`);
+                break; 
+            } catch (e) { continue; }
+        }
 
         const categories = [
-            {
-                id: 'performance',
-                tools: ['JMeter', 'NeoLoad', 'LoadRunner', 'k6', 'Locust'],
-                topics: 'Correlation, Parameterization, Workload Modeling, Pacing'
-            },
-            {
-                id: 'sre',
-                tools: ['Kubernetes', 'AKS', 'Azure', 'Grafana', 'Datadog', 'Dynatrace'],
-                topics: 'SLOs, Error Budgets, AKS Scaling, Observability'
-            },
-            {
-                id: 'devops',
-                tools: ['GitHub', 'Jenkins', 'Linux', 'Pipelines', 'Docker'],
-                topics: 'CI/CD workflows, Bash Scripting, Linux Performance Tuning'
-            }
+            { id: 'performance', topics: 'JMeter, LoadRunner, NeoLoad, k6, Locust, Correlation' },
+            { id: 'sre', topics: 'Kubernetes, AKS, SLIs/SLOs, Observability, Grafana, Dynatrace' },
+            { id: 'devops', topics: 'GitHub Actions, Jenkins, Linux performance tuning, CI/CD' }
         ];
 
         const selectedCat = categories[Math.floor(Math.random() * categories.length)];
-        const selectedTool = selectedCat.tools[Math.floor(Math.random() * selectedCat.tools.length)];
 
         const prompt = `
-            ACT AS: A Principal Performance Architect & SRE with 30 years of experience.
+            ACT AS: A world-class Principal Performance Architect and SRE with 30 years of history.
+            CONTEXT: You are mentoring students at Little's Law Academy.
+            TOPIC: General high-level insights for ${selectedCat.topics}.
             
-            GOAL: Write a professional Masterclass entry (300 words) about ${selectedTool}.
-            Focus on these areas: ${selectedCat.topics}.
-            
-            FORMAT (Strict Markdown):
-            1. # ${selectedTool} Architectural Deep Dive
-            2. ## The Trenches (Story)
-            Write a 100-word emotional "war story" from the past (e.g., a massive production failure at 3 AM) and how it felt to be the one responsible for the fix.
+            STRUCTURE:
+            1. # Architectural Field Manual: [Random Specific Tool from the Topic list]
+            2. ## The Trenches
+               Write a 150-word story about a past production disaster. Mention the stress, the stakes, and the specific tool used.
             3. ## Technical Analysis
-            Explain a highly technical bottleneck involving ${selectedTool}. Use expert terminology (Latency, Throughput, TCP, Heap Analysis).
-            4. ## Implementation Example
-            Provide a clear technical example (e.g., a code snippet, a CLI command, or a YAML config).
-            5. ## Veteran Wisdom
-            Close with a one-sentence inspiring advice for future Performance Engineers.
+               Detailed 100-word analysis of a technical bottleneck (e.g., Thread contention, Heap Exhaustion).
+            4. ## Fix & Command
+               Provide a practical fix using a code block, shell command, or YAML.
+            5. ## Veteran's Philosophy
+               Final mentorship wisdom.
 
-            WORD COUNT: Ensure the total length is at least 300 words.
+            LENGTH: Total response must be between 300 and 400 words.
         `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
-        if (!text) throw new Error("AI returned empty content");
+        if (!text) throw new Error("Empty response.");
 
-        // 3. UPDATE FIREBASE (Real-time Site Banner)
+        // 3. EXTRACT FILENAME from first line of AI response
+        const titleLine = text.split('\n')[0].replace('# ', '').trim();
+        const safeFileName = titleLine.toLowerCase().replace(/[^a-z0-9]/g, '_') + ".md";
+
+        // 4. UPDATE FIREBASE
         await db.collection('admin_data').doc('hourly_tip').set({
             content: text,
-            tool: selectedTool,
-            category: selectedCat.id,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            category: selectedCat.id
         });
 
-        // 4. UPDATE GITHUB (Permanent categorized Docs)
-        // Root is 'docs/', Subfolders are 'performance/', 'sre/', 'devops/'
+        // 5. UPDATE GITHUB FOLDERS
         const baseDocsDir = path.join(__dirname, '../docs');
-        const categoryFolder = path.join(baseDocsDir, selectedCat.id);
+        const targetFolder = path.join(baseDocsDir, selectedCat.id);
 
-        if (!fs.existsSync(categoryFolder)) {
-            fs.mkdirSync(categoryFolder, { recursive: true });
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder, { recursive: true });
         }
 
-        const fileName = `${selectedTool.toLowerCase()}.md`;
-        const filePath = path.join(categoryFolder, fileName);
-
+        const filePath = path.join(targetFolder, safeFileName);
         fs.writeFileSync(filePath, text);
 
-        console.log(`✅ [${selectedCat.id}] Successfully documented ${selectedTool} into /docs/${selectedCat.id}/${fileName}`);
+        console.log(`✅ SUCCESSFULLY documented: ${safeFileName} into folder: ${selectedCat.id}`);
 
     } catch (error) {
-        console.error("❌ Fatal Error:", error.message);
+        console.error("❌ Fatal Error during Generation:", error.message);
         process.exit(1);
     }
 }
