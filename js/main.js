@@ -2,15 +2,15 @@
 // 1. FIREBASE CONFIGURATION
 // ==========================================
 
-const firebaseConfig = {
-    apiKey: "GH_INJECT_API_KEY",
-    authDomain: "GH_INJECT_AUTH_DOMAIN",
-    projectId: "GH_INJECT_PROJECT_ID",
-    storageBucket: "GH_INJECT_STORAGE_BUCKET",
-    messagingSenderId: "GH_INJECT_SENDER_ID",
-    appId: "GH_INJECT_APP_ID",
-    measurementId: "GH_INJECT_MEASUREMENT_ID"
-};
+// const firebaseConfig = {
+//     apiKey: "GH_INJECT_API_KEY",
+//     authDomain: "GH_INJECT_AUTH_DOMAIN",
+//     projectId: "GH_INJECT_PROJECT_ID",
+//     storageBucket: "GH_INJECT_STORAGE_BUCKET",
+//     messagingSenderId: "GH_INJECT_SENDER_ID",
+//     appId: "GH_INJECT_APP_ID",
+//     measurementId: "GH_INJECT_MEASUREMENT_ID"
+// };
 // const firebaseConfig = {
 //     apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
 //     authDomain: "littleslawacademy-f45e7.firebaseapp.com",
@@ -108,8 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Authentication Logic
+// Enhanced Authentication Logic
     const handleLogin = () => {
-        auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+        console.log("Attempting Login for domain:", window.location.hostname);
+        
+        // Always try Redirect for GitHub Pages to avoid popup blockers
+        auth.signInWithRedirect(provider).catch(error => {
+            console.error("Auth failed:", error.code, error.message);
+            alert("Login Error: " + error.message);
+        });
     };
 
     if (loginBtn) loginBtn.onclick = handleLogin;
