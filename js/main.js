@@ -1,5 +1,5 @@
 // ==========================================
-// 1. FIREBASE CONFIG
+// 1. FIREBASE CONFIGURATION
 // ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyAIM7NkLymWvPOFfGJlUI3ZyGKIgAhVFuI",
@@ -11,140 +11,303 @@ const firebaseConfig = {
     measurementId: "G-S40XF238WM"
 };
 
-if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+// Initialize Firebase Instance
+if (!firebase.apps.length) { 
+    firebase.initializeApp(firebaseConfig); 
+}
 const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// App State
+// ==========================================
+// 2. GLOBAL APP STATE
+// ==========================================
 let playlists = []; 
 let completed = JSON.parse(localStorage.getItem('ll-completed')) || [];
 let currentUser = null;
 let currentFilter = 'All';
 let searchTerm = '';
 
+// Mapping for the Documentation Wiki Subfolders
+const DOC_PATHS = {
+    'jmeter': 'performance', 'neoload': 'performance', 'loadrunner': 'performance', 'k6': 'performance', 'locust': 'performance',
+    'kubernetes': 'sre', 'aks': 'sre', 'azure': 'sre', 'grafana': 'sre', 'datadog': 'sre', 'dynatrace': 'sre',
+    'github': 'devops', 'jenkins': 'devops', 'linux': 'devops', 'docker': 'devops'
+};
+
+// ==========================================
+// 3. CORE ENGINES
+// ==========================================
+
+// Helper: Progress Stats Engine
 function getCourseStats(course) {
     if (!course.videos || course.videos.length === 0) return { done: 0, total: 0, percent: 0 };
+    const total = course.videos.length;
     const done = course.videos.filter(v => completed.includes(`${course.courseId}_${v.id}`)).length;
-    return { done, total: course.videos.length, percent: Math.round((done / course.videos.length) * 100) };
+    const percent = Math.round((done / total) * 100);
+    return { done, total, percent };
 }
 
+// Sync current user progress to Firebase Cloud
+const syncToCloud = async () => {
+    if (currentUser) {
+        try {
+            await db.collection('users').doc(currentUser.uid).set({ completed: completed });
+            console.log("☁️ Progress saved to cloud");
+        } catch (e) { console.error("Cloud Sync Fail:", e); }
+    } else {
+        localStorage.setItem('ll-completed', JSON.stringify(completed));
+    }
+};
+
 // ==========================================
-// 2. MAIN LOGIC
+// 4. MAIN UI CONTROLLER
 // ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('playlist-container');
+    const searchInput = document.getElementById('search-input');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
+    const userProfile = document.getElementById('user-profile');
+    const userPic = document.getElementById('user-pic');
 
-    // Authentication Observer
+    // Fetch JSON Course Data
+    const loadAcademyData = async () => {
+        try {
+            const res = await fetch('data/playlists.json');
+            playlists = await res.json();
+            console.log("📂 Courses Loaded:", playlists.length);
+            renderDashboard();
+        } catch (e) { console.error("Could not find playlists.json:", e); }
+    };
+
+    // Render the Daily AI Technical Tip
+    const loadHourlyAIFeed = async () => {
+        try {
+            const doc = await db.collection('admin_data').doc('hourly_tip').get();
+            if (doc.exists) {
+                const el = document.getElementById('ai-tip-banner');
+                if (el) {
+                    el.style.display = 'block';
+                    el.innerHTML = `<h4>💡 Expert Masterclass: 30-Year Architect Insights</h4>
+                                   <div class="ai-content">${doc.data().content}</div>`;
+                }
+            }
+        } catch (e) { console.log("AI Feed refreshing..."); }
+    };
+
+    // Authentication Logic
+    const handleLogin = () => {
+        auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+    };
+
+    if (loginBtn) loginBtn.onclick = handleLogin;
+    if (logoutBtn) logoutBtn.onclick = () => auth.signOut().then(() => window.location.reload());
+
     auth.onAuthStateChanged(async (user) => {
-        currentUser = user;
         if (user) {
-            document.getElementById('user-profile').style.display = 'flex';
-            document.getElementById('user-pic').src = user.photoURL;
-            loginBtn.style.display = 'none';
-            // Sync cloud data
-            try {
-                const doc = await db.collection('users').doc(user.uid).get();
-                if (doc.exists) { completed = doc.data().completed || []; }
-            } catch(e) { console.warn("Firestore access error."); }
+            currentUser = user;
+            if(loginBtn) loginBtn.style.display = 'none';
+            if(userProfile) userProfile.style.display = 'flex';
+            if(userPic) userPic.src = user.photoURL;
+
+            // Fetch User Progress from Firebase
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
+                completed = doc.data().completed || [];
+            }
+            loadHourlyAIFeed();
         } else {
-            document.getElementById('user-profile').style.display = 'none';
-            loginBtn.style.display = 'block';
+            currentUser = null;
+            if(loginBtn) loginBtn.style.display = 'block';
+            if(userProfile) userProfile.style.display = 'none';
         }
         renderDashboard();
     });
 
-    const sync = async () => {
-        if (currentUser) {
-            await db.collection('users').doc(currentUser.uid).set({ completed });
-        } else {
-            localStorage.setItem('ll-completed', JSON.stringify(completed));
-        }
-    };
-
-    const renderDashboard = async () => {
+    // Main Renderer for Course Cards
+    function renderDashboard() {
         if (!currentUser) {
-            container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:100px;"><h2>🔐 Login to Access 900+ Videos</h2><button class="auth-btn" id="lock-login-btn">Login with Google</button></div>`;
-            document.getElementById('lock-login-btn').onclick = () => auth.signInWithPopup(provider);
+            container.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:100px;">
+                    <h1 style="font-size:3rem">🎓 Little's Law Academy</h1>
+                    <p style="margin:20px; font-size:1.2rem">Please sign in to unlock your SRE, Performance, and DevOps training path.</p>
+                    <button class="auth-btn" style="padding:15px 40px; font-size:1.1rem;" onclick="handleLogin()">Sign in with Google</button>
+                </div>`;
             return;
         }
 
-        // Fetch courses if empty
-        if (playlists.length === 0) {
-            const res = await fetch('data/playlists.json');
-            playlists = await res.json();
-        }
+        // Reset with AI Insight space at top
+        container.innerHTML = `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:6px solid red; background:#fff; padding:30px; margin-bottom:40px; line-height:1.7; white-space:pre-line;"></div>`;
 
-        container.innerHTML = `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; background:#fff; padding:25px; border-left:5px solid red; margin-bottom:20px;"></div>`;
-        
-        // Render AI Tip
-        db.collection('admin_data').doc('hourly_tip').get().then(doc => {
-            if(doc.exists) {
-                const banner = document.getElementById('ai-tip-banner');
-                banner.style.display = 'block';
-                banner.innerHTML = `<h4>💡 Expert Masterclass</h4><div style="white-space:pre-wrap;">${doc.data().content}</div>`;
-            }
+        // Filtering Logic
+        const filtered = playlists.filter(p => {
+            const pool = (p.title + p.tool + (p.category || '')).toLowerCase();
+            const matchesSearch = pool.includes(searchTerm);
+            const matchesCat = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
+            return matchesCat && matchesSearch;
         });
 
-        playlists.filter(p => currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter)
-                 .forEach(p => {
+        filtered.forEach(p => {
             const stats = getCourseStats(p);
             const card = document.createElement('div');
             card.className = 'playlist-card';
             card.innerHTML = `
-                <div class="card-tag">${p.tool}</div>
+                <div class="card-tag">${p.tool} <span class="badge ${p.level ? p.level.toLowerCase() : 'beginner'}">${p.level || 'Expert'}</span></div>
                 <h2>${p.title}</h2>
-                <div class="card-progress"><div class="progress-fill" style="width:${stats.percent}%"></div></div>
+                <div class="card-progress"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
+                <small>${stats.percent}% Mastery (${stats.done}/${stats.total} Lessons)</small>
                 <p>${p.description}</p>
-                <button class="lms-btn" data-cid="${p.courseId}">Open Academy</button>
+                <button class="lms-btn" data-cid="${p.courseId}">Open Bootcamp View</button>
             `;
             container.appendChild(card);
         });
-        document.getElementById('progress-count').textContent = completed.length;
-    };
 
-    // UI Click Handler
+        loadHourlyAIFeed();
+        if(document.getElementById('progress-count')) document.getElementById('progress-count').textContent = completed.length;
+    }
+
+    // Interaction Listener
     document.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('lms-btn')) {
-            const course = playlists.find(p => p.courseId === e.target.dataset.cid);
-            const list = document.getElementById('curriculum-list');
-            list.innerHTML = '';
+        const target = e.target;
+
+        // Mega Menu Category Selection
+        if (target.closest('[data-filter]')) {
+            e.preventDefault();
+            if(!currentUser) return;
+            currentFilter = target.closest('[data-filter]').dataset.filter;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const parent = target.closest('.dropdown')?.querySelector('.nav-item') || target;
+            parent.classList.add('active');
+            renderDashboard();
+            return;
+        }
+
+        // Documentation Loading (MD Library)
+        if (target.closest('[data-doc]')) {
+            e.preventDefault();
+            const toolName = target.closest('[data-doc]').dataset.doc.toLowerCase();
+            const subFolder = DOC_PATHS[toolName] || 'performance';
+            try {
+                const response = await fetch(`docs/${subFolder}/${toolName}.md`);
+                const md = await response.text();
+                const lmsArea = document.querySelector('.lms-video-area');
+                document.getElementById('current-lesson-title').textContent = `${toolName.toUpperCase()} Architecture Wiki`;
+                lmsArea.innerHTML = `<div class="doc-viewer" style="background:#fff; padding:60px; height:100%; overflow-y:auto; color:#222; font-size:1.1rem; line-height:1.8;">${typeof marked !== 'undefined' ? marked.parse(md) : md}</div>`;
+                document.getElementById('video-overlay').style.display = 'flex';
+            } catch (e) { alert("Documentation being updated. Please try again soon!"); }
+            return;
+        }
+
+        // Open specific Bootcamp view
+        if (target.classList.contains('lms-btn')) {
+            const course = playlists.find(p => p.courseId === target.dataset.cid);
+            if (!course) return;
+
+            const listEl = document.getElementById('curriculum-list');
+            listEl.innerHTML = '';
             course.videos.forEach(v => {
                 const gid = `${course.courseId}_${v.id}`;
+                const checked = completed.includes(gid);
                 const li = document.createElement('li');
-                li.className = `lesson-item ${completed.includes(gid) ? 'completed' : ''}`;
-                li.innerHTML = `<input type="checkbox" ${completed.includes(gid) ? 'checked' : ''} data-gid="${gid}">
+                li.className = `lesson-item ${checked ? 'completed' : ''}`;
+                li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} data-gid="${gid}">
                                 <span class="lesson-link" data-vid="${v.id}">${v.title}</span>`;
-                list.appendChild(li);
+                listEl.appendChild(li);
             });
+
+            document.getElementById('course-title-label').textContent = "Learning Journey: " + course.title;
+            updateUIProgress(course.courseId);
             document.getElementById('video-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
-        if (e.target.classList.contains('lesson-link')) {
-            document.getElementById('video-player').src = "https://www.youtube.com/embed/" + e.target.dataset.vid + "?autoplay=1";
-            document.querySelectorAll('.lesson-item').forEach(li => li.classList.remove('active'));
-            e.target.parentElement.classList.add('active');
+        // Select a lesson inside Sidebar
+        if (target.classList.contains('lesson-link')) {
+            const vidId = target.dataset.vid;
+            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0&origin=${window.location.origin}`;
+            document.getElementById('current-lesson-title').textContent = target.textContent;
+            document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
+            target.parentElement.classList.add('active');
         }
 
-        if (e.target.type === 'checkbox' && e.target.dataset.gid) {
-            const gid = e.target.dataset.gid;
-            completed = e.target.checked ? [...completed, gid] : completed.filter(i => i !== gid);
-            await sync();
-            renderDashboard();
-        }
-
-        if (e.target.closest('[data-filter]')) {
-            currentFilter = e.target.closest('[data-filter]').dataset.filter;
+        // Mark specific lesson completed (Checkbox)
+        if (target.type === 'checkbox' && target.dataset.gid) {
+            const gid = target.dataset.gid;
+            const cid = gid.split('_')[0];
+            if (target.checked) {
+                if (!completed.includes(gid)) completed.push(gid);
+            } else {
+                completed = completed.filter(id => id !== gid);
+            }
+            await syncToCloud();
+            updateUIProgress(cid);
             renderDashboard();
         }
     });
 
-    if(loginBtn) loginBtn.onclick = () => auth.signInWithPopup(provider);
-    if(logoutBtn) logoutBtn.onclick = () => auth.signOut();
+    // Helper: Progress update for LMS Modal
+    function updateUIProgress(cid) {
+        const stats = getCourseStats(playlists.find(p => p.courseId === cid));
+        const bar = document.getElementById('modal-progress-bar');
+        const text = document.getElementById('modal-progress-text');
+        if(bar) bar.style.width = stats.percent + '%';
+        if(text) text.textContent = `${stats.percent}% Processed`;
+
+        // CERTIFICATE AWARDING
+        if (stats.percent === 100) {
+            handleCertAward(playlists.find(p => p.courseId === cid).title);
+        } else {
+            const existing = document.getElementById('dl-cert-btn');
+            if (existing) existing.remove();
+        }
+    }
+
+    // Modal Control: Cleanup stream on close
     document.querySelector('.close-modal').onclick = () => {
         document.getElementById('video-overlay').style.display = 'none';
         document.getElementById('video-player').src = '';
+        document.body.style.overflow = 'auto';
     };
+
+    // Listeners for Search input
+    if(searchInput) searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); renderDashboard(); };
+
+    loadAcademyData();
 });
+
+// ==========================================
+// 5. CERTIFICATE OF ACHIEVEMENT LOGIC
+// ==========================================
+function handleCertAward(courseTitle) {
+    if (document.getElementById('dl-cert-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.id = 'dl-cert-btn';
+    btn.className = 'cert-download-btn visible';
+    btn.innerHTML = '🥇 Unlock Official Certificate';
+    btn.onclick = () => {
+        // Hydrate the certificate template with live user data
+        document.getElementById('cert-user-name').textContent = auth.currentUser.displayName;
+        document.getElementById('cert-course-name').textContent = courseTitle;
+        document.getElementById('cert-date').textContent = new Date().toLocaleDateString();
+        
+        const certView = document.getElementById('certificate-template');
+        certView.style.display = 'block';
+
+        const opt = { 
+            margin: 0.5, 
+            filename: `Certification_${courseTitle.replace(/\s+/g,'_')}.pdf`, 
+            image: { type:'jpeg', quality:0.98 }, 
+            html2canvas: { scale: 2 }, 
+            jsPDF: { unit:'in', format:'letter', orientation:'landscape' } 
+        };
+
+        // Captures UI template to PDF via external lib
+        html2pdf().set(opt).from(certView).save().then(() => {
+            certView.style.display = 'none';
+        });
+    };
+    document.querySelector('.sidebar-header').appendChild(btn);
+}
