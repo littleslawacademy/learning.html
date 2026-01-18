@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-S40XF238WM"
 };
 
-// Initialize Firebase
+// Initialize Instance
 if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -19,11 +19,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 
 // GLOBAL LOGIN FUNCTION (Accessible to buttons injected via innerHTML)
 const handleLogin = () => {
-    console.log("🔐 Starting Login Sequence...");
-    auth.signInWithPopup(provider).catch(() => {
-        console.log("Popup blocked or failed, attempting redirect...");
-        auth.signInWithRedirect(provider);
-    });
+    auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
 };
 
 // ==========================================
@@ -36,25 +32,22 @@ let currentUser = null;
 let currentFilter = 'All';
 let searchTerm = '';
 
-// Helper: Calculate Course Completion Progress
+// Path routing for the Documentation Hub folders
+const DOC_PATHS = {
+    'jmeter': 'performance', 'neoload': 'performance', 'loadrunner': 'performance', 'k6': 'performance', 'locust': 'performance',
+    'kubernetes': 'sre', 'aks': 'sre', 'azure': 'sre', 'grafana': 'sre', 'datadog': 'sre', 'dynatrace': 'sre',
+    'github': 'devops', 'jenkins': 'devops', 'linux': 'devops', 'docker': 'devops',
+    'testing-fundamentals': 'performance_mastery', 'distributed-architecture': 'performance_mastery',
+    'ai-in-perf-testing': 'trends_ai', 'generative-ai-sre': 'trends_ai'
+};
+
+// Helper: Progress Stats Engine
 function getStats(course) {
     if (!course.videos || course.videos.length === 0) return { done: 0, total: 0, percent: 0 };
     const total = course.videos.length;
     const done = course.videos.filter(v => completed.includes(`${course.courseId}_${v.id}`)).length;
     return { done, total, percent: Math.round((done / total) * 100) };
 }
-
-// Sync progress to Firebase Cloud
-const syncCloud = async () => {
-    if (currentUser) {
-        try {
-            await db.collection('users').doc(currentUser.uid).set({ completed, favorites });
-            console.log("☁️ Progress synced to cloud");
-        } catch (e) { console.error("Cloud Sync error:", e); }
-    } else {
-        localStorage.setItem('ll-completed', JSON.stringify(completed));
-    }
-};
 
 // ==========================================
 // 3. MAIN CONTROLLER
@@ -72,89 +65,88 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('data/playlists.json');
             playlists = await res.json();
             render();
-        } catch (e) { console.error("JSON Loading failed:", e); }
+        } catch (e) { console.error("Error loading JSON:", e); }
     };
 
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             currentUser = user;
-            if(userProfile) userProfile.style.display = 'flex';
-            if(userPic) userPic.src = user.photoURL;
-            if(loginBtn) loginBtn.style.display = 'none';
+            if (userProfile) userProfile.style.display = 'flex';
+            if (userPic) userPic.src = user.photoURL;
+            if (loginBtn) loginBtn.style.display = 'none';
 
-            // Sync with Firestore
-            try {
-                const doc = await db.collection('users').doc(user.uid).get();
-                if (doc.exists) { 
-                    completed = doc.data().completed || []; 
-                    favorites = doc.data().favorites || [];
-                }
-            } catch(e) { console.warn("Firestore Rules Restriction."); }
-            loadHourlyAITip();
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) { 
+                completed = doc.data().completed || []; 
+                favorites = doc.data().favorites || [];
+            }
+            loadHourlyTeamBriefing();
         } else {
             currentUser = null;
-            if(userProfile) userProfile.style.display = 'none';
-            if(loginBtn) loginBtn.style.display = 'block';
+            if (userProfile) userProfile.style.display = 'none';
+            if (loginBtn) loginBtn.style.display = 'block';
         }
         render();
     });
 
-    async function loadHourlyAITip() {
+    async function loadHourlyTeamBriefing() {
         try {
             const doc = await db.collection('admin_data').doc('hourly_tip').get();
             if (doc.exists) {
                 const el = document.getElementById('ai-tip-banner');
                 if (el) {
                     el.style.display = 'block';
-                    el.innerHTML = `<h4>💡 Expert Architect Perspective</h4>
+                    el.innerHTML = `<h4>💡 Little's Law Team | Expert Field Manual</h4>
                                    <div style="font-family:serif; line-height:1.7;">${doc.data().content}</div>`;
                 }
             }
-        } catch(e) { console.log("AI feed not found."); }
+        } catch(e) {}
     }
 
-    // MAIN RENDERING FUNCTION
+    const syncCloud = async () => {
+        if (currentUser) {
+            await db.collection('users').doc(currentUser.uid).set({ completed, favorites });
+        } else {
+            localStorage.setItem('ll-completed', JSON.stringify(completed));
+        }
+    };
+
+    // RENDERING DASHBOARD
     function render() {
         if (!currentUser) {
             container.innerHTML = `
             <div id="locked-view" style="grid-column:1/-1; text-align:center; padding:100px;">
-                <h1 style="font-size:3rem">🎓 Little's Law Academy</h1>
-                <p style="margin:20px; color:#666;">Please sign in with your Google account to unlock your journey through 900+ lessons.</p>
-                <button class="auth-btn" style="padding:15px 40px; font-size:1.1rem; cursor:pointer;" onclick="handleLogin()">🔓 Unlock Dashboard Now</button>
+                <h1>🎓 Welcome to Little's Law Academy</h1>
+                <p style="margin:20px; color:#666;">Sign in with Google to unlock your SRE & Performance training track.</p>
+                <button class="auth-btn" style="padding:15px 40px; font-size:1.1rem; cursor:pointer;" onclick="handleLogin()">Unlock My Journey</button>
             </div>`;
             return;
         }
 
-        // Generate Header if inside a specific Tool/Category Hub
-        let hubHtml = '';
-        if (currentFilter !== 'All' && currentFilter !== 'Favorites') {
-            hubHtml = `
+        let hubHeader = '';
+        if (currentFilter !== 'All') {
+            hubHeader = `
                 <div class="hub-header" style="grid-column: 1 / -1; background: #111; color: white; padding: 40px; border-radius: 12px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <small style="color:var(--primary-red); text-transform:uppercase; font-weight:bold;">Masterclass Series</small>
-                        <h2 style="margin:0">${currentFilter} Library</h2>
-                    </div>
-                    <button class="back-btn" data-filter="All" style="background:transparent; border:1px solid white; color:white; padding:8px 15px; border-radius:5px; cursor:pointer;">← All Journeys</button>
+                    <div><small style="color:red">TEAM HUB</small><h2 style="margin:0">${currentFilter}</h2></div>
+                    <button class="back-btn" data-filter="All" style="background:transparent; border:1px solid white; color:white; padding:8px 15px; cursor:pointer; border-radius:5px;">← All Paths</button>
                 </div>`;
         }
 
-        container.innerHTML = hubHtml + `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:10px solid #e52e2e; padding:30px; margin-bottom:40px; white-space:pre-wrap; background:#fff; box-shadow:0 4px 15px rgba(0,0,0,0.05);"></div>`;
-
+        container.innerHTML = hubHeader + `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:10px solid #e52e2e; padding:30px; margin-bottom:40px; background:#fff; white-space:pre-wrap;"></div>`;
+        
         const filtered = playlists.filter(p => {
-            const f = currentFilter.toLowerCase().trim();
-            const searchTermLower = searchTerm.toLowerCase();
-            const pool = (p.title + (p.tool || "") + (p.category || "")).toLowerCase();
+            const filterKey = currentFilter.toLowerCase().trim();
+            const pool = (p.title + p.tool + (p.category || '')).toLowerCase();
+            const matchesSearch = pool.includes(searchTerm);
             
-            const isAll = (f === 'all');
-            const isFav = (f === 'favorites' && favorites.includes(p.courseId));
-            const isToolMatch = (p.tool && p.tool.toLowerCase() === f);
-            const isCatMatch = (p.category && p.category.toLowerCase() === f);
-
-            return (isAll || isFav || isToolMatch || isCatMatch) && pool.includes(searchTermLower);
+            const isToolMatch = p.tool && p.tool.toLowerCase() === filterKey;
+            const isCatMatch = p.category && p.category.toLowerCase() === filterKey;
+            
+            return (filterKey === 'all' || isToolMatch || isCatMatch) && matchesSearch;
         });
 
-        if (filtered.length === 0) {
-            container.innerHTML += `<div style="grid-column:1/-1; text-align:center; padding:100px; color:#999;"><h3>No courses found in "${currentFilter}".</h3></div>`;
+        if (filtered.length === 0 && currentFilter !== 'All') {
+            container.innerHTML += `<div style="grid-column:1/-1; text-align:center; padding:50px;"><h3>No modules found in the ${currentFilter} track.</h3></div>`;
         }
 
         filtered.forEach(p => {
@@ -165,137 +157,127 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-tag">${p.tool} <span class="badge ${p.level.toLowerCase()}">${p.level}</span></div>
                 <h2>${p.title}</h2>
                 <div class="card-progress"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
-                <small>${stats.percent}% Journey Mastered (${stats.done}/${stats.total} topics)</small>
+                <small>${stats.percent}% Journey Complete (${stats.done}/${stats.total} videos)</small>
                 <p>${p.description}</p>
-                <button class="lms-btn" data-cid="${p.courseId}">Open Course Curriculum</button>
+                <button class="lms-btn" data-cid="${p.courseId}">▶ Enter Journey</button>
             `;
             container.appendChild(card);
         });
 
-        loadHourlyAITip();
+        loadHourlyTeamBriefing();
         if(document.getElementById('progress-count')) document.getElementById('progress-count').textContent = completed.length;
     }
 
-    // ==========================================
-    // 4. UNIFIED CLICK HANDLER (Event Delegation)
-    // ==========================================
+    // INTERACTION HANDLER
     document.addEventListener('click', async (e) => {
         const t = e.target;
 
-        // 1. Navigation, Filters & Mega Menu Links
-        const filterEl = t.closest('[data-filter]');
-        if (filterEl) {
+        // A. Handle Filters
+        const filterBtn = t.closest('[data-filter]');
+        if (filterBtn) {
             e.preventDefault();
-            if (!currentUser) return;
-            currentFilter = filterEl.dataset.filter;
-            
-            document.querySelectorAll('.nav-item').forEach(link => link.classList.remove('active'));
-            const parentDropdown = filterEl.closest('.dropdown')?.querySelector('.nav-item');
-            if (parentDropdown) parentDropdown.classList.add('active'); else filterEl.classList.add('active');
-            
+            currentFilter = filterBtn.dataset.filter;
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            (t.closest('.dropdown')?.querySelector('.nav-item') || filterBtn).classList.add('active');
             render();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 
-        // 2. Open Academy LMS Modal
-        if (t.classList.contains('lms-btn')) {
-            const cid = t.dataset.cid;
-            const course = playlists.find(p => p.courseId === cid);
-            if (!course) return;
+        // B. Handle Team Wiki (Docs)
+        const docBtn = t.closest('[data-doc]');
+        if (docBtn) {
+            e.preventDefault();
+            const tool = docBtn.dataset.doc.toLowerCase();
+            const folder = DOC_PATHS[tool] || 'performance';
+            try {
+                const res = await fetch(`docs/${folder}/${tool}.md`);
+                if(!res.ok) throw new Error();
+                const mdText = await res.text();
+                
+                document.getElementById('current-lesson-title').textContent = tool.toUpperCase() + " Technical Wiki";
+                const mediaArea = document.querySelector('.lms-video-area');
+                mediaArea.innerHTML = `<div class="doc-viewer" style="background:#fff; padding:60px; overflow-y:auto; height:100%; color:#222; font-size:1.1rem; line-height:1.8;">${marked.parse(mdText)}</div>`;
+                document.getElementById('video-overlay').style.display = 'flex';
+            } catch (err) { alert("Documentation being curated by the Team. Check back next hour!"); }
+            return;
+        }
 
-            const listEl = document.getElementById('curriculum-list');
-            listEl.innerHTML = '';
+        // C. LMS Sidebar & Progress
+        if (t.classList.contains('lms-btn')) {
+            const course = playlists.find(p => p.courseId === t.dataset.cid);
+            if(!course) return;
+
+            const list = document.getElementById('curriculum-list');
+            list.innerHTML = '';
             course.videos.forEach(v => {
                 const gid = `${course.courseId}_${v.id}`;
+                const checked = completed.includes(gid);
                 const li = document.createElement('li');
-                const isChecked = completed.includes(gid);
-                li.className = `lesson-item ${isChecked ? 'completed' : ''}`;
-                li.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''} data-gid="${gid}">
+                li.className = `lesson-item ${checked ? 'completed' : ''}`;
+                li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} data-gid="${gid}">
                                 <span class="lesson-link" data-vid="${v.id}">${v.title}</span>`;
-                listEl.appendChild(li);
+                list.appendChild(li);
             });
-            document.getElementById('course-title-label').textContent = "Course Content: " + course.title;
+            document.getElementById('course-title-label').textContent = course.title;
             updateModalUI(course.courseId);
             document.getElementById('video-overlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            return;
         }
 
-        // 3. Lesson Click (Change current video)
+        // Lesson switch
         if (t.classList.contains('lesson-link')) {
             const vidId = t.dataset.vid;
-            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&origin=${window.location.origin}`;
+            document.getElementById('video-player').src = `https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0&origin=${window.location.origin}`;
             document.getElementById('current-lesson-title').textContent = t.textContent;
             document.querySelectorAll('.lesson-item').forEach(li => li.classList.remove('active'));
             t.closest('.lesson-item').classList.add('active');
-            return;
         }
 
-        // 4. Progress Toggle (Checkbox)
+        // Checkbox click
         if (t.type === 'checkbox' && t.dataset.gid) {
             const gid = t.dataset.gid;
-            const cid = gid.split('_')[0];
-            completed = t.checked ? [...completed, gid] : completed.filter(id => id !== gid);
-            
+            completed = t.checked ? [...completed, gid] : completed.filter(i => i !== gid);
             await syncCloud();
-            updateModalUI(cid);
-            render(); // Refresh dashboard cards in the background
+            updateModalUI(gid.split('_')[0]);
+            render();
         }
     });
 
-    // Sub-Logic: Updates the Progress UI inside the sidebar modal
     function updateModalUI(cid) {
-        const course = playlists.find(p => p.courseId === cid);
-        const stats = getStats(course);
+        const stats = getStats(playlists.find(p => p.courseId === cid));
         const bar = document.getElementById('modal-progress-bar');
         const text = document.getElementById('modal-progress-text');
-        
         if(bar) bar.style.width = stats.percent + '%';
-        if(text) text.textContent = `${stats.percent}% Syllabus Complete`;
+        if(text) text.textContent = `${stats.percent}% Ready to Certificate`;
 
-        const sidebarHeader = document.querySelector('.sidebar-header');
-        const oldCert = document.getElementById('dl-cert-btn'); 
-        if(oldCert) oldCert.remove();
-        
+        const header = document.querySelector('.sidebar-header');
+        const oldCert = document.getElementById('dl-cert-btn'); if(oldCert) oldCert.remove();
+
         if (stats.percent === 100) {
             const btn = document.createElement('button');
             btn.id = 'dl-cert-btn';
             btn.className = 'cert-download-btn visible';
-            btn.style = "background:#28a745; color:white; border:none; padding:12px; width:100%; cursor:pointer; margin-top:15px; border-radius:6px; font-weight:bold;";
-            btn.innerHTML = '🎓 Download Verified Certificate';
+            btn.style = "background:#28a745; color:white; border:none; padding:12px; width:100%; cursor:pointer; margin-top:20px; font-weight:bold; border-radius:5px;";
+            btn.innerHTML = '🥇 Download My Team Certificate';
             btn.onclick = () => {
                 document.getElementById('cert-user-name').textContent = currentUser.displayName;
-                document.getElementById('cert-course-name').textContent = course.title;
-                document.getElementById('cert-date').textContent = "Achieved: " + new Date().toLocaleDateString();
-                const certEl = document.getElementById('certificate-template');
-                certEl.style.display = 'block';
-                html2pdf().from(certEl).set({ margin: 0.5, filename: `Cert_${course.courseId}.pdf`, jsPDF: { orientation: 'landscape' } }).save().then(() => certEl.style.display = 'none');
+                document.getElementById('cert-course-name').textContent = playlists.find(p => p.courseId === cid).title;
+                document.getElementById('cert-date').textContent = "Validated: " + new Date().toLocaleDateString();
+                const element = document.getElementById('certificate-template');
+                element.style.display = 'block';
+                html2pdf().from(element).set({ margin:0.5, filename:'TeamCertificate.pdf', jsPDF:{orientation:'landscape'} }).save().then(() => element.style.display = 'none');
             };
-            sidebarHeader.appendChild(btn);
+            header.appendChild(btn);
         }
     }
 
-    // Modal Close logic
-    const closeBtn = document.querySelector('.close-modal');
-    if (closeBtn) {
-        closeBtn.onclick = () => {
-            document.getElementById('video-overlay').style.display = 'none';
-            document.getElementById('video-player').src = ''; 
-            document.body.style.overflow = 'auto'; 
-        };
-    }
-
-    // Search and Input Filter
-    if (searchInput) {
-        searchInput.oninput = (e) => { 
-            searchTerm = e.target.value.toLowerCase(); 
-            render(); 
-        };
-    }
-
-    if (loginBtn) loginBtn.onclick = handleLogin;
-    if (logoutBtn) logoutBtn.onclick = () => auth.signOut().then(() => window.location.reload());
+    searchInput.oninput = (e) => { searchTerm = e.target.value.toLowerCase(); render(); };
+    document.querySelector('.close-modal').onclick = () => {
+        document.getElementById('video-overlay').style.display = 'none';
+        document.getElementById('video-player').src = '';
+        document.body.style.overflow = 'auto';
+    };
 
     loadData();
 });

@@ -2,8 +2,8 @@
   {
     "courseId": "perf_foundations",
     "title": "Performance Testing Foundations",
-    "description": "Essential concepts for every Performance Engineer.",
-    "category": "Performance Testing",
+    "description": "Essential concepts for every Performance Engineer including Little's Law and Workload modeling.",
+    "category": "Performance Masterclass",
     "tool": "Foundations",
     "level": "Beginner",
     "videos": [
@@ -15,12 +15,12 @@
   {
     "courseId": "neoload_course",
     "title": "NeoLoad Complete Course",
-    "description": "Master Neoload from installation to advanced variable management.",
-    "category": "Performance Testing",
+    "description": "The ultimate team guide to mastering NeoLoad from installation to advanced logic.",
+    "category": "Performance Tools",
     "tool": "NeoLoad",
     "level": "Intermediate",
     "videos": [
-      { "id": "yqvvDKT1KIs", "title": "Download & Install Neoload Windows" },
+      { "id": "yqvvDKT1KIs", "title": "Download & Install NeoLoad Windows" },
       { "id": "PfdggV0wxUA", "title": "Download & Install Root Certificate" },
       { "id": "r4I0st1FM3U", "title": "How to Record Web Application" },
       { "id": "u-e1QtcYnRY", "title": "Variable Manager Step by Step" },
@@ -33,34 +33,61 @@
   },  
   {
     "courseId": "jmeter_basics",
-    "title": "JMeter: Beginner Essentials",
-    "description": "Getting started with Apache JMeter recording and setup.",
+    "title": "JMeter Mastery: Beginner Essentials",
+    "description": "Getting started with Apache JMeter recording, setup, and CSV parameterization.",
     "tool": "JMeter",
-    "category": "Performance Testing",
+    "category": "Performance Tools",
     "level": "Beginner",
     "videos": [ 
-      { "id": "1OO4XcWWMRc", "title": "Lesson 1: How to Install JMeter" },
-      { "id": "GJKvvxKIYGU", "title": "Lesson 2: How to Record Script" },
-      { "id": "BZ4_JXbRNw4", "title": "Lesson 3: CSV Parameterization" },
-      { "id": "sDTUibbFryk", "title": "Lesson 4: Fix Certificate issues" }
+      { "id": "1OO4XcWWMRc", "title": "How to Install Apache JMeter in Windows" },
+      { "id": "GJKvvxKIYGU", "title": "How to Record Script using Apache JMeter" },
+      { "id": "BZ4_JXbRNw4", "title": "How to Do Parameterization in JMeter" },
+      { "id": "sDTUibbFryk", "title": "How to Fix Certificate issues" }
      ]
   },
   {
     "courseId": "jmeter_advanced",
-    "title": "JMeter: Advanced logic Controllers",
-    "description": "Master complex load scenarios and dynamic data.",
+    "title": "JMeter Mastery: Advanced Logic",
+    "description": "Deep dive into Logic Controllers, Properties, and Dynamic workload handling.",
     "tool": "JMeter",
-    "category": "Performance Testing",
+    "category": "Performance Tools",
     "level": "Advanced",
-    "videos": []
+    "videos": [
+      { "id": "dQw4w9WgXcQ", "title": "Introduction to Advanced Controllers" }
+    ]
   },
   {
     "courseId": "jmeter_api",
     "title": "JMeter: Performance Testing APIs",
-    "description": "Automate load testing for RESTful and SOAP services.",
+    "description": "Mastering REST API and Microservices performance testing using JMeter.",
     "tool": "JMeter",
-    "category": "Performance Testing",
+    "category": "Performance Tools",
     "level": "Intermediate",
-    "videos": []
+    "videos": [
+      { "id": "ID_PLACEHOLDER_1", "title": "API Header Management" },
+      { "id": "ID_PLACEHOLDER_2", "title": "JSON Extractor & Correlation" }
+    ]
+  },
+  {
+    "courseId": "k6_academy",
+    "title": "k6 Modern Load Testing",
+    "description": "Javascript-based load testing for modern CI/CD and Kubernetes environments.",
+    "tool": "k6",
+    "category": "Performance Tools",
+    "level": "Advanced",
+    "videos": [
+      { "id": "ID_k6_1", "title": "Introduction to k6 OSS" }
+    ]
+  },
+  {
+    "courseId": "ai_trends_2026",
+    "title": "Innovation Lab: AI in SRE & Testing",
+    "description": "Little's Law Team perspectives on using Generative AI for scripting and scaling.",
+    "tool": "Trends",
+    "category": "AI Trends",
+    "level": "Expert",
+    "videos": [
+      { "id": "ID_AI_TREND_1", "title": "LLMs for Performance Tuning" }
+    ]
   }
 ]

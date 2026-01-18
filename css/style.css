@@ -442,49 +442,6 @@ footer {
 
 .dropdown-menu { display: none; } /* Use standard if simple, but Mega Menu below */
 
-.mega-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    display: none; /* Only show on hover */
-    grid-template-columns: repeat(3, 1fr);
-    padding: 30px;
-    z-index: 2000;
-    border-top: 4px solid var(--primary-red);
-}
-
-.dropdown.mega:hover .mega-menu {
-    display: grid;
-    animation: fadeIn 0.3s ease;
-}
-
-.mega-col h4 {
-    color: var(--primary-red);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.mega-col a {
-    display: block;
-    padding: 8px 0;
-    text-decoration: none;
-    color: #444;
-    font-size: 0.95rem;
-    transition: 0.2s;
-}
-
-.mega-col a:hover {
-    color: var(--primary-red);
-    padding-left: 10px; /* Interaction effect */
-}
-
 /* AI Banner Aesthetic - Veteran Look */
 #ai-tip-banner {
     background: #fdfdfd !important;
@@ -500,10 +457,6 @@ footer {
 #curriculum-list {
     max-height: 400px;
     overflow-y: auto;
-}
-.lesson-item.completed {
-    opacity: 0.6;
-    background: #f0fff0;
 }
 
 /* Hub Styling */
@@ -532,3 +485,60 @@ footer {
 }
 
 .back-btn:hover { background: white; color: black; }
+
+/* MEGA MENU GRID SETUP */
+.mega-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    display: none; 
+    grid-template-columns: repeat(4, 1fr); /* Supports 4 columns of categories */
+    padding: 35px;
+    z-index: 2000;
+    border-top: 4px solid var(--primary-red);
+}
+
+.mega-col h4 {
+    color: var(--primary-red);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.mega-col a {
+    display: block;
+    padding: 8px 0;
+    color: #444;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.mega-col a:hover {
+    color: var(--primary-red);
+    padding-left: 10px;
+}
+
+.dropdown:hover .mega-menu { display: grid; }
+
+/* DOCO VIEWER (MARKDOWN STYLES) */
+.doc-viewer h1 { border-bottom: 3px solid var(--primary-red); padding-bottom: 15px; color: #111; }
+.doc-viewer h2 { margin-top: 40px; color: #333; }
+.doc-viewer code { background: #f4f4f4; padding: 4px 8px; border-radius: 4px; font-family: monospace; color: #e52e2e; }
+.doc-viewer pre { background: #2d3436; color: #fff; padding: 20px; border-radius: 10px; overflow-x: auto; }
+
+/* TEAM PROGRESS COLORS */
+.lesson-item.completed span {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+.lesson-item.completed {
+    border-left: 5px solid #28a745;
+    background: #f8fff9;
+}
