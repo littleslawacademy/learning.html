@@ -1,46 +1,35 @@
-name: Hourly AI Training Tip
+name: Hourly Academy Expansion
 
 on:
   schedule:
-    - cron: '0 * * * *' # Every hour on the dot
-  workflow_dispatch:   # Allows you to run it manually to test
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write      # Required to allow the bot to push .md files to your repo
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4 # Use V4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20' # Using a modern node version
+          node-version: '20'
 
-        
-      - name: Install AI Libraries 📦
-        run: |
-          npm init -y
-          npm install firebase-admin @google/generative-ai@0.21.0 # Forcing a stable specific version
+      - name: Install dependencies 📦
+        run: npm install firebase-admin groq-sdk
 
-      - name: Install dependencies
-        run: |
-          npm init -y
-          npm install firebase-admin @google/generative-ai@latest
-
-      - name: Execute AI Script
+      - name: Run Team Insight Generator 🧠
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node scripts/generate-ai-tip.js
-      
-      - name: Commit & Push Documentation 📝
+
+      - name: Commit Wiki changes 📝
         run: |
-          git config --global user.name 'Academy-Writer-Bot'
-          git config --global user.email 'bot@littleslaw.com'
+          git config --global user.name 'LittleSlawTeam'
+          git config --global user.email 'vasanthtce@gmail.com'
           git add docs/
-          git commit -m "Auto-update wiki: [${{ github.workflow }}]" || echo "No changes to commit"
+          git commit -m "Little's Law Team: Knowledge Expansion" || echo "No changes"
           git push

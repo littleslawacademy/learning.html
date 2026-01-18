@@ -1,77 +1,65 @@
 const admin = require('firebase-admin');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Groq = require('groq-sdk');
 const fs = require('fs');
 const path = require('path');
 
-// 1. FIREBASE ADMIN SETUP
+// 1. FIREBASE SETUP
 if (!admin.apps.length) {
-    try {
-        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
-        });
-    } catch (e) {
-        console.error("❌ Firebase Service Account error. Check your GitHub Secret.");
-        process.exit(1);
-    }
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
 const db = admin.firestore();
 
-// 2. AI SETUP
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// 2. GROQ SETUP
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const categoryMap = {
-    "performance": { name: "Performance Hub", folder: "performance", tools: ["JMeter", "NeoLoad", "LoadRunner", "k6"] },
-    "sre": { name: "SRE & Cloud", folder: "sre", tools: ["Kubernetes", "AKS", "Observability", "Azure"] },
-    "devops": { name: "DevOps CI/CD", folder: "devops", tools: ["GitHub", "Jenkins", "Linux", "Docker"] },
-    "performance_mastery": { name: "Roadmap Mastery", folder: "performance_mastery", tools: ["Fundamentals", "Analysis"] },
-    "trends_ai": { name: "Trends & AI", folder: "trends_ai", tools: ["AI-Testing", "Predictive-Ops"] }
+    "performance": { name: "Performance Hub", folder: "performance", tools: ["JMeter", "NeoLoad", "k6"] },
+    "sre": { name: "SRE & Cloud", folder: "sre", tools: ["Kubernetes", "AKS", "Azure"] },
+    "devops": { name: "DevOps Hub", folder: "devops", tools: ["Jenkins", "GitHub Actions"] },
+    "performance_mastery": { name: "Roadmap Mastery", folder: "performance_mastery", tools: ["Fundamentals", "Queueing Theory"] },
+    "trends_ai": { name: "Trends & AI", folder: "trends_ai", tools: ["Autonomous Testing", "LLM-Scaling"] }
 };
 
 async function run() {
-    // UK/EU Recommended stable IDs
-    const modelNames = ["gemini-1.5-flash", "gemini-pro"];
-    let contentGenerated = null;
+    try {
+        const keys = Object.keys(categoryMap);
+        const cat = categoryMap[keys[Math.floor(Math.random() * keys.length)]];
+        const tool = cat.tools[Math.floor(Math.random() * cat.tools.length)];
 
-    const keys = Object.keys(categoryMap);
-    const cat = categoryMap[keys[Math.floor(Math.random() * keys.length)]];
-    const tool = cat.tools[Math.floor(Math.random() * cat.tools.length)];
+        console.log(`🚀 Little's Law Team preparing Masterclass for: ${tool}`);
 
-    for (const name of modelNames) {
-        try {
-            console.log(`📡 Attempting secure connection: ${name}...`);
-            
-            // Using the base model getter - SDK handles the endpoint version
-            const model = genAI.getGenerativeModel({ model: name });
+        const completion = await groq.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: "You are the Senior Technical Team at Little's Law Academy. You speak as a collective group of experts with 30 years experience. Your goal is technical mentorship."
+                },
+                {
+                    role: "user",
+                    content: `Write a technical masterclass on ${tool} for our students. 
+                    Include: 1. A war story from the trenches. 2. A deep dive into an architectural bottleneck. 3. A practical CLI command or code snippet. 
+                    Format as Markdown. Word count: Exactly 350 words. Do not mention AI.`
+                }
+            ],
+            model: "llama-3.3-70b-versatile", // Highest quality Groq model
+        });
 
-            const prompt = `Act as the Little's Law Engineering Team. Write a 300-word professional briefing on ${tool}. Category: ${cat.name}. Include: From the Trenches story, Architectural analysis, and a Code/Command example. Use Markdown. No mention of AI.`;
+        const text = completion.choices[0]?.message?.content;
 
-            // Adding a timeout and cleaner response handling
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
-
-            if (text && text.length > 100) {
-                contentGenerated = text;
-                console.log(`✅ Success: Content received via ${name}`);
-                break; 
-            }
-        } catch (error) {
-            console.error(`❌ [${name}] Error:`, error.message);
-            // If it's a 404, we continue to 'gemini-pro'
+        if (text) {
+            await saveEverything(text, tool, cat);
+            console.log(`✅ Success! [${tool}] content generated via Groq.`);
         }
-    }
 
-    if (contentGenerated) {
-        await saveEverything(contentGenerated, tool, cat);
-    } else {
-        console.error("🚨 Content generation failed globally. Verify API Key exists in a project with Generative Language API enabled.");
+    } catch (error) {
+        console.error("❌ Groq Automation Error:", error.message);
         process.exit(1);
     }
 }
 
 async function saveEverything(text, tool, category) {
-    // 1. Firebase Save
+    // Save to Firebase (Home Banner)
     await db.collection('admin_data').doc('hourly_tip').set({
         content: text,
         tool: tool,
@@ -80,14 +68,13 @@ async function saveEverything(text, tool, category) {
         lastUpdated: new Date().toISOString()
     });
 
-    // 2. GitHub Save
+    // Save to GitHub Wiki Folders
     const baseDocsDir = path.join(__dirname, '../docs');
-    const targetFolder = path.join(baseDocsDir, category.folder);
-    if (!fs.existsSync(targetFolder)) fs.mkdirSync(targetFolder, { recursive: true });
+    const folderPath = path.join(baseDocsDir, category.folder);
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
 
-    const cleanName = tool.toLowerCase().replace(/[^a-z0-9]/g, '_');
-    fs.writeFileSync(path.join(targetFolder, `${cleanName}.md`), text);
-    console.log(`📂 Wiki updated: docs/${category.folder}/${cleanName}.md`);
+    const fileName = tool.toLowerCase().replace(/[^a-z0-9]/g, '_') + ".md";
+    fs.writeFileSync(path.join(folderPath, fileName), text);
 }
 
 run();
