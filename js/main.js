@@ -17,6 +17,11 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
+const handleLogin = () => {
+    console.log("Login sequence started...");
+    auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+};
+
 // App State
 let playlists = []; 
 let favorites = []; 
