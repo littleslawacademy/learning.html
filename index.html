@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Little's Law Academy | Professional SRE & Performance Hub</title>
+    <title>Little's Law Academy | Official Team Training Hub</title>
+    <!-- Professional Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,110 +14,172 @@
     <header>
         <div class="header-content">
             <h1>🎓 Little's Law Academy</h1>
-            <p>Mastering Performance Testing, SRE, and DevOps</p>
+            <p>Mastering the Science of Scalability: SRE, Performance & AI Orchestration</p>
             <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search 900+ lessons (e.g. JMeter, Kubernetes)...">
+                <input type="text" id="search-input" placeholder="Search 900+ professional lessons (e.g. JMeter, k6, AI, AKS)...">
                 <span class="search-icon">🔍</span>
             </div>
         </div>
 
         <nav class="navbar">
             <ul class="nav-links">
-                <li><a href="#" class="nav-item active" data-filter="All">Home</a></li>
+                <li><a href="#" class="nav-item active" data-filter="All">Home Dashboard</a></li>
+                
+                <!-- MEGA MENU 1: THE VIDEO BOOTCAMPS -->
                 <li class="dropdown mega">
                     <a href="#" class="nav-item">Course Paths ▾</a>
                     <div class="mega-menu">
-<div class="mega-col">
-    <h4>Industry Standard</h4>
-    <a href="#" data-filter="JMeter">JMeter Bootcamp</a>
-    <a href="#" data-filter="Loadrunner">LoadRunner Hub</a>
-    <a href="#" data-filter="Neoload">NeoLoad Course</a>
-</div>
                         <div class="mega-col">
-                            <h4>SRE & Modern Stack</h4>
-                            <a href="#" data-filter="Kubernetes">K8s & AKS</a>
-                            <a href="#" data-filter="Grafana">Observability</a>
-                            <a href="#" data-filter="Azure">Azure Cloud</a>
+                            <h4>The Mastery Path</h4>
+                            <a href="#" data-filter="Performance Masterclass">Basics to Pro Roadmap</a>
+                            <a href="#" data-filter="Workload-Design">Workload Modeling</a>
+                            <a href="#" data-filter="Foundations">Perf Foundations</a>
                         </div>
                         <div class="mega-col">
-                            <h4>DevOps</h4>
-                            <a href="#" data-filter="GitHub">GitHub Actions</a>
-                            <a href="#" data-filter="Jenkins">Pipelines</a>
+                            <h4>Tooling Expert</h4>
+                            <a href="#" data-filter="JMeter">JMeter Bootcamp</a>
+                            <a href="#" data-filter="Neoload">NeoLoad Training</a>
+                            <a href="#" data-filter="Loadrunner">LoadRunner Hub</a>
+                            <a href="#" data-filter="k6">k6 Performance</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>SRE & Modern Stack</h4>
+                            <a href="#" data-filter="Kubernetes">K8s & AKS Ops</a>
+                            <a href="#" data-filter="Azure">Azure Infrastructure</a>
+                            <a href="#" data-filter="Grafana">Observability Stack</a>
+                            <a href="#" data-filter="GitHub">DevOps Automation</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>Innovation Lab</h4>
+                            <a href="#" data-filter="AI Trends">AI in Testing</a>
+                            <a href="#" data-filter="Trends">Latest Tech Trends 2026</a>
                         </div>
                     </div>
                 </li>
+
+                <!-- MEGA MENU 2: THE TEAM WIKI (AI ASSISTED) -->
+                <li class="dropdown mega">
+                    <a href="#" class="nav-item">Expert Team Wiki ▾</a>
+                    <div class="mega-menu">
+                        <div class="mega-col">
+                            <h4>Technical Roadmaps</h4>
+                            <a href="#" data-doc="Testing-Fundamentals">Full Fundamentals Guide</a>
+                            <a href="#" data-doc="Distributed-Architecture">Cloud Architecture Wiki</a>
+                            <a href="#" data-doc="Heap-Analysis">Memory Tuning Docs</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>Next-Gen Trends</h4>
+                            <a href="#" data-doc="AI-in-Perf-Testing">AI Implementation Hub</a>
+                            <a href="#" data-doc="Generative-AI-SRE">Gen-AI for Engineers</a>
+                            <a href="#" data-doc="Current-Market-Trends-2025">What's New Today?</a>
+                        </div>
+                        <div class="mega-col">
+                            <h4>Team Reference</h4>
+                            <a href="#" data-doc="Linux">Linux Internal Optimization</a>
+                            <a href="#" data-doc="Docker">Container Best Practices</a>
+                            <a href="#" data-doc="Kubernetes">K8s Cluster Wiki</a>
+                        </div>
+                    </div>
+                </li>
+
                 <li><a href="#" class="nav-item" data-filter="Favorites">❤️ Watchlist</a></li>
+                
                 <li id="auth-section">
-                    <button id="login-btn" class="auth-btn">Join Academy</button>
+                    <button id="login-btn" class="auth-btn" onclick="handleLogin()">Join Academy</button>
                     <div id="user-profile" style="display: none;">
                         <img id="user-pic" src="" alt="User">
-                        <button id="logout-btn">Logout</button>
+                        <button id="logout-btn">Sign Out</button>
                     </div>
                 </li>
             </ul>
         </nav>
         
         <div class="stats-bar">
-            🏆 You have mastered <span id="progress-count">0</span> advanced lessons.
+            <span>🏆 Journey Stats: <span id="progress-count">0</span> Technical Modules Completed</span>
         </div>
     </header>
 
+    <!-- Content injection -->
     <main id="playlist-container"></main>
 
-    <!-- Professional LMS Modal -->
+    <!-- Professional LMS / Academy Viewer -->
     <div id="video-overlay" class="overlay">
         <div class="modal-content lms-view">
             <span class="close-modal">&times;</span>
             <div class="lms-layout">
+                
+                <!-- Left Content: Player or Wiki Content -->
                 <div class="lms-video-area">
                     <div class="video-wrapper">
-                        <iframe id="video-player" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+                        <iframe id="video-player" src="" frameborder="0" allow="autoplay; encrypted-media; gyroscope" allowfullscreen></iframe>
                     </div>
                     <div class="lms-details">
-                        <h2 id="current-lesson-title">Welcome to the Lessons</h2>
-                        <p id="course-title-label"></p>
+                        <h2 id="current-lesson-title">Please Select a Lesson</h2>
+                        <p id="course-title-label">Curated Bootcamp Session</p>
                     </div>
                 </div>
+
+                <!-- Right Sidebar: Lesson list & Progress -->
                 <div class="lms-sidebar">
                     <div class="sidebar-header">
-                        <h3>Curriculum</h3>
-                        <div class="progress-container">
-                            <div id="modal-progress-bar" class="progress-fill"></div>
+                        <h3>Module Progress</h3>
+                        <div class="progress-container" style="background:#eee; height:10px; border-radius:5px; margin:10px 0;">
+                            <div id="modal-progress-bar" class="progress-fill" style="background:#28a745; width: 0%; height:100%; border-radius:5px; transition:0.3s;"></div>
                         </div>
-                        <span id="modal-progress-text">0% Complete</span>
+                        <span id="modal-progress-text" style="font-size:0.85rem; font-weight:bold;">0% Complete</span>
+
+                        <!-- Mentor Connection Tool -->
+                        <div class="mentor-connect" style="margin-top:20px; background:#fff5f5; padding:15px; border-radius:10px; border:1px solid #fbdada;">
+                            <p style="font-size:0.8rem; margin-bottom:10px;">Mastered by the <b>Little's Law Team</b></p>
+                            <div style="display:flex; gap:8px;">
+                                <a href="https://www.youtube.com/@littleslawyoutubechannel?sub_confirmation=1" target="_blank" style="background:red; color:#fff; text-decoration:none; padding:8px 12px; font-size:0.75rem; border-radius:5px; font-weight:bold;">🔔 Subscribe</a>
+                                <a href="https://www.linkedin.com/in/vasanthmshanmugam/" target="_blank" style="background:#0077b5; color:#fff; text-decoration:none; padding:8px 12px; font-size:0.75rem; border-radius:5px; font-weight:bold;">🤝 Connect</a>
+                            </div>
+                        </div>
                     </div>
-                    <ul id="curriculum-list"></ul>
+                    <!-- 50+ Lesson List -->
+                    <ul id="curriculum-list" style="overflow-y:auto; height:100%; padding:0; margin:0; list-style:none;"></ul>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- CERTIFICATE (HIDDEN) -->
-    <div id="certificate-template" style="display: none; background:white; padding:50px; border:15px solid #e52e2e; text-align:center; font-family:'Inter';">
-        <h1 style="color:#e52e2e; font-size:60px;">CERTIFICATE</h1>
-        <p>OF COURSE COMPLETION</p>
-        <hr style="width:50%; margin:20px auto;">
-        <p>This is awarded to</p>
-        <h2 id="cert-user-name" style="font-size:40px;">Student Name</h2>
-        <p>for completing the curriculum</p>
-        <h3 id="cert-course-name" style="font-size:25px; color:#333;">Course Title</h3>
-        <p id="cert-date" style="margin-top:40px"></p>
-        <p>Validated by <b>Little's Law Academy</b></p>
+    <!-- Hidden Professional Certificate Template -->
+    <div id="certificate-template" style="display: none; background:white; padding:80px; border:20px solid #e52e2e; text-align:center; font-family:'Inter', sans-serif;">
+        <h1 style="color:#e52e2e; font-size:65px; margin:0;">CERTIFICATE</h1>
+        <p style="font-size:24px; letter-spacing:3px;">PROFESSIONAL ACCOMPLISHMENT</p>
+        <hr style="width:60%; margin:40px auto; border: 1px solid #eee;">
+        <p style="font-size:20px;">The Little's Law Engineering Team recognizes</p>
+        <h2 id="cert-user-name" style="font-size:45px; text-transform:uppercase; color:#111; margin:20px 0; border-bottom:3px solid #eee; display:inline-block; padding:0 30px;">[Student Name]</h2>
+        <p style="font-size:18px;">for achieving elite proficiency in</p>
+        <h3 id="cert-course-name" style="font-size:32px; color:#e52e2e; margin:10px 0;">[Course Title Mastered]</h3>
+        <p id="cert-date" style="margin-top:50px; font-weight:bold;"></p>
+        <p style="margin-top:10px;">Authenticated via <b>Academy Digital Registry</b></p>
+        <div style="margin-top:60px; color:#aaa; font-size:0.8rem;">Little's Law Academy: Performance Testing, SRE & AI Lab</div>
     </div>
 
     <footer>
-        <p>© 2025 Little's Law Academy. Master the Science of Scalability.</p>
-        <div class="social-links" style="margin-top:15px">
-            <a href="https://www.youtube.com/@littleslawyoutubechannel" target="_blank" style="color:red">YouTube</a> | 
-            <a href="https://www.linkedin.com/in/vasanthmshanmugam/" target="_blank" style="color:#0077b5">LinkedIn</a>
+        <h2 style="color:var(--primary-red)">Little's Law Academy</h2>
+        <p>Leading the Science of Digital Experience for Modern Engineering Teams.</p>
+        <div class="footer-links" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@littleslawyoutubechannel" target="_blank" style="color:#fff; text-decoration:none;">Video Tutorials</a> | 
+            <a href="https://www.linkedin.com/in/vasanthmshanmugam/" target="_blank" style="color:#fff; text-decoration:none;">Team Networking</a>
         </div>
+        <p style="margin-top:40px; font-size:0.75rem; opacity:0.3;">
+            © 2026 Little's Law Academy | Little's Law Team Hub. Built by Performance Engineers.
+        </p>
     </footer>
 
-    <!-- Libraries -->
+    <!-- EXTERNAL LIBRARIES -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Firebase (Global Compat version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Little's Law Main Engine -->
     <script src="js/main.js"></script>
 </body>
 </html>
