@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm init -y
-          npm install firebase-admin @google/generative-ai
+          npm install firebase-admin @google/generative-ai@latest
 
       - name: Execute AI Script
         env:
