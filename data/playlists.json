@@ -234,7 +234,73 @@
       { "id": "d73aSpJIGU4", "title": "Locust Ep 15: Executing Stress & Spike Tests" },
       { "id": "1PHCRDiWXg4", "title": "Locust Ep 17: Mastering Correlation like a PRO" }
     ]
+  },
+  {
+    "courseId": "bootcamp_k6_academy",
+    "title": "k6 Academy: Performance-as-Code",
+    "description": "The ultimate team guide to modern load testing with k6 and JavaScript. Includes installation, POST requests, dynamic correlation, and converting JMeter scripts.",
+    "category": "performance",
+    "tool": "k6",
+    "level": "Advanced",
+    "videos": [
+      { "id": "wEb4Qzleejg", "title": "Introduction to K6: Setup and Installation" },
+      { "id": "lon_NQTY6Jw", "title": "Protocol: Testing POST Requests with K6" },
+      { "id": "kd96a8hBHdY", "title": "Validations: Check, Text Verification & Assertions" },
+      { "id": "OIahoSmB2z8", "title": "Data Drive: Parameterization in K6 Studio" },
+      { "id": "-_2HVQWo_cA", "title": "Advanced Logic: Correlating Dynamic Data" },
+      { "id": "-4JRxHzdnKU", "title": "Regex Logic: JavaScript match() like JMeter" },
+      { "id": "jlL3pKgalmA", "title": "Realism: Mastering Realistic User Delays (Think Time)" },
+      { "id": "ASAYuXojG9Q", "title": "Architecture: Understanding constant-vus executor" },
+      { "id": "mVGl_axu8FA", "title": "Scale Logic: Ramp-up, Ramp-down & HTML reporting" },
+      { "id": "MBe5Bzoam0I", "title": "First Step: Using K6 Studio for fast development" },
+      { "id": "7zBXaebP8AQ", "title": "Transition: Convert JMeter scripts to k6 automatically" },
+      { "id": "37tibBoZ0v0", "title": "CI/CD: Integrate GitLab with VSCode for k6" }
+    ]
+  },
+  {
+    "courseId": "devops_infrastructure_iac",
+    "title": "Infrastructure Hub: Docker & Terraform",
+    "description": "The Littles Law team guide to platform engineering. Build containers, write HCL (Terraform), and protect production branches in GitHub.",
+    "category": "devops",
+    "tool": "Docker",
+    "level": "Expert",
+    "videos": [
+      { "id": "KgFBT6HRijI", "title": "Docker: Building Web Apps with Containers" },
+      { "id": "wIU4LdzGRhE", "title": "Docker: Starting and Stopping Containers (Manual)" },
+      { "id": "6uknzzHfFQ0", "title": "Image Management: Add files to Docker Images" },
+      { "id": "Fzvphhz1ZD4", "title": "DB Ops: Setup Redis Cache via Docker" },
+      { "id": "HvavmyYue28", "title": "Terraform 1: HashiCorp Certification Intro" },
+      { "id": "TnLJNAIB35Q", "title": "Terraform 2: Mastering Essential Init Commands" },
+      { "id": "J1-US8Tt71I", "title": "Azure: Deploy VNETs using Terraform" },
+      { "id": "rexOFt_lYIw", "title": "Workflow: Create Azure RG with Terraform + GitHub Actions" },
+      { "id": "bibHtOfv9-0", "title": "Self-Hosted: Setting up Windows Agents in Azure DevOps" },
+      { "id": "AQAi-7CcYPk", "title": "Git Strategy: Master Branch Protection" },
+      { "id": "45khqzOeQHk", "title": "Git Logic: Automatically delete stale branches" },
+      { "id": "Ik0lkeXZyw4", "title": "Version Control: First commit to GitHub via CLI" }
+    ]
+  },
+  {
+    "courseId": "bootcamp_trends_innovation",
+    "title": "Academy Evolution: AI Trends & Careers",
+    "description": "How the Little's Law Team stays relevant. AI in load testing, career salary roadmaps ($150k SRE path), and technical interview success strategies.",
+    "category": "trends_ai",
+    "tool": "Trends",
+    "level": "Expert",
+    "videos": [
+      { "id": "SS8UwBJZZdU", "title": "The Reality: AI is coming - Will Testers survive?" },
+      { "id": "oVIZ-FUri5E", "title": "Tech Comparison: GPT-4 vs DeepSeek for Engineering" },
+      { "id": "Usx8OVynboM", "title": "Fast Path: Fast Performance Scripting with GitHub Copilot" },
+      { "id": "ztP6NDtCeJM", "title": "Risk Alert: AI mistakes that expose company secrets" },
+      { "id": "dy-wzlYiqsM", "title": "AI Speed: Create JMeter Scripts in 30 seconds" },
+      { "id": "y6q3SmB7rZw", "title": "Smart Correlation: Using AI for Dynamic Values" },
+      { "id": "mteyATZCgeQ", "title": "Innovation: Meet Gordon AI in Docker Desktop" },
+      { "id": "CDMDaeNYk6c", "title": "Career Strategy: How to stay relevant with 12k layoffs" },
+      { "id": "kJx47HqvTos", "title": "Roadmap 2026: Achieving $150k SRE/DevOps Salary" },
+      { "id": "uZ-D0IM0Fs4", "title": "Interview Secret: Why I was rejected until I did THIS" },
+      { "id": "LoHNziLok7k", "title": "Win your Next Interview: 5 Tactical Steps" },
+      { "id": "HZP9RpE7KRs", "title": "Podcast: ChatGTP - Mentor or Monster?" }
+    ]
   }
-  
+
   
 ]
