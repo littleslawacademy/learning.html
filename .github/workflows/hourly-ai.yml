@@ -20,6 +20,12 @@ jobs:
         with:
           node-version: '20' # Using a modern node version
 
+        
+      - name: Install AI Libraries 📦
+        run: |
+          npm init -y
+          npm install firebase-admin @google/generative-ai@0.21.0 # Forcing a stable specific version
+
       - name: Install dependencies
         run: |
           npm init -y
