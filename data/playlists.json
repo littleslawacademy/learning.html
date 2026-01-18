@@ -30,5 +30,34 @@
       { "id": "k-UVgms70W4", "title": "Think Time and Pacing" },
       { "id": "C0q9z7-iUNI", "title": "How to Install Free License" }
     ]
+  },  
+  {
+    "courseId": "jmeter_basics",
+    "title": "JMeter: Beginner Essentials",
+    "tool": "JMeter",
+    "category": "Performance Testing",
+    "level": "Beginner",
+    "videos": [ 
+      { "id": "1OO4XcWWMRc", "title": "How to Install Apache JMeter in Windows Step by Step Performance Testing Episode 1 - YouTube" },
+      { "id": "GJKvvxKIYGU", "title": "How to Record Script using Apache JMeter Step by Step Performance Testing Episode 2 - YouTube" },
+      { "id": "BZ4_JXbRNw4", "title": "How to Do Parameterization in JMeter using CSV Episode 3 - YouTube" },
+      { "id": "sDTUibbFryk", "title": "How to Fix Certificate issue while recording script in JMeter - YouTube" }
+     ]
+  },
+  {
+    "courseId": "jmeter_advanced",
+    "title": "JMeter: Advanced Logic Controllers",
+    "tool": "JMeter",
+    "category": "Performance Testing",
+    "level": "Advanced",
+    "videos": [ ...vids... ]
+  },
+  {
+    "courseId": "jmeter_api",
+    "title": "JMeter: Performance Testing APIs",
+    "tool": "JMeter",
+    "category": "Performance Testing",
+    "level": "Intermediate",
+    "videos": [ ...vids... ]
   }
 ]

@@ -111,25 +111,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // MAIN RENDER ENGINE
+    // --- UPDATED RENDER ENGINE ---
     function render() {
         if (!currentUser) {
-            container.innerHTML = `
-            <div id="locked-view" style="grid-column:1/-1; text-align:center; padding:100px;">
-                <h1>🎓 Welcome Performance Engineer</h1>
-                <p style="margin:20px; color:#666;">Login to track your journey through 900+ professional lessons.</p>
-                <button class="auth-btn" style="padding:15px 35px; font-size:1.1rem; cursor:pointer;" onclick="handleLogin()">🔓 Unlock Journey Now</button>
-            </div>`;
+            container.innerHTML = `<div id="locked-view" style="grid-column:1/-1; text-align:center; padding:100px;"><h1>🎓 Welcome</h1><button class="auth-btn" style="padding:15px 30px" onclick="handleLogin()">Unlock Now</button></div>`;
             return;
         }
 
-        container.innerHTML = `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:8px solid #e52e2e; background:#fff; padding:30px; margin-bottom:40px; white-space:pre-wrap; box-shadow:0 4px 15px rgba(0,0,0,0.05);"></div>`;
+        // Check if we are in a specific Hub (e.g. JMeter, k6) or All
+        let hubHtml = '';
+        if (currentFilter !== 'All' && currentFilter !== 'Favorites') {
+            hubHtml = `
+                <div class="hub-header">
+                    <div>
+                        <small>Specialized Academy Hub</small>
+                        <h2>${currentFilter} Masterclass Series</h2>
+                    </div>
+                    <button class="back-btn" data-filter="All">← Back to All Courses</button>
+                </div>
+            `;
+        }
+
+        container.innerHTML = hubHtml + `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:10px solid #e52e2e; padding:30px; margin-bottom:30px; white-space:pre-line; background:#fff;"></div>`;
         
+        // Logic to filter the playlists
         const filtered = playlists.filter(p => {
             const pool = (p.title + p.tool).toLowerCase();
             const matchesSearch = pool.includes(searchTerm);
-            const matchesCat = (currentFilter === 'All' || p.category === currentFilter || p.tool === currentFilter);
-            return matchesCat && matchesSearch;
+            // Deep check: Filter by specific tool (JMeter) OR the broad Category
+            const matchesFilter = (currentFilter === 'All' || p.tool === currentFilter || p.category === currentFilter);
+            return matchesFilter && matchesSearch;
         });
+
+        if (filtered.length === 0) {
+            container.innerHTML += `<div style="grid-column:1/-1; text-align:center; padding:50px;"><h3>No courses found in the ${currentFilter} Hub.</h3></div>`;
+        }
 
         filtered.forEach(p => {
             const stats = getStats(p);
@@ -139,9 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-tag">${p.tool} <span class="badge ${p.level.toLowerCase()}">${p.level}</span></div>
                 <h2>${p.title}</h2>
                 <div class="card-progress"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
-                <small>${stats.percent}% Completed (${stats.done}/${stats.total} topics)</small>
+                <small>${stats.percent}% Journey Mastered</small>
                 <p>${p.description}</p>
-                <button class="lms-btn" data-cid="${p.courseId}">Open Training Dashboard</button>
+                <button class="lms-btn" data-cid="${p.courseId}">▶ Open Syllabus (${p.videos.length} Videos)</button>
             `;
             container.appendChild(card);
         });
@@ -149,6 +165,49 @@ document.addEventListener('DOMContentLoaded', () => {
         loadHourlyAITip();
         if(document.getElementById('progress-count')) document.getElementById('progress-count').textContent = completed.length;
     }
+
+    // --- GLOBAL CLICK HANDLER (MERGED) ---
+    document.addEventListener('click', async (e) => {
+        const t = e.target;
+        
+        // 1. Navigation / Mega Menu / Back Button Filter
+        if (t.closest('[data-filter]')) {
+            e.preventDefault();
+            currentFilter = t.closest('[data-filter]').dataset.filter;
+            
+            // Set Nav Active styles
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            const megaParent = t.closest('.dropdown')?.querySelector('.nav-item');
+            if (megaParent) megaParent.classList.add('active'); else t.classList.add('active');
+            
+            render();
+            window.scrollTo({top: 0, behavior: 'smooth'}); // Auto scroll up on hub change
+            return;
+        }
+
+        // 2. Open specific Journey (Opens the modal with video sidebar)
+        if (t.classList.contains('lms-btn')) {
+            const cid = t.dataset.cid;
+            const course = playlists.find(p => p.courseId === cid);
+            const list = document.getElementById('curriculum-list');
+            list.innerHTML = '';
+            
+            course.videos.forEach(v => {
+                const gid = `${course.courseId}_${v.id}`;
+                const checked = completed.includes(gid);
+                const li = document.createElement('li');
+                li.className = `lesson-item ${checked ? 'completed' : ''}`;
+                li.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''} data-gid="${gid}">
+                                <span class="lesson-link" data-vid="${v.id}">${v.title}</span>`;
+                list.appendChild(li);
+            });
+            document.getElementById('course-title-label').textContent = course.title;
+            updateModalUI(course.courseId);
+            document.getElementById('video-overlay').style.display = 'flex';
+        }
+
+        // ... Keep existing logic for lesson-link click, checkbox toggle, and close-modal ...
+    });
 
     // GLOBAL INTERACTION LISTENER
     document.addEventListener('click', async (e) => {
