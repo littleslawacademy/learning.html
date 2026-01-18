@@ -112,39 +112,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // MAIN RENDER ENGINE
     // --- UPDATED RENDER ENGINE ---
+  // --- UPDATED RENDER ENGINE ---
     function render() {
         if (!currentUser) {
-            container.innerHTML = `<div id="locked-view" style="grid-column:1/-1; text-align:center; padding:100px;"><h1>🎓 Welcome</h1><button class="auth-btn" style="padding:15px 30px" onclick="handleLogin()">Unlock Now</button></div>`;
+            container.innerHTML = `<div id="locked-view" style="grid-column:1/-1; text-align:center; padding:100px;"><h1>🎓 Welcome</h1><button class="auth-btn" style="padding:15px 30px" onclick="handleLogin()">Unlock Journey Now</button></div>`;
             return;
         }
 
-        // Check if we are in a specific Hub (e.g. JMeter, k6) or All
         let hubHtml = '';
         if (currentFilter !== 'All' && currentFilter !== 'Favorites') {
             hubHtml = `
-                <div class="hub-header">
+                <div class="hub-header" style="grid-column: 1 / -1; background: #111; color: white; padding: 40px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <small>Specialized Academy Hub</small>
-                        <h2>${currentFilter} Masterclass Series</h2>
+                        <small style="color:red; text-transform:uppercase;">Specialized Academy Hub</small>
+                        <h2 style="margin:0">${currentFilter} Masterclass Series</h2>
                     </div>
-                    <button class="back-btn" data-filter="All">← Back to All Courses</button>
-                </div>
-            `;
+                    <button class="back-btn" data-filter="All" style="background:transparent; border:1px solid white; color:white; padding:8px 15px; border-radius:5px; cursor:pointer;">← All Courses</button>
+                </div>`;
         }
 
         container.innerHTML = hubHtml + `<div id="ai-tip-banner" class="stats-bar" style="grid-column:1/-1; display:none; border-left:10px solid #e52e2e; padding:30px; margin-bottom:30px; white-space:pre-line; background:#fff;"></div>`;
         
-        // Logic to filter the playlists
         const filtered = playlists.filter(p => {
-            const pool = (p.title + p.tool).toLowerCase();
-            const matchesSearch = pool.includes(searchTerm);
-            // Deep check: Filter by specific tool (JMeter) OR the broad Category
-            const matchesFilter = (currentFilter === 'All' || p.tool === currentFilter || p.category === currentFilter);
-            return matchesFilter && matchesSearch;
+            const f = currentFilter.toLowerCase();
+            const pool = (p.title + p.tool + p.category).toLowerCase();
+            const matchesSearch = pool.includes(searchTerm.toLowerCase());
+            
+            // Check if it matches the Tool name or Category name
+            const isAll = f === 'all';
+            const matchesTool = p.tool.toLowerCase() === f;
+            const matchesCat = p.category.toLowerCase() === f;
+
+            if (f === 'favorites') return favorites.includes(p.courseId) && matchesSearch;
+            return (isAll || matchesTool || matchesCat) && matchesSearch;
         });
 
         if (filtered.length === 0) {
-            container.innerHTML += `<div style="grid-column:1/-1; text-align:center; padding:50px;"><h3>No courses found in the ${currentFilter} Hub.</h3></div>`;
+            container.innerHTML += `<div style="grid-column:1/-1; text-align:center; padding:100px;"><h3>No modules found in the ${currentFilter} path yet.</h3></div>`;
         }
 
         filtered.forEach(p => {
@@ -157,13 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-progress"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
                 <small>${stats.percent}% Journey Mastered</small>
                 <p>${p.description}</p>
-                <button class="lms-btn" data-cid="${p.courseId}">▶ Open Syllabus (${p.videos.length} Videos)</button>
+                <button class="lms-btn" data-cid="${p.courseId}">▶ View ${p.videos.length} Lessons</button>
             `;
             container.appendChild(card);
         });
 
         loadHourlyAITip();
-        if(document.getElementById('progress-count')) document.getElementById('progress-count').textContent = completed.length;
     }
 
     // --- GLOBAL CLICK HANDLER (MERGED) ---

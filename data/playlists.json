@@ -34,30 +34,33 @@
   {
     "courseId": "jmeter_basics",
     "title": "JMeter: Beginner Essentials",
+    "description": "Getting started with Apache JMeter recording and setup.",
     "tool": "JMeter",
     "category": "Performance Testing",
     "level": "Beginner",
     "videos": [ 
-      { "id": "1OO4XcWWMRc", "title": "How to Install Apache JMeter in Windows Step by Step Performance Testing Episode 1 - YouTube" },
-      { "id": "GJKvvxKIYGU", "title": "How to Record Script using Apache JMeter Step by Step Performance Testing Episode 2 - YouTube" },
-      { "id": "BZ4_JXbRNw4", "title": "How to Do Parameterization in JMeter using CSV Episode 3 - YouTube" },
-      { "id": "sDTUibbFryk", "title": "How to Fix Certificate issue while recording script in JMeter - YouTube" }
+      { "id": "1OO4XcWWMRc", "title": "Lesson 1: How to Install JMeter" },
+      { "id": "GJKvvxKIYGU", "title": "Lesson 2: How to Record Script" },
+      { "id": "BZ4_JXbRNw4", "title": "Lesson 3: CSV Parameterization" },
+      { "id": "sDTUibbFryk", "title": "Lesson 4: Fix Certificate issues" }
      ]
   },
   {
     "courseId": "jmeter_advanced",
-    "title": "JMeter: Advanced Logic Controllers",
+    "title": "JMeter: Advanced logic Controllers",
+    "description": "Master complex load scenarios and dynamic data.",
     "tool": "JMeter",
     "category": "Performance Testing",
     "level": "Advanced",
-    "videos": [ ...vids... ]
+    "videos": []
   },
   {
     "courseId": "jmeter_api",
     "title": "JMeter: Performance Testing APIs",
+    "description": "Automate load testing for RESTful and SOAP services.",
     "tool": "JMeter",
     "category": "Performance Testing",
     "level": "Intermediate",
-    "videos": [ ...vids... ]
+    "videos": []
   }
 ]
